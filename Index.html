@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GT Rao - Personal Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: { accent: 'var(--accent)' }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --bg-color: #0d0914;
+            --card-bg: rgba(20, 15, 35, 0.4);
+            --border-color: rgba(168, 85, 247, 0.2);
+            --accent: #a855f7;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --glow: 0 0 20px rgba(168, 85, 247, 0.3);
+        }
+
+        [data-theme="amoled"] { --bg-color: #000000; --card-bg: rgba(15, 15, 15, 0.7); --border-color: rgba(255, 107, 0, 0.3); --accent: #ff6b00; --text-main: #ffffff; --text-muted: #9ca3af; --glow: 0 0 20px rgba(255, 107, 0, 0.2); }
+        [data-theme="cyberpunk"] { --bg-color: #0a0a1a; --card-bg: rgba(20, 20, 40, 0.6); --border-color: rgba(0, 255, 255, 0.4); --accent: #00ffff; --text-main: #ffffff; --text-muted: #a5b4fc; --glow: 0 0 25px rgba(0, 255, 255, 0.4); }
+        [data-theme="ocean"] { --bg-color: #051923; --card-bg: rgba(10, 40, 60, 0.5); --border-color: rgba(0, 168, 232, 0.3); --accent: #00a8e8; --text-main: #ffffff; --text-muted: #94a3b8; --glow: 0 0 20px rgba(0, 168, 232, 0.3); }
+        [data-theme="frost"] { --bg-color: #f1f5f9; --card-bg: rgba(255, 255, 255, 0.7); --border-color: rgba(56, 189, 248, 0.4); --accent: #0284c7; --text-main: #0f172a; --text-muted: #475569; --glow: 0 5px 15px rgba(2, 132, 199, 0.15); }
+        [data-theme="emerald"] { --bg-color: #022c22; --card-bg: rgba(6, 78, 59, 0.4); --border-color: rgba(16, 185, 129, 0.3); --accent: #10b981; --text-main: #ffffff; --text-muted: #94a3b8; --glow: 0 0 20px rgba(16, 185, 129, 0.3); }
+        [data-theme="crimson"] { --bg-color: #2a0408; --card-bg: rgba(80, 7, 18, 0.4); --border-color: rgba(225, 29, 72, 0.3); --accent: #e11d48; --text-main: #ffffff; --text-muted: #cbd5e1; --glow: 0 0 20px rgba(225, 29, 72, 0.3); }
+        [data-theme="sunset"] { --bg-color: #1f0d11; --card-bg: rgba(60, 20, 30, 0.4); --border-color: rgba(244, 63, 94, 0.3); --accent: #f43f5e; --text-main: #ffffff; --text-muted: #cbd5e1; --glow: 0 0 20px rgba(244, 63, 94, 0.3); }
+        [data-theme="midnight"] { --bg-color: #020617; --card-bg: rgba(15, 23, 42, 0.6); --border-color: rgba(99, 102, 241, 0.3); --accent: #6366f1; --text-main: #ffffff; --text-muted: #94a3b8; --glow: 0 0 20px rgba(99, 102, 241, 0.3); }
+        [data-theme="golden"] { --bg-color: #1a1500; --card-bg: rgba(40, 30, 5, 0.5); --border-color: rgba(234, 179, 8, 0.3); --accent: #eab308; --text-main: #ffffff; --text-muted: #d6d3d1; --glow: 0 0 20px rgba(234, 179, 8, 0.3); }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: all 0.5s ease;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .link-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .link-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            border-color: var(--accent);
+            box-shadow: var(--glow);
+        }
+        .link-card:hover i, .link-card:hover svg {
+            animation: bounceIcon 0.5s ease;
+        }
+
+        @keyframes bounceIcon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* Profile Ring Animation */
+        .profile-container {
+            position: relative;
+            width: 124px;
+            height: 124px;
+            margin: 0 auto;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .profile-ring {
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent 0%, var(--accent) 30%, transparent 60%);
+            animation: spinRing 3s linear infinite;
+            z-index: 0;
+        }
+        .profile-pic {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--bg-color);
+            position: relative;
+            z-index: 1;
+        }
+        @keyframes spinRing {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Quotes Slider */
+        .quote-container {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 100px;
+        }
+        .quote-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            height: 100%;
+        }
+        .quote-slide {
+            min-width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            text-align: center;
+            font-style: italic;
+            font-weight: 500;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--border-color);
+            transition: all 0.3s;
+        }
+        .dot.active {
+            width: 24px;
+            background: var(--accent);
+        }
+
+        /* Modal */
+        #igModal { backdrop-filter: blur(8px); }
+
+        /* Fireworks */
+        .firework {
+            position: fixed;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            animation: explode 1.2s ease-out forwards;
+        }
+        @keyframes explode {
+            0% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 var(--accent); }
+            100% { transform: scale(1.5); opacity: 0; 
+                box-shadow: -35px -35px 0 0 var(--accent), 35px -35px 0 0 #fff, 
+                            -35px 35px 0 0 var(--accent), 35px 35px 0 0 #fff, 
+                            0 -50px 0 0 var(--accent), 0 50px 0 0 #fff,
+                            -50px 0 0 0 var(--accent), 50px 0 0 0 #fff; 
+            }
+        }
+        
+        .floating-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.3;
+            animation: floatOrb 10s infinite alternate;
+        }
+        @keyframes floatOrb {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(30px, 50px); }
+        }
+        
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background-color: var(--accent);
+            vertical-align: text-bottom;
+            animation: blink 1s step-end infinite;
+            margin-left: 2px;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+    </style>
+</head>
+<body class="antialiased min-h-screen relative flex flex-col items-center justify-center p-4">
+
+    <!-- Audio Element -->
+    <audio id="bgMusic" loop>
+        <source src="music.mp4" type="audio/mp4">
+    </audio>
+
+    <!-- Floating Orbs -->
+    <div class="floating-orb w-64 h-64 top-0 left-0 bg-[var(--accent)]"></div>
+    <div class="floating-orb w-72 h-72 bottom-0 right-0 bg-blue-500"></div>
+
+    <!-- Header Controls -->
+    <div class="absolute top-6 w-full max-w-2xl px-4 flex justify-between items-start z-10">
+        <div class="glass-card px-4 py-2 rounded-full text-sm font-semibold animate-pulse">
+            <span id="greetingText">Good Evening</span> ✨
+        </div>
+        <button onclick="cycleTheme()" class="glass-card w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-[0_0_15px_var(--accent)] border-accent/50">
+            <i class="fa-solid fa-palette text-accent"></i>
+        </button>
+    </div>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-2xl mt-20 mb-10 relative z-10">
+        
+        <!-- Profile Section -->
+        <div class="text-center mb-8 relative flex flex-col items-center">
+            <div class="profile-container mb-4">
+                <div class="profile-ring"></div>
+                <img src="dev-Profile.png" alt="GT Rao" class="profile-pic" onerror="this.src='https://ui-avatars.com/api/?name=GT+Rao&background=random&color=fff&size=200'">
+            </div>
+            
+            <!-- Name and Verified Badge -->
+            <div class="flex items-center justify-center gap-2 mb-2">
+                <h1 class="text-3xl font-bold">GT Rao</h1>
+                <!-- Real Verified Badge SVG Next to Name -->
+                <svg aria-label="Verified" role="img" viewBox="0 0 40 40" class="w-6 h-6 fill-[#0095F6]">
+                    <path d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Zm7.415 11.225 2.254 2.287-11.43 11.5-6.835-6.93 2.244-2.258 4.587 4.581 9.18-9.18Z" fill-rule="evenodd"></path>
+                </svg>
+            </div>
+            
+            <p class="text-[var(--text-muted)] font-medium leading-relaxed max-w-sm mx-auto text-sm">
+                Web Developer, Student & Digital Creator<br>
+                Founder of PDFly Tools & Educate Path
+            </p>
+        </div>
+
+        <!-- Links Grid (Strict 2 Column) -->
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <!-- Website -->
+            <a href="https://pdflytools.github.io/Home/" target="_blank" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center">
+                <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center mb-1 group-hover:bg-accent/20 transition-colors">
+                    <i class="fa-solid fa-globe text-2xl text-accent"></i>
+                </div>
+                <span class="font-semibold text-sm">Website</span>
+            </a>
+            
+            <!-- Telegram -->
+            <a href="https://t.me/Gt_Rao" target="_blank" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center">
+                <div class="w-12 h-12 rounded-full bg-[#0088cc]/10 flex items-center justify-center mb-1 group-hover:bg-[#0088cc]/20 transition-colors">
+                    <i class="fa-brands fa-telegram text-2xl text-[#0088cc]"></i>
+                </div>
+                <span class="font-semibold text-sm">Telegram</span>
+            </a>
+
+            <!-- Instagram (Triggers Modal) -->
+            <button onclick="openIgModal()" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center w-full relative overflow-hidden">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 opacity-10 flex items-center justify-center mb-1 group-hover:opacity-20 transition-all"></div>
+                <i class="fa-brands fa-instagram text-3xl text-transparent bg-clip-text bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-[calc(50%+10px)]"></i>
+                <span class="font-semibold text-sm z-10 mt-1">Instagram</span>
+            </button>
+
+            <!-- WhatsApp -->
+            <a href="https://whatsapp.com/channel/0029Vb8s6FTLNSa1Hh33k607" target="_blank" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center">
+                <div class="w-12 h-12 rounded-full bg-[#25D366]/10 flex items-center justify-center mb-1 group-hover:bg-[#25D366]/20 transition-colors">
+                    <i class="fa-brands fa-whatsapp text-2xl text-[#25D366]"></i>
+                </div>
+                <span class="font-semibold text-sm">WhatsApp</span>
+            </a>
+
+            <!-- X (Twitter) -->
+            <a href="#" target="_blank" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center">
+                <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-1 group-hover:bg-white/20 transition-colors">
+                    <svg viewBox="0 0 24 24" class="w-6 h-6 fill-current" aria-hidden="true">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+                    </svg>
+                </div>
+                <span class="font-semibold text-sm">X</span>
+            </a>
+
+            <!-- YouTube -->
+            <a href="#" target="_blank" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center">
+                <div class="w-12 h-12 rounded-full bg-[#FF0000]/10 flex items-center justify-center mb-1 group-hover:bg-[#FF0000]/20 transition-colors">
+                    <i class="fa-brands fa-youtube text-2xl text-[#FF0000]"></i>
+                </div>
+                <span class="font-semibold text-sm">YouTube</span>
+            </a>
+
+            <!-- Facebook -->
+            <a href="#" target="_blank" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center col-span-2">
+                <div class="w-12 h-12 rounded-full bg-[#1877F2]/10 flex items-center justify-center mb-1 group-hover:bg-[#1877F2]/20 transition-colors">
+                    <i class="fa-brands fa-facebook-f text-2xl text-[#1877F2]"></i>
+                </div>
+                <span class="font-semibold text-sm">Facebook</span>
+            </a>
+        </div>
+
+        <!-- Special OSINT Note Section (Live Typing Style) -->
+        <div class="glass-card rounded-3xl p-6 mb-8 relative overflow-hidden transition-all duration-300">
+            <h3 class="text-xl font-bold mb-3 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-gift text-accent"></i> Ek Chota Sa Magic 
+            </h3>
+            <p class="text-[var(--text-muted)] text-sm mb-5 text-center">Mere paas aapke liye ek bahut hi special message hai. Bas ek tap karke dekhiye! ✨</p>
+            
+            <button id="surpriseBtn" onclick="showSurprise()" class="w-full bg-accent hover:bg-accent/80 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 flex justify-center items-center gap-2 shadow-[0_0_15px_var(--accent)]">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Magic Dekho
+            </button>
+
+            <!-- Hidden Message Box for Typewriter -->
+            <div id="surpriseMessage" class="hidden mt-2 p-5 bg-black/40 rounded-2xl border border-white/10 text-sm leading-relaxed text-left text-gray-200 min-h-[150px]">
+                <!-- Typing content goes here -->
+            </div>
+        </div>
+
+        <!-- Quotes Slider -->
+        <div class="glass-card rounded-3xl py-6 px-2 mb-8">
+            <div class="quote-container" id="quoteContainer">
+                <div class="quote-track" id="quoteTrack">
+                    <!-- JS se populate hoga -->
+                </div>
+            </div>
+            <div class="flex justify-center gap-2 mt-4" id="quoteDots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-sm text-[var(--text-muted)] mt-12 pb-6">
+            Crafted with <i class="fa-solid fa-heart text-accent mx-1 animate-pulse"></i> by GT Rao
+        </footer>
+
+    </main>
+
+    <!-- Music Control (Hidden default) -->
+    <button id="musicBtn" onclick="toggleMusic()" class="hidden fixed bottom-6 right-6 w-12 h-12 glass-card rounded-full z-50 flex items-center justify-center text-accent hover:scale-110 transition-transform">
+        <i class="fa-solid fa-music" id="musicIcon"></i>
+    </button>
+
+    <!-- Instagram Split Modal -->
+    <div id="igModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 opacity-0 transition-opacity duration-300">
+        <div class="glass-card w-full max-w-sm rounded-3xl p-6 transform scale-95 transition-transform duration-300" id="igModalContent">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-bold">Select Instagram Account</h3>
+                <button onclick="closeIgModal()" class="text-[var(--text-muted)] hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="space-y-4">
+                <!-- Personal Account -->
+                <a href="https://instagram.com/mr_gt_rao" target="_blank" class="flex items-center gap-4 w-full p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-accent transition-all text-left group">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-lg">
+                        <i class="fa-brands fa-instagram text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="block font-bold mb-0.5 text-base">Personal Account</span>
+                        <span class="text-sm text-[var(--text-muted)] group-hover:text-accent transition-colors block">@mr_gt_rao</span>
+                    </div>
+                </a>
+                <!-- Professional Account -->
+                <a href="https://instagram.com/educate_path" target="_blank" class="flex items-center gap-4 w-full p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-accent transition-all text-left group">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-400 to-blue-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-lg">
+                        <i class="fa-brands fa-instagram text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="block font-bold mb-0.5 text-base">Professional Account</span>
+                        <span class="text-sm text-[var(--text-muted)] group-hover:text-accent transition-colors block">@educate_path</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Theme System ---
+        const themes = ['midnight', 'amoled', 'cyberpunk', 'ocean', 'frost', 'emerald', 'crimson', 'sunset', 'golden'];
+        let currentThemeIndex = 0; // Default Midnight
+        
+        function cycleTheme() {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            document.documentElement.setAttribute('data-theme', themes[currentThemeIndex]);
+        }
+        document.documentElement.setAttribute('data-theme', themes[currentThemeIndex]);
+
+        // --- Dynamic Greeting ---
+        const dInfo = new Date();
+        const hour = dInfo.getHours();
+        let greeting = 'Good Evening';
+        if (hour < 12) greeting = 'Good Morning';
+        else if (hour < 17) greeting = 'Good Afternoon';
+        document.getElementById('greetingText').innerText = greeting;
+
+        // --- Music System ---
+        const bgMusic = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicBtn');
+        const musicIcon = document.getElementById('musicIcon');
+        let hasInteracted = false;
+
+        document.body.addEventListener('click', () => {
+            if (!hasInteracted) {
+                bgMusic.play().then(() => {
+                    musicBtn.classList.remove('hidden');
+                    musicIcon.className = 'fa-solid fa-pause';
+                }).catch(e => console.log("Audio autoplay prevented"));
+                hasInteracted = true;
+            }
+        }, { once: true });
+
+        function toggleMusic() {
+            if (bgMusic.paused) {
+                bgMusic.play();
+                musicIcon.className = 'fa-solid fa-pause';
+            } else {
+                bgMusic.pause();
+                musicIcon.className = 'fa-solid fa-play';
+            }
+        }
+
+        // --- Instagram Modal ---
+        const igModal = document.getElementById('igModal');
+        const igModalContent = document.getElementById('igModalContent');
+
+        function openIgModal() {
+            igModal.classList.remove('hidden');
+            setTimeout(() => {
+                igModal.classList.remove('opacity-0');
+                igModalContent.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeIgModal() {
+            igModal.classList.add('opacity-0');
+            igModalContent.classList.add('scale-95');
+            setTimeout(() => {
+                igModal.classList.add('hidden');
+            }, 300);
+        }
+
+        // --- 50 Quotes Carousel Logic ---
+        const quotes = [
+            "Education is the most powerful weapon.", "Push yourself, because no one else is going to do it for you.",
+            "Sometimes later becomes never. Do it now.", "Great things never come from comfort zones.",
+            "Dream it. Wish it. Do it.", "Success doesn't just find you. You have to go out and get it.",
+            "The harder you work for something, the greater you'll feel when you achieve it.", "Dream bigger. Do bigger.",
+            "Don't stop when you're tired. Stop when you're done.", "Wake up with determination. Go to bed with satisfaction.",
+            "Do something today that your future self will thank you for.", "Little things make big days.",
+            "It's going to be hard, but hard does not mean impossible.", "Don't wait for opportunity. Create it.",
+            "Sometimes we're tested not to show our weaknesses, but to discover our strengths.", "The key to success is to focus on goals, not obstacles.",
+            "Dream it. Believe it. Build it.", "Motivation is what gets you started. Habit is what keeps you going.",
+            "You don't have to be great to start, but you have to start to be great.", "The secret of getting ahead is getting started.",
+            "It always seems impossible until it's done.", "Believe you can and you're halfway there.",
+            "Work hard in silence, let your success be your noise.", "Focus on your goal. Don't look in any direction but ahead.",
+            "A goal without a plan is just a wish."
+        ];
+        
+        let fullQuotes = [...quotes, ...quotes].sort(() => Math.random() - 0.5);
+        
+        const track = document.getElementById('quoteTrack');
+        fullQuotes.forEach(q => {
+            const div = document.createElement('div');
+            div.className = 'quote-slide';
+            div.innerText = `"${q}"`;
+            track.appendChild(div);
+        });
+
+        let currentSlide = 0;
+        const dots = document.querySelectorAll('.dot');
+        
+        function updateSlider() {
+            currentSlide = (currentSlide + 1) % fullQuotes.length;
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            dots.forEach(d => d.classList.remove('active'));
+            dots[currentSlide % 3].classList.add('active');
+        }
+        setInterval(updateSlider, 4000);
+
+        // --- Friendly Live OSINT Magic Note ---
+        async function showSurprise() {
+            const btn = document.getElementById('surpriseBtn');
+            const msgBox = document.getElementById('surpriseMessage');
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Thoda intezaar kijiye...';
+            btn.disabled = true;
+
+            // Gather Data
+            const ua = navigator.userAgent;
+            let brand = "phone";
+            if (/vivo/i.test(ua)) brand = "Vivo smartphone";
+            else if (/oppo|cph/i.test(ua)) brand = "Oppo smartphone";
+            else if (/samsung|sm-/i.test(ua)) brand = "Samsung device";
+            else if (/redmi|poco|mi\s/i.test(ua)) brand = "Xiaomi/Redmi phone";
+            else if (/realme/i.test(ua)) brand = "Realme smartphone";
+            else if (/oneplus/i.test(ua)) brand = "OnePlus phone";
+            else if (/motorola|moto/i.test(ua)) brand = "Motorola device";
+            else if (/iphone/i.test(ua)) brand = "iPhone";
+            else if (/macintosh|mac os/i.test(ua)) brand = "MacBook/Mac";
+            else if (/windows/i.test(ua)) brand = "Windows PC/Laptop";
+
+            // Browser logic
+            let browser = "shandar browser";
+            if (ua.includes("Chrome")) browser = "Google Chrome";
+            else if (ua.includes("Safari") && !ua.includes("Chrome")) browser = "Safari";
+            else if (ua.includes("Firefox")) browser = "Firefox";
+            else if (ua.includes("Edg")) browser = "Microsoft Edge";
+
+            // Screen & Extras
+            const screenW = window.screen.width;
+            const screenH = window.screen.height;
+            const lang = navigator.language || "English";
+
+            let ramStr = navigator.deviceMemory ? navigator.deviceMemory + "GB RAM" : "badiya storage/RAM";
+            let coreStr = navigator.hardwareConcurrency ? navigator.hardwareConcurrency + "-core processor" : "achi speed";
+            let specs = `isme <b>${ramStr}</b> aur <b>${coreStr}</b> hai`;
+
+            // Battery
+            let batteryText = "aur aapka device ekdam active lag raha hai.";
+            let lvl = 0;
+            try {
+                if (navigator.getBattery) {
+                    const b = await navigator.getBattery();
+                    lvl = Math.round(b.level * 100);
+                    batteryText = `Waise aapke phone ki battery abhi <b>${lvl}%</b> hai, ${b.charging ? 'aur achi baat ye hai ki wo charge me lagi hui hai ⚡.' : 'isliye aaram se chala sakte hain bina charge kiye.'}`;
+                }
+            } catch(e){}
+
+            // IP OSINT Data
+            let locText = "";
+            let ipAddress = "";
+            try {
+                const res = await fetch('https://ipwho.is/');
+                const data = await res.json();
+                if(data.success) {
+                    ipAddress = data.ip;
+                    const ispName = data.connection.isp || data.connection.org || 'achi telecom company';
+                    locText = `Agar main galat nahi hu, toh aap abhi <b>${data.city}, ${data.region} (${data.country})</b> ke aas-paas se meri is website par hain. Wahan <b>${ispName}</b> ka internet kaafi achi speed de raha hai!`;
+                } else {
+                    locText = "Aapka connection itna safe hai ki pata hi nahi chal raha aap kahan se hain! 😉";
+                }
+            } catch(e){
+                locText = "Aapka connection kafi private hai, location ekdam hidden hai! 😉";
+            }
+
+            // Time logic
+            const dateObj = new Date();
+            const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const todayDay = days[dateObj.getDay()];
+            const timeStr = dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+            let prahar = dateObj.getHours() < 12 ? "subah" : (dateObj.getHours() < 17 ? "dopahar" : "shaam/raat");
+
+            // Combine into highly respectful, friendly message
+            const rawMessageHTML = `
+                <p class="text-lg text-accent font-bold mb-2">Welcome! 🎉</p>
+                <p>Namaste, main GT Rao bol raha hu. 🙏</p><br>
+                <p>Aapne apna keemti waqt nikal kar meri is website par visit kiya, ye mere liye sach mein bahut badi khushi ki baat hai. Aap sach me ek bahut hi acche aur khaas insaan lagte hain. ❤️</p><br>
+                <p>Baaton hi baaton mein mujhe aapke baare me thodi si cheezein mehsoos hui... jaise ki aaj <b>${todayDay}</b> ka khoobsurat din hai aur ghadi mein <b>${timeStr}</b> ho rahe hain.</p><br>
+                <p>${locText} Aapne apne us <b>${brand}</b> (jisme lagbhag ${specs} hai) ki <b>${screenW}x${screenH}</b> pixels ki clear screen par mujhe thodi si jagah di hai. Aap shayad <b>${lang}</b> language setting aur <b>${browser}</b> ka use kar rahe hain.</p><br>
+                <p>${batteryText} ${ipAddress ? `(Waise aapka IP address ${ipAddress} hai)` : ''}</p><br>
+                <p><b>Please bilkul bhi dariyega mat!</b> 😂 Aap ekdam safe hain aur aap hack nahi hue hain. Ye bas meri web development skills ka ek chota sa 'Jadu' (demo) hai, jo main aapke sath share karna chahta tha.</p><br>
+                <p>Aapko mera ye chota sa kaam kaisa laga? Aise hi haste, muskurate rahiye aur life me hamesha aage badhte rahiye. Aapka din shubh ho! ✨</p>
+            `;
+
+            // UI Changes
+            btn.style.display = 'none';
+            msgBox.classList.remove('hidden');
+            msgBox.innerHTML = '';
+
+            // Live Typewriter Effect Logic
+            async function typeOutHTML(htmlContent, container) {
+                let currentHTML = "";
+                let i = 0;
+                while (i < htmlContent.length) {
+                    if (htmlContent[i] === '<') {
+                        let endIdx = htmlContent.indexOf('>', i);
+                        if (endIdx !== -1) {
+                            currentHTML += htmlContent.substring(i, endIdx + 1);
+                            i = endIdx + 1;
+                        } else {
+                            currentHTML += htmlContent[i];
+                            i++;
+                        }
+                    } else {
+                        currentHTML += htmlContent[i];
+                        i++;
+                        container.innerHTML = currentHTML + '<span class="typing-cursor"></span>';
+                        // Speed logic for natural typing
+                        const typingSpeed = Math.random() * (25 - 8) + 8; 
+                        await new Promise(resolve => setTimeout(resolve, typingSpeed));
+                    }
+                }
+                container.innerHTML = currentHTML; 
+                triggerFireworks();
+            }
+
+            // Trigger Fireworks
+            function triggerFireworks() {
+                for(let i=0; i<10; i++) {
+                    setTimeout(() => {
+                        const fw = document.createElement('div');
+                        fw.className = 'firework';
+                        fw.style.left = (Math.random() * 100) + 'vw';
+                        fw.style.top = (Math.random() * 100) + 'vh';
+                        document.body.appendChild(fw);
+                        setTimeout(() => fw.remove(), 1200);
+                    }, i * 200);
+                }
+            }
+
+            // Start typing
+            typeOutHTML(rawMessageHTML, msgBox);
+        }
+    </script>
+</body>
+</html>
