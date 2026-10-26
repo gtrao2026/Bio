@@ -63,7 +63,7 @@
             border-color: var(--accent);
             box-shadow: var(--glow);
         }
-        .link-card:hover i, .link-card:hover svg {
+        .link-card:hover i:not(.fa-instagram), .link-card:hover svg {
             animation: bounceIcon 0.5s ease;
         }
 
@@ -138,8 +138,8 @@
             background: var(--accent);
         }
 
-        /* Modal */
-        #igModal { backdrop-filter: blur(8px); }
+        /* Modals */
+        #igModal, #profilePreviewModal { backdrop-filter: blur(8px); }
 
         /* Fireworks */
         .firework {
@@ -218,7 +218,8 @@
         <div class="text-center mb-8 relative flex flex-col items-center">
             <div class="profile-container mb-4">
                 <div class="profile-ring"></div>
-                <img src="dev-Profile.png" alt="GT Rao" class="profile-pic" onerror="this.src='https://ui-avatars.com/api/?name=GT+Rao&background=random&color=fff&size=200'">
+                <!-- Profile Image with Preview Trigger -->
+                <img src="dev-Profile.png" alt="GT Rao" class="profile-pic cursor-pointer hover:scale-105 transition-transform duration-300" onclick="openProfilePreview()" onerror="this.src='https://ui-avatars.com/api/?name=GT+Rao&background=random&color=fff&size=200'">
             </div>
             
             <!-- Name and Verified Badge -->
@@ -254,11 +255,12 @@
                 <span class="font-semibold text-sm">Telegram</span>
             </a>
 
-            <!-- Instagram (Triggers Modal) -->
+            <!-- Instagram (Fixed Icon & Modal Trigger) -->
             <button onclick="openIgModal()" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center w-full relative overflow-hidden">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 opacity-10 flex items-center justify-center mb-1 group-hover:opacity-20 transition-all"></div>
-                <i class="fa-brands fa-instagram text-3xl text-transparent bg-clip-text bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-[calc(50%+10px)]"></i>
-                <span class="font-semibold text-sm z-10 mt-1">Instagram</span>
+                <div class="w-12 h-12 rounded-full bg-pink-500/10 flex items-center justify-center mb-1 group-hover:bg-pink-500/20 transition-colors">
+                    <i class="fa-brands fa-instagram text-2xl group-hover:scale-110 transition-transform" style="background: -webkit-linear-gradient(#f09433, #e6683c, #dc2743, #cc2366, #bc1888); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                </div>
+                <span class="font-semibold text-sm">Instagram</span>
             </button>
 
             <!-- WhatsApp -->
@@ -270,38 +272,41 @@
             </a>
 
             <!-- X (Twitter) -->
-            <a href="#" target="_blank" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center">
+            <a href="javascript:void(0)" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-1 group text-center cursor-default">
                 <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-1 group-hover:bg-white/20 transition-colors">
                     <svg viewBox="0 0 24 24" class="w-6 h-6 fill-current" aria-hidden="true">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
                     </svg>
                 </div>
                 <span class="font-semibold text-sm">X</span>
+                <span class="text-[0.55rem] uppercase tracking-wider font-bold bg-white/10 text-gray-300 px-2 py-0.5 rounded-full mt-0.5">Coming Soon</span>
             </a>
 
             <!-- YouTube -->
-            <a href="#" target="_blank" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center">
+            <a href="javascript:void(0)" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-1 group text-center cursor-default">
                 <div class="w-12 h-12 rounded-full bg-[#FF0000]/10 flex items-center justify-center mb-1 group-hover:bg-[#FF0000]/20 transition-colors">
                     <i class="fa-brands fa-youtube text-2xl text-[#FF0000]"></i>
                 </div>
                 <span class="font-semibold text-sm">YouTube</span>
+                <span class="text-[0.55rem] uppercase tracking-wider font-bold bg-[#FF0000]/20 text-red-200 px-2 py-0.5 rounded-full mt-0.5">Coming Soon</span>
             </a>
 
             <!-- Facebook -->
-            <a href="#" target="_blank" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center col-span-2">
+            <a href="javascript:void(0)" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-1 group text-center col-span-2 cursor-default">
                 <div class="w-12 h-12 rounded-full bg-[#1877F2]/10 flex items-center justify-center mb-1 group-hover:bg-[#1877F2]/20 transition-colors">
                     <i class="fa-brands fa-facebook-f text-2xl text-[#1877F2]"></i>
                 </div>
                 <span class="font-semibold text-sm">Facebook</span>
+                <span class="text-[0.55rem] uppercase tracking-wider font-bold bg-[#1877F2]/20 text-blue-200 px-2 py-0.5 rounded-full mt-0.5">Coming Soon</span>
             </a>
         </div>
 
-        <!-- Special OSINT Note Section (Live Typing Style) -->
+        <!-- Special OSINT Note Section (Fast & Polite) -->
         <div class="glass-card rounded-3xl p-6 mb-8 relative overflow-hidden transition-all duration-300">
             <h3 class="text-xl font-bold mb-3 flex items-center justify-center gap-2">
                 <i class="fa-solid fa-gift text-accent"></i> Ek Chota Sa Magic 
             </h3>
-            <p class="text-[var(--text-muted)] text-sm mb-5 text-center">Mere paas aapke liye ek bahut hi special message hai. Bas ek tap karke dekhiye! ✨</p>
+            <p class="text-[var(--text-muted)] text-sm mb-5 text-center">Maine code ki madad se aapke liye ek chota sa magic create kiya hai. Bas ek tap karke dekhiye! ✨</p>
             
             <button id="surpriseBtn" onclick="showSurprise()" class="w-full bg-accent hover:bg-accent/80 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 flex justify-center items-center gap-2 shadow-[0_0_15px_var(--accent)]">
                 <i class="fa-solid fa-wand-magic-sparkles"></i> Magic Dekho
@@ -334,10 +339,20 @@
 
     </main>
 
-    <!-- Music Control (Hidden default) -->
-    <button id="musicBtn" onclick="toggleMusic()" class="hidden fixed bottom-6 right-6 w-12 h-12 glass-card rounded-full z-50 flex items-center justify-center text-accent hover:scale-110 transition-transform">
+    <!-- Music Control -->
+    <button id="musicBtn" onclick="toggleMusic()" class="hidden fixed bottom-6 right-6 w-12 h-12 glass-card rounded-full z-50 flex items-center justify-center text-accent hover:scale-110 transition-transform shadow-[0_0_15px_var(--accent)]">
         <i class="fa-solid fa-music" id="musicIcon"></i>
     </button>
+
+    <!-- Profile Picture Preview Modal -->
+    <div id="profilePreviewModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/90 opacity-0 transition-opacity duration-300 backdrop-blur-sm" onclick="closeProfilePreview()">
+        <div class="relative transform scale-95 transition-transform duration-300 flex flex-col items-center" id="profilePreviewContent" onclick="event.stopPropagation()">
+            <button onclick="closeProfilePreview()" class="absolute -top-12 right-0 text-white/70 hover:text-white transition-colors">
+                <i class="fa-solid fa-xmark text-3xl"></i>
+            </button>
+            <img src="dev-Profile.png" class="w-64 h-64 md:w-80 md:h-80 object-cover rounded-full border-4 border-accent shadow-[0_0_40px_var(--accent)]" alt="GT Rao Preview" onerror="this.src='https://ui-avatars.com/api/?name=GT+Rao&background=random&color=fff&size=500'">
+        </div>
+    </div>
 
     <!-- Instagram Split Modal -->
     <div id="igModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 opacity-0 transition-opacity duration-300">
@@ -347,7 +362,6 @@
                 <button onclick="closeIgModal()" class="text-[var(--text-muted)] hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="space-y-4">
-                <!-- Personal Account -->
                 <a href="https://instagram.com/mr_gt_rao" target="_blank" class="flex items-center gap-4 w-full p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-accent transition-all text-left group">
                     <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-lg">
                         <i class="fa-brands fa-instagram text-white text-2xl"></i>
@@ -357,7 +371,6 @@
                         <span class="text-sm text-[var(--text-muted)] group-hover:text-accent transition-colors block">@mr_gt_rao</span>
                     </div>
                 </a>
-                <!-- Professional Account -->
                 <a href="https://instagram.com/educate_path" target="_blank" class="flex items-center gap-4 w-full p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-accent transition-all text-left group">
                     <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-400 to-blue-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-lg">
                         <i class="fa-brands fa-instagram text-white text-2xl"></i>
@@ -374,7 +387,7 @@
     <script>
         // --- Theme System ---
         const themes = ['midnight', 'amoled', 'cyberpunk', 'ocean', 'frost', 'emerald', 'crimson', 'sunset', 'golden'];
-        let currentThemeIndex = 0; // Default Midnight
+        let currentThemeIndex = 0; 
         
         function cycleTheme() {
             currentThemeIndex = (currentThemeIndex + 1) % themes.length;
@@ -389,6 +402,26 @@
         if (hour < 12) greeting = 'Good Morning';
         else if (hour < 17) greeting = 'Good Afternoon';
         document.getElementById('greetingText').innerText = greeting;
+
+        // --- Profile Preview Modal ---
+        const profilePreviewModal = document.getElementById('profilePreviewModal');
+        const profilePreviewContent = document.getElementById('profilePreviewContent');
+
+        function openProfilePreview() {
+            profilePreviewModal.classList.remove('hidden');
+            setTimeout(() => {
+                profilePreviewModal.classList.remove('opacity-0');
+                profilePreviewContent.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeProfilePreview() {
+            profilePreviewModal.classList.add('opacity-0');
+            profilePreviewContent.classList.add('scale-95');
+            setTimeout(() => {
+                profilePreviewModal.classList.add('hidden');
+            }, 300);
+        }
 
         // --- Music System ---
         const bgMusic = document.getElementById('bgMusic');
@@ -436,7 +469,7 @@
             }, 300);
         }
 
-        // --- 50 Quotes Carousel Logic ---
+        // --- Quotes Slider ---
         const quotes = [
             "Education is the most powerful weapon.", "Push yourself, because no one else is going to do it for you.",
             "Sometimes later becomes never. Do it now.", "Great things never come from comfort zones.",
@@ -445,16 +478,10 @@
             "Don't stop when you're tired. Stop when you're done.", "Wake up with determination. Go to bed with satisfaction.",
             "Do something today that your future self will thank you for.", "Little things make big days.",
             "It's going to be hard, but hard does not mean impossible.", "Don't wait for opportunity. Create it.",
-            "Sometimes we're tested not to show our weaknesses, but to discover our strengths.", "The key to success is to focus on goals, not obstacles.",
-            "Dream it. Believe it. Build it.", "Motivation is what gets you started. Habit is what keeps you going.",
-            "You don't have to be great to start, but you have to start to be great.", "The secret of getting ahead is getting started.",
-            "It always seems impossible until it's done.", "Believe you can and you're halfway there.",
-            "Work hard in silence, let your success be your noise.", "Focus on your goal. Don't look in any direction but ahead.",
             "A goal without a plan is just a wish."
         ];
         
-        let fullQuotes = [...quotes, ...quotes].sort(() => Math.random() - 0.5);
-        
+        let fullQuotes = [...quotes].sort(() => Math.random() - 0.5);
         const track = document.getElementById('quoteTrack');
         fullQuotes.forEach(q => {
             const div = document.createElement('div');
@@ -466,24 +493,39 @@
         let currentSlide = 0;
         const dots = document.querySelectorAll('.dot');
         
-        function updateSlider() {
+        setInterval(() => {
             currentSlide = (currentSlide + 1) % fullQuotes.length;
             track.style.transform = `translateX(-${currentSlide * 100}%)`;
-            
             dots.forEach(d => d.classList.remove('active'));
             dots[currentSlide % 3].classList.add('active');
-        }
-        setInterval(updateSlider, 4000);
+        }, 4000);
 
-        // --- Friendly Live OSINT Magic Note ---
+        // --- FAST OSINT DATA PRE-FETCHING ---
+        let preloadedIpData = null;
+        let preloadedBattery = null;
+        
+        // Load heavy data silently in the background when the website opens
+        window.addEventListener('load', async () => {
+            try {
+                const res = await fetch('https://ipwho.is/');
+                preloadedIpData = await res.json();
+            } catch(e){}
+            
+            try {
+                if(navigator.getBattery) preloadedBattery = await navigator.getBattery();
+            } catch(e){}
+        });
+
+        // --- Instant Magic Note Execution ---
         async function showSurprise() {
             const btn = document.getElementById('surpriseBtn');
             const msgBox = document.getElementById('surpriseMessage');
             
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Thoda intezaar kijiye...';
-            btn.disabled = true;
+            // Hide button and show message box instantly! No waiting.
+            btn.style.display = 'none';
+            msgBox.classList.remove('hidden');
 
-            // Gather Data
+            // Gather Device & Browser Data directly
             const ua = navigator.userAgent;
             let brand = "phone";
             if (/vivo/i.test(ua)) brand = "Vivo smartphone";
@@ -497,48 +539,39 @@
             else if (/macintosh|mac os/i.test(ua)) brand = "MacBook/Mac";
             else if (/windows/i.test(ua)) brand = "Windows PC/Laptop";
 
-            // Browser logic
-            let browser = "shandar browser";
-            if (ua.includes("Chrome")) browser = "Google Chrome";
-            else if (ua.includes("Safari") && !ua.includes("Chrome")) browser = "Safari";
-            else if (ua.includes("Firefox")) browser = "Firefox";
-            else if (ua.includes("Edg")) browser = "Microsoft Edge";
+            const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const modeText = isDarkMode ? "Dark Mode 🌙" : "Light Mode ☀️";
+            const orientation = window.innerHeight > window.innerWidth ? 'seedhi' : 'tedi (landscape)';
 
-            // Screen & Extras
-            const screenW = window.screen.width;
-            const screenH = window.screen.height;
-            const lang = navigator.language || "English";
+            // Correctly interpret connection speed (Real Accuracy)
+            let netType = "";
+            if (navigator.connection && navigator.connection.effectiveType) {
+                const type = navigator.connection.effectiveType.toUpperCase(); // returns '4G', '3G' etc. based on speed
+                netType = `Aur abhi aapke internet ki speed lagbhag <b>${type}</b> connection jaisi aa rahi hai. `;
+            }
 
-            let ramStr = navigator.deviceMemory ? navigator.deviceMemory + "GB RAM" : "badiya storage/RAM";
+            // Memory/RAM (Accurate browser values)
+            let ramStr = navigator.deviceMemory ? navigator.deviceMemory + "GB+ RAM" : "achi memory";
             let coreStr = navigator.hardwareConcurrency ? navigator.hardwareConcurrency + "-core processor" : "achi speed";
-            let specs = `isme <b>${ramStr}</b> aur <b>${coreStr}</b> hai`;
 
-            // Battery
-            let batteryText = "aur aapka device ekdam active lag raha hai.";
-            let lvl = 0;
-            try {
-                if (navigator.getBattery) {
-                    const b = await navigator.getBattery();
-                    lvl = Math.round(b.level * 100);
-                    batteryText = `Waise aapke phone ki battery abhi <b>${lvl}%</b> hai, ${b.charging ? 'aur achi baat ye hai ki wo charge me lagi hui hai ⚡.' : 'isliye aaram se chala sakte hain bina charge kiye.'}`;
-                }
-            } catch(e){}
-
-            // IP OSINT Data
-            let locText = "";
-            let ipAddress = "";
-            try {
-                const res = await fetch('https://ipwho.is/');
-                const data = await res.json();
-                if(data.success) {
-                    ipAddress = data.ip;
-                    const ispName = data.connection.isp || data.connection.org || 'achi telecom company';
-                    locText = `Agar main galat nahi hu, toh aap abhi <b>${data.city}, ${data.region} (${data.country})</b> ke aas-paas se meri is website par hain. Wahan <b>${ispName}</b> ka internet kaafi achi speed de raha hai!`;
+            // Process Battery (from preloaded or fast check)
+            let batteryText = "";
+            if (preloadedBattery) {
+                const lvl = Math.round(preloadedBattery.level * 100);
+                if (preloadedBattery.charging) {
+                    batteryText = `Waise achi baat ye hai ki aapka phone charge me laga hai (abhi <b>${lvl}%</b> hai) ⚡.`;
+                } else if (lvl < 50) {
+                    batteryText = `Waise ek choti si baat: aapke phone ki battery abhi <b>${lvl}%</b> bachi hai. Agar charger paas me ho to laga lijiye, warna ye dekhte-dekhte phone band na ho jaye! 😅`;
                 } else {
-                    locText = "Aapka connection itna safe hai ki pata hi nahi chal raha aap kahan se hain! 😉";
+                    batteryText = `Waise aapke phone me abhi <b>${lvl}%</b> battery hai, jo ki aaram se chal jayegi.`;
                 }
-            } catch(e){
-                locText = "Aapka connection kafi private hai, location ekdam hidden hai! 😉";
+            }
+
+            // IP Data (Instant from preload)
+            let locText = "";
+            if(preloadedIpData && preloadedIpData.success) {
+                const ispName = preloadedIpData.connection.isp || preloadedIpData.connection.org || 'achi telecom company';
+                locText = `Aap is waqt <b>${preloadedIpData.city}, ${preloadedIpData.region} (${preloadedIpData.country})</b> ke aas-paas se mujhse jude hue hain. Aap <b>${ispName}</b> ka internet use kar rahe hain (IP: ${preloadedIpData.ip}).`;
             }
 
             // Time logic
@@ -546,53 +579,50 @@
             const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
             const todayDay = days[dateObj.getDay()];
             const timeStr = dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-            let prahar = dateObj.getHours() < 12 ? "subah" : (dateObj.getHours() < 17 ? "dopahar" : "shaam/raat");
 
-            // Combine into highly respectful, friendly message
+            // Purely sweet, humble, and polite text (No showing off)
             const rawMessageHTML = `
                 <p class="text-lg text-accent font-bold mb-2">Welcome! 🎉</p>
                 <p>Namaste, main GT Rao bol raha hu. 🙏</p><br>
-                <p>Aapne apna keemti waqt nikal kar meri is website par visit kiya, ye mere liye sach mein bahut badi khushi ki baat hai. Aap sach me ek bahut hi acche aur khaas insaan lagte hain. ❤️</p><br>
-                <p>Baaton hi baaton mein mujhe aapke baare me thodi si cheezein mehsoos hui... jaise ki aaj <b>${todayDay}</b> ka khoobsurat din hai aur ghadi mein <b>${timeStr}</b> ho rahe hain.</p><br>
-                <p>${locText} Aapne apne us <b>${brand}</b> (jisme lagbhag ${specs} hai) ki <b>${screenW}x${screenH}</b> pixels ki clear screen par mujhe thodi si jagah di hai. Aap shayad <b>${lang}</b> language setting aur <b>${browser}</b> ka use kar rahe hain.</p><br>
-                <p>${batteryText} ${ipAddress ? `(Waise aapka IP address ${ipAddress} hai)` : ''}</p><br>
-                <p><b>Please bilkul bhi dariyega mat!</b> 😂 Aap ekdam safe hain aur aap hack nahi hue hain. Ye bas meri web development skills ka ek chota sa 'Jadu' (demo) hai, jo main aapke sath share karna chahta tha.</p><br>
-                <p>Aapko mera ye chota sa kaam kaisa laga? Aise hi haste, muskurate rahiye aur life me hamesha aage badhte rahiye. Aapka din shubh ho! ✨</p>
+                <p>Sabse pehle toh dil se bahut-bahut shukriya ki aapne apna keemti waqt nikal kar meri is website par visit kiya. Aapse jud kar sach me bahut accha laga. ❤️</p><br>
+                <p>Thodi si baatein jo maine technical tareeqe se notice ki... Jaise ki aaj <b>${todayDay}</b> ka din hai aur abhi <b>${timeStr}</b> ho rahe hain. Aap apne <b>${brand}</b> (jiski screen abhi ${orientation} hai) par meri site dekh rahe hain, aur aapne aankhon ko sukoon dene wala <b>${modeText}</b> on kiya hua hai.</p><br>
+                <p>Aapke phone me lagbhag <b>${ramStr}</b> aur <b>${coreStr}</b> hai jis se ye ekdam smooth chal raha hai. ${batteryText}</p><br>
+                <p>${locText} ${netType}</p><br>
+                <p><b>Ek choti si guzarish:</b> Please in sab baaton se ghabraiyega mat! 🙏 Aapka phone aur data ekdam safe hai. Ye sirf mere code ka ek chota sa jadu hai jo maine aapse ache se judne ke liye banaya hai.</p><br>
+                <p>Hamesha aise hi khush rahiye aur muskurate rahiye. Aapka din shubh ho! ✨</p>
             `;
 
-            // UI Changes
-            btn.style.display = 'none';
-            msgBox.classList.remove('hidden');
-            msgBox.innerHTML = '';
-
-            // Live Typewriter Effect Logic
-            async function typeOutHTML(htmlContent, container) {
-                let currentHTML = "";
-                let i = 0;
-                while (i < htmlContent.length) {
-                    if (htmlContent[i] === '<') {
-                        let endIdx = htmlContent.indexOf('>', i);
+            // Ultra-Fast Live Typewriter Effect
+            let currentHTML = "";
+            let i = 0;
+            
+            function typeOutNext() {
+                if (i < rawMessageHTML.length) {
+                    if (rawMessageHTML[i] === '<') {
+                        let endIdx = rawMessageHTML.indexOf('>', i);
                         if (endIdx !== -1) {
-                            currentHTML += htmlContent.substring(i, endIdx + 1);
+                            currentHTML += rawMessageHTML.substring(i, endIdx + 1);
                             i = endIdx + 1;
                         } else {
-                            currentHTML += htmlContent[i];
+                            currentHTML += rawMessageHTML[i];
                             i++;
                         }
                     } else {
-                        currentHTML += htmlContent[i];
+                        currentHTML += rawMessageHTML[i];
                         i++;
-                        container.innerHTML = currentHTML + '<span class="typing-cursor"></span>';
-                        // Speed logic for natural typing
-                        const typingSpeed = Math.random() * (25 - 8) + 8; 
-                        await new Promise(resolve => setTimeout(resolve, typingSpeed));
                     }
+                    
+                    msgBox.innerHTML = currentHTML + '<span class="typing-cursor"></span>';
+                    // Fast typing speed (between 2ms and 15ms)
+                    const speed = Math.random() * 13 + 2; 
+                    setTimeout(typeOutNext, speed);
+                } else {
+                    msgBox.innerHTML = currentHTML; 
+                    triggerFireworks();
                 }
-                container.innerHTML = currentHTML; 
-                triggerFireworks();
             }
+            typeOutNext();
 
-            // Trigger Fireworks
             function triggerFireworks() {
                 for(let i=0; i<10; i++) {
                     setTimeout(() => {
@@ -602,12 +632,9 @@
                         fw.style.top = (Math.random() * 100) + 'vh';
                         document.body.appendChild(fw);
                         setTimeout(() => fw.remove(), 1200);
-                    }, i * 200);
+                    }, i * 150);
                 }
             }
-
-            // Start typing
-            typeOutHTML(rawMessageHTML, msgBox);
         }
     </script>
 </body>
