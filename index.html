@@ -175,7 +175,7 @@
             100% { transform: translate(30px, 50px); }
         }
 
-        /* Natural Meteor Shower (Shooting Stars) */
+        /* Natural Meteor Shower (Shooting Stars) - UPDATED SLOWER SPEED */
         .meteor {
             position: absolute;
             top: -200px;
@@ -184,7 +184,7 @@
             background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.6));
             transform: rotate(45deg);
             opacity: 0;
-            animation: meteorFall var(--duration, 3s) linear infinite;
+            animation: meteorFall var(--duration, 7s) linear infinite;
             animation-delay: var(--delay, 0s);
             border-radius: 999px;
             z-index: -1;
@@ -234,19 +234,30 @@
     <div class="floating-orb w-64 h-64 top-0 left-0 bg-[var(--accent)]"></div>
     <div class="floating-orb w-72 h-72 bottom-0 right-0 bg-blue-500"></div>
 
-    <!-- Meteor Shower Container (Hidden by default, shown when music plays) -->
+    <!-- Meteor Shower Container -->
     <div id="meteorContainer" class="fixed inset-0 pointer-events-none z-[-1] opacity-0 transition-opacity duration-1000 overflow-hidden">
-        <!-- Meteors will be dynamically injected here -->
+        <!-- Meteors injected by JS -->
     </div>
 
-    <!-- Header Controls -->
-    <div class="absolute top-6 w-full max-w-2xl px-4 flex justify-between items-start z-10">
-        <div class="glass-card px-4 py-2 rounded-full text-sm font-semibold animate-pulse">
-            <span id="greetingText">Good Evening</span> ✨
+    <!-- Header Controls (UPDATED: Theme and Play/Pause inside one layout) -->
+    <div class="absolute top-6 w-full max-w-2xl px-4 flex justify-between items-center z-10">
+        <!-- Greeting Layout -->
+        <div class="glass-card px-4 py-2 rounded-full text-sm font-semibold animate-pulse flex items-center">
+            <span id="greetingText">Good Evening</span> &nbsp;✨
         </div>
-        <button onclick="cycleTheme()" class="glass-card w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-[0_0_15px_var(--accent)] border-accent/50">
-            <i class="fa-solid fa-palette text-accent"></i>
-        </button>
+        
+        <!-- Controls Container Layout -->
+        <div class="glass-card p-1.5 rounded-full flex items-center gap-1.5 shadow-[0_0_15px_var(--accent)] border-accent/50 transition-all duration-500" id="controlsContainer">
+            <!-- Theme Button (Circle) -->
+            <button onclick="cycleTheme()" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-white/10 hover:scale-110 transition-all">
+                <i class="fa-solid fa-palette text-accent"></i>
+            </button>
+            
+            <!-- Music Button (Circle - Hidden initially) -->
+            <button id="musicBtn" onclick="toggleMusic()" class="hidden w-9 h-9 rounded-full items-center justify-center hover:bg-white/10 hover:scale-110 transition-all">
+                <i class="fa-solid fa-music text-accent" id="musicIcon"></i>
+            </button>
+        </div>
     </div>
 
     <!-- Main Container -->
@@ -256,14 +267,14 @@
         <div class="text-center mb-8 relative flex flex-col items-center">
             <div class="profile-container mb-4">
                 <div class="profile-ring"></div>
-                <!-- Profile Image with Preview Trigger -->
+                <!-- Profile Image -->
                 <img src="dev-Profile.png" alt="GT Rao" class="profile-pic cursor-pointer hover:scale-105 transition-transform duration-300" onclick="openProfilePreview()" onerror="this.src='https://ui-avatars.com/api/?name=GT+Rao&background=random&color=fff&size=200'">
             </div>
             
             <!-- Name and Verified Badge -->
             <div class="flex items-center justify-center gap-2 mb-2">
                 <h1 class="text-3xl font-bold">GT Rao</h1>
-                <!-- Real Verified Badge SVG Next to Name -->
+                <!-- Verified Badge -->
                 <svg aria-label="Verified" role="img" viewBox="0 0 40 40" class="w-6 h-6 fill-[#0095F6]">
                     <path d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Zm7.415 11.225 2.254 2.287-11.43 11.5-6.835-6.93 2.244-2.258 4.587 4.581 9.18-9.18Z" fill-rule="evenodd"></path>
                 </svg>
@@ -285,7 +296,7 @@
                 <span class="font-semibold text-sm">Website</span>
             </a>
             
-            <!-- Instagram (Swapped to be 2nd) -->
+            <!-- Instagram -->
             <button onclick="openIgModal()" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center w-full relative overflow-hidden">
                 <div class="w-12 h-12 rounded-full bg-pink-500/10 flex items-center justify-center mb-1 group-hover:bg-pink-500/20 transition-colors">
                     <i class="fa-brands fa-instagram text-2xl group-hover:scale-110 transition-transform" style="background: -webkit-linear-gradient(#f09433, #e6683c, #dc2743, #cc2366, #bc1888); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
@@ -293,7 +304,7 @@
                 <span class="font-semibold text-sm">Instagram</span>
             </button>
 
-            <!-- Telegram (Swapped to be 3rd) -->
+            <!-- Telegram -->
             <a href="https://t.me/Gt_Rao" target="_blank" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center">
                 <div class="w-12 h-12 rounded-full bg-[#0088cc]/10 flex items-center justify-center mb-1 group-hover:bg-[#0088cc]/20 transition-colors">
                     <i class="fa-brands fa-telegram text-2xl text-[#0088cc]"></i>
@@ -379,11 +390,6 @@
 
     </main>
 
-    <!-- Music Control -->
-    <button id="musicBtn" onclick="toggleMusic()" class="hidden fixed bottom-6 right-6 w-12 h-12 glass-card rounded-full z-50 flex items-center justify-center text-accent hover:scale-110 transition-transform shadow-[0_0_15px_var(--accent)]">
-        <i class="fa-solid fa-music" id="musicIcon"></i>
-    </button>
-
     <!-- Profile Picture Preview Modal -->
     <div id="profilePreviewModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/90 opacity-0 transition-opacity duration-300 backdrop-blur-sm" onclick="closeProfilePreview()">
         <div class="relative transform scale-95 transition-transform duration-300 flex flex-col items-center" id="profilePreviewContent" onclick="event.stopPropagation()">
@@ -463,29 +469,25 @@
             }, 300);
         }
 
-        // --- Generate Meteors (Tootta Tara) ---
+        // --- Generate Meteors (Slower, Smooth Tootta Tara) ---
         const meteorContainer = document.getElementById('meteorContainer');
         function initMeteors() {
-            // Increased quantity to 40
-            for(let i=0; i<40; i++) {
+            for(let i=0; i<35; i++) {
                 let m = document.createElement('div');
                 m.className = 'meteor';
-                // Spread across a wider area to ensure smooth coverage
                 m.style.left = `${Math.random() * 200}vw`; 
-                // Varied speeds (From fast 2s to very slow 7s)
-                m.style.setProperty('--duration', `${Math.random() * 5 + 2}s`); 
-                // Varied delays so they fall naturally at different times
+                // Increased duration to make them fall much slower (5s to 12s)
+                m.style.setProperty('--duration', `${Math.random() * 7 + 5}s`); 
                 m.style.setProperty('--delay', `${Math.random() * 15}s`);
-                // Varied visibility (kuch halke, kuch bright) -> 0.1 to 0.9 opacity
-                m.style.setProperty('--max-opacity', `${Math.random() * 0.8 + 0.1}`);
-                // Varied tail length
-                m.style.setProperty('--tail-length', `${Math.random() * 100 + 50}px`);
+                // Natural mixing of bright and very dim meteors
+                m.style.setProperty('--max-opacity', `${Math.random() * 0.7 + 0.1}`);
+                m.style.setProperty('--tail-length', `${Math.random() * 120 + 40}px`);
                 meteorContainer.appendChild(m);
             }
         }
         initMeteors();
 
-        // --- Music System ---
+        // --- Music System (Header Controls Integration) ---
         const bgMusic = document.getElementById('bgMusic');
         const musicBtn = document.getElementById('musicBtn');
         const musicIcon = document.getElementById('musicIcon');
@@ -494,8 +496,10 @@
         document.body.addEventListener('click', () => {
             if (!hasInteracted) {
                 bgMusic.play().then(() => {
+                    // Show play/pause button right next to theme button
                     musicBtn.classList.remove('hidden');
-                    musicIcon.className = 'fa-solid fa-pause';
+                    musicBtn.classList.add('flex');
+                    musicIcon.className = 'fa-solid fa-pause text-accent';
                     meteorContainer.classList.remove('opacity-0'); // Show meteors
                 }).catch(e => console.log("Audio autoplay prevented"));
                 hasInteracted = true;
@@ -505,11 +509,11 @@
         function toggleMusic() {
             if (bgMusic.paused) {
                 bgMusic.play();
-                musicIcon.className = 'fa-solid fa-pause';
+                musicIcon.className = 'fa-solid fa-pause text-accent';
                 meteorContainer.classList.remove('opacity-0'); // Show meteors
             } else {
                 bgMusic.pause();
-                musicIcon.className = 'fa-solid fa-play';
+                musicIcon.className = 'fa-solid fa-play text-accent';
                 meteorContainer.classList.add('opacity-0'); // Hide meteors
             }
         }
@@ -569,7 +573,6 @@
         let preloadedIpData = null;
         let preloadedBattery = null;
         
-        // Load heavy data silently in the background when the website opens
         window.addEventListener('load', async () => {
             try {
                 const res = await fetch('https://ipwho.is/');
@@ -642,7 +645,7 @@
             const todayDay = days[dateObj.getDay()];
             const timeStr = dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 
-            // Balanced, Friendly & Respectful Tone (No attitude, no sycophancy)
+            // Balanced, Friendly & Respectful Tone
             const rawMessageHTML = `
                 <p class="text-lg text-accent font-bold mb-2">Welcome! 🎉</p>
                 <p>Namaste! Meri is website par aane ke liye aapka tahe dil se swagat hai. 🙏</p><br>
