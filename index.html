@@ -175,16 +175,17 @@
             100% { transform: translate(30px, 50px); }
         }
 
-        /* Meteor Shower (Shooting Stars) */
+        /* Natural Meteor Shower (Shooting Stars) */
         .meteor {
             position: absolute;
-            top: -100px;
+            top: -200px;
             width: 2px;
-            height: 100px;
-            background: linear-gradient(to bottom, transparent, var(--accent));
+            height: var(--tail-length, 100px);
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.6));
             transform: rotate(45deg);
             opacity: 0;
-            animation: meteorFall linear infinite;
+            animation: meteorFall var(--duration, 3s) linear infinite;
+            animation-delay: var(--delay, 0s);
             border-radius: 999px;
             z-index: -1;
         }
@@ -192,18 +193,18 @@
             content: '';
             position: absolute;
             bottom: 0;
-            left: -2px;
-            width: 6px;
-            height: 6px;
+            left: -1px;
+            width: 4px;
+            height: 4px;
             border-radius: 50%;
             background-color: #fff;
             box-shadow: 0 0 15px 4px var(--accent);
         }
         @keyframes meteorFall {
             0% { transform: translate(0, 0) rotate(45deg); opacity: 0; }
-            10% { opacity: 0.4; }
-            80% { opacity: 0.4; }
-            100% { transform: translate(-1000px, 1000px) rotate(45deg); opacity: 0; }
+            10% { opacity: var(--max-opacity, 0.5); }
+            70% { opacity: var(--max-opacity, 0.5); }
+            100% { transform: translate(-1500px, 1500px) rotate(45deg); opacity: 0; }
         }
         
         .typing-cursor {
@@ -284,21 +285,21 @@
                 <span class="font-semibold text-sm">Website</span>
             </a>
             
-            <!-- Telegram -->
-            <a href="https://t.me/Gt_Rao" target="_blank" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center">
-                <div class="w-12 h-12 rounded-full bg-[#0088cc]/10 flex items-center justify-center mb-1 group-hover:bg-[#0088cc]/20 transition-colors">
-                    <i class="fa-brands fa-telegram text-2xl text-[#0088cc]"></i>
-                </div>
-                <span class="font-semibold text-sm">Telegram</span>
-            </a>
-
-            <!-- Instagram (Fixed Icon & Modal Trigger) -->
+            <!-- Instagram (Swapped to be 2nd) -->
             <button onclick="openIgModal()" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center w-full relative overflow-hidden">
                 <div class="w-12 h-12 rounded-full bg-pink-500/10 flex items-center justify-center mb-1 group-hover:bg-pink-500/20 transition-colors">
                     <i class="fa-brands fa-instagram text-2xl group-hover:scale-110 transition-transform" style="background: -webkit-linear-gradient(#f09433, #e6683c, #dc2743, #cc2366, #bc1888); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
                 </div>
                 <span class="font-semibold text-sm">Instagram</span>
             </button>
+
+            <!-- Telegram (Swapped to be 3rd) -->
+            <a href="https://t.me/Gt_Rao" target="_blank" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center">
+                <div class="w-12 h-12 rounded-full bg-[#0088cc]/10 flex items-center justify-center mb-1 group-hover:bg-[#0088cc]/20 transition-colors">
+                    <i class="fa-brands fa-telegram text-2xl text-[#0088cc]"></i>
+                </div>
+                <span class="font-semibold text-sm">Telegram</span>
+            </a>
 
             <!-- WhatsApp -->
             <a href="https://whatsapp.com/channel/0029Vb8s6FTLNSa1Hh33k607" target="_blank" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center">
@@ -465,12 +466,20 @@
         // --- Generate Meteors (Tootta Tara) ---
         const meteorContainer = document.getElementById('meteorContainer');
         function initMeteors() {
-            for(let i=0; i<15; i++) {
+            // Increased quantity to 40
+            for(let i=0; i<40; i++) {
                 let m = document.createElement('div');
                 m.className = 'meteor';
-                m.style.left = `${Math.random() * 150}vw`; 
-                m.style.animationDuration = `${Math.random() * 3 + 2}s`; 
-                m.style.animationDelay = `${Math.random() * 5}s`;
+                // Spread across a wider area to ensure smooth coverage
+                m.style.left = `${Math.random() * 200}vw`; 
+                // Varied speeds (From fast 2s to very slow 7s)
+                m.style.setProperty('--duration', `${Math.random() * 5 + 2}s`); 
+                // Varied delays so they fall naturally at different times
+                m.style.setProperty('--delay', `${Math.random() * 15}s`);
+                // Varied visibility (kuch halke, kuch bright) -> 0.1 to 0.9 opacity
+                m.style.setProperty('--max-opacity', `${Math.random() * 0.8 + 0.1}`);
+                // Varied tail length
+                m.style.setProperty('--tail-length', `${Math.random() * 100 + 50}px`);
                 meteorContainer.appendChild(m);
             }
         }
