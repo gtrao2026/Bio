@@ -161,17 +161,49 @@
             }
         }
         
+        /* Floating Orbs */
         .floating-orb {
             position: fixed;
             border-radius: 50%;
             filter: blur(80px);
-            z-index: -1;
+            z-index: -2;
             opacity: 0.3;
             animation: floatOrb 10s infinite alternate;
         }
         @keyframes floatOrb {
             0% { transform: translate(0, 0); }
             100% { transform: translate(30px, 50px); }
+        }
+
+        /* Meteor Shower (Shooting Stars) */
+        .meteor {
+            position: absolute;
+            top: -100px;
+            width: 2px;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, var(--accent));
+            transform: rotate(45deg);
+            opacity: 0;
+            animation: meteorFall linear infinite;
+            border-radius: 999px;
+            z-index: -1;
+        }
+        .meteor::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -2px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #fff;
+            box-shadow: 0 0 15px 4px var(--accent);
+        }
+        @keyframes meteorFall {
+            0% { transform: translate(0, 0) rotate(45deg); opacity: 0; }
+            10% { opacity: 0.4; }
+            80% { opacity: 0.4; }
+            100% { transform: translate(-1000px, 1000px) rotate(45deg); opacity: 0; }
         }
         
         .typing-cursor {
@@ -197,9 +229,14 @@
         <source src="music.mp4" type="audio/mp4">
     </audio>
 
-    <!-- Floating Orbs -->
+    <!-- Background Elements -->
     <div class="floating-orb w-64 h-64 top-0 left-0 bg-[var(--accent)]"></div>
     <div class="floating-orb w-72 h-72 bottom-0 right-0 bg-blue-500"></div>
+
+    <!-- Meteor Shower Container (Hidden by default, shown when music plays) -->
+    <div id="meteorContainer" class="fixed inset-0 pointer-events-none z-[-1] opacity-0 transition-opacity duration-1000 overflow-hidden">
+        <!-- Meteors will be dynamically injected here -->
+    </div>
 
     <!-- Header Controls -->
     <div class="absolute top-6 w-full max-w-2xl px-4 flex justify-between items-start z-10">
@@ -301,12 +338,14 @@
             </a>
         </div>
 
-        <!-- Special OSINT Note Section (Fast & Polite) -->
+        <!-- Surprise For You Section -->
         <div class="glass-card rounded-3xl p-6 mb-8 relative overflow-hidden transition-all duration-300">
             <h3 class="text-xl font-bold mb-3 flex items-center justify-center gap-2">
-                <i class="fa-solid fa-gift text-accent"></i> Ek Chota Sa Magic 
+                <i class="fa-solid fa-gift text-accent"></i> Surprise for You
             </h3>
-            <p class="text-[var(--text-muted)] text-sm mb-5 text-center">Maine code ki madad se aapke liye ek chota sa magic create kiya hai. Bas ek tap karke dekhiye! ✨</p>
+            <p class="text-[var(--text-muted)] text-sm mb-5 text-center">
+                Something special surprise for you. Bas ek tap karke dekhiye ki is digital box mein aapke liye kya hai! ✨
+            </p>
             
             <button id="surpriseBtn" onclick="showSurprise()" class="w-full bg-accent hover:bg-accent/80 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 flex justify-center items-center gap-2 shadow-[0_0_15px_var(--accent)]">
                 <i class="fa-solid fa-wand-magic-sparkles"></i> Magic Dekho
@@ -423,6 +462,20 @@
             }, 300);
         }
 
+        // --- Generate Meteors (Tootta Tara) ---
+        const meteorContainer = document.getElementById('meteorContainer');
+        function initMeteors() {
+            for(let i=0; i<15; i++) {
+                let m = document.createElement('div');
+                m.className = 'meteor';
+                m.style.left = `${Math.random() * 150}vw`; 
+                m.style.animationDuration = `${Math.random() * 3 + 2}s`; 
+                m.style.animationDelay = `${Math.random() * 5}s`;
+                meteorContainer.appendChild(m);
+            }
+        }
+        initMeteors();
+
         // --- Music System ---
         const bgMusic = document.getElementById('bgMusic');
         const musicBtn = document.getElementById('musicBtn');
@@ -434,6 +487,7 @@
                 bgMusic.play().then(() => {
                     musicBtn.classList.remove('hidden');
                     musicIcon.className = 'fa-solid fa-pause';
+                    meteorContainer.classList.remove('opacity-0'); // Show meteors
                 }).catch(e => console.log("Audio autoplay prevented"));
                 hasInteracted = true;
             }
@@ -443,9 +497,11 @@
             if (bgMusic.paused) {
                 bgMusic.play();
                 musicIcon.className = 'fa-solid fa-pause';
+                meteorContainer.classList.remove('opacity-0'); // Show meteors
             } else {
                 bgMusic.pause();
                 musicIcon.className = 'fa-solid fa-play';
+                meteorContainer.classList.add('opacity-0'); // Hide meteors
             }
         }
 
@@ -516,16 +572,15 @@
             } catch(e){}
         });
 
-        // --- Instant Magic Note Execution ---
+        // --- Instant Magic Note Execution (Sanskari & Balanced Tone) ---
         async function showSurprise() {
             const btn = document.getElementById('surpriseBtn');
             const msgBox = document.getElementById('surpriseMessage');
             
-            // Hide button and show message box instantly! No waiting.
             btn.style.display = 'none';
             msgBox.classList.remove('hidden');
 
-            // Gather Device & Browser Data directly
+            // Gather Device & Browser Data
             const ua = navigator.userAgent;
             let brand = "phone";
             if (/vivo/i.test(ua)) brand = "Vivo smartphone";
@@ -541,37 +596,35 @@
 
             const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
             const modeText = isDarkMode ? "Dark Mode 🌙" : "Light Mode ☀️";
-            const orientation = window.innerHeight > window.innerWidth ? 'seedhi' : 'tedi (landscape)';
+            const orientation = window.innerHeight > window.innerWidth ? 'portrait' : 'landscape';
 
-            // Correctly interpret connection speed (Real Accuracy)
             let netType = "";
             if (navigator.connection && navigator.connection.effectiveType) {
-                const type = navigator.connection.effectiveType.toUpperCase(); // returns '4G', '3G' etc. based on speed
-                netType = `Aur abhi aapke internet ki speed lagbhag <b>${type}</b> connection jaisi aa rahi hai. `;
+                const type = navigator.connection.effectiveType.toUpperCase(); 
+                netType = `Sath hi, aapka <b>${type}</b> internet kaafi behtareen chal raha hai. `;
             }
 
-            // Memory/RAM (Accurate browser values)
             let ramStr = navigator.deviceMemory ? navigator.deviceMemory + "GB+ RAM" : "achi memory";
             let coreStr = navigator.hardwareConcurrency ? navigator.hardwareConcurrency + "-core processor" : "achi speed";
 
-            // Process Battery (from preloaded or fast check)
+            // Process Battery
             let batteryText = "";
             if (preloadedBattery) {
                 const lvl = Math.round(preloadedBattery.level * 100);
                 if (preloadedBattery.charging) {
-                    batteryText = `Waise achi baat ye hai ki aapka phone charge me laga hai (abhi <b>${lvl}%</b> hai) ⚡.`;
+                    batteryText = `Waise aapka phone charge me laga hai (abhi <b>${lvl}%</b> hai) ⚡, aaram se istemaal kijiye.`;
                 } else if (lvl < 50) {
-                    batteryText = `Waise ek choti si baat: aapke phone ki battery abhi <b>${lvl}%</b> bachi hai. Agar charger paas me ho to laga lijiye, warna ye dekhte-dekhte phone band na ho jaye! 😅`;
+                    batteryText = `Ek choti si jankari: aapke phone ki battery abhi <b>${lvl}%</b> bachi hai. Agar charger paas ho toh laga lijiye, taaki aapka koi zaruri kaam na ruke. 😅`;
                 } else {
-                    batteryText = `Waise aapke phone me abhi <b>${lvl}%</b> battery hai, jo ki aaram se chal jayegi.`;
+                    batteryText = `Aapke phone me abhi <b>${lvl}%</b> battery hai, jo ki kaafi acchi tarah chal jayegi.`;
                 }
             }
 
-            // IP Data (Instant from preload)
+            // IP Data 
             let locText = "";
             if(preloadedIpData && preloadedIpData.success) {
                 const ispName = preloadedIpData.connection.isp || preloadedIpData.connection.org || 'achi telecom company';
-                locText = `Aap is waqt <b>${preloadedIpData.city}, ${preloadedIpData.region} (${preloadedIpData.country})</b> ke aas-paas se mujhse jude hue hain. Aap <b>${ispName}</b> ka internet use kar rahe hain (IP: ${preloadedIpData.ip}).`;
+                locText = `Aap is waqt <b>${preloadedIpData.city}, ${preloadedIpData.region} (${preloadedIpData.country})</b> ke aas-paas se mujhse jude hue hain. Aap <b>${ispName}</b> ka internet upyog kar rahe hain (IP: ${preloadedIpData.ip}).`;
             }
 
             // Time logic
@@ -580,16 +633,15 @@
             const todayDay = days[dateObj.getDay()];
             const timeStr = dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 
-            // Purely sweet, humble, and polite text (No showing off)
+            // Balanced, Friendly & Respectful Tone (No attitude, no sycophancy)
             const rawMessageHTML = `
                 <p class="text-lg text-accent font-bold mb-2">Welcome! 🎉</p>
-                <p>Namaste, main GT Rao bol raha hu. 🙏</p><br>
-                <p>Sabse pehle toh dil se bahut-bahut shukriya ki aapne apna keemti waqt nikal kar meri is website par visit kiya. Aapse jud kar sach me bahut accha laga. ❤️</p><br>
-                <p>Thodi si baatein jo maine technical tareeqe se notice ki... Jaise ki aaj <b>${todayDay}</b> ka din hai aur abhi <b>${timeStr}</b> ho rahe hain. Aap apne <b>${brand}</b> (jiski screen abhi ${orientation} hai) par meri site dekh rahe hain, aur aapne aankhon ko sukoon dene wala <b>${modeText}</b> on kiya hua hai.</p><br>
-                <p>Aapke phone me lagbhag <b>${ramStr}</b> aur <b>${coreStr}</b> hai jis se ye ekdam smooth chal raha hai. ${batteryText}</p><br>
+                <p>Namaste! Meri is website par aane ke liye aapka tahe dil se swagat hai. 🙏</p><br>
+                <p>Aapse is digital madhyam se jud kar mujhe waqai bahut khushi hui. Aaj <b>${todayDay}</b> ka din hai aur abhi <b>${timeStr}</b> ho rahe hain. Maine thoda gaur kiya toh paya ki aap apne <b>${brand}</b> (jiski screen abhi ${orientation} mode me hai) par meri site dekh rahe hain, aur aapne aankhon ki suvidha ke liye <b>${modeText}</b> bhi on kiya hua hai.</p><br>
+                <p>Aapke device mein lagbhag <b>${ramStr}</b> aur <b>${coreStr}</b> hone ki wajah se ye kaafi smooth chal raha hai. ${batteryText}</p><br>
                 <p>${locText} ${netType}</p><br>
-                <p><b>Ek choti si guzarish:</b> Please in sab baaton se ghabraiyega mat! 🙏 Aapka phone aur data ekdam safe hai. Ye sirf mere code ka ek chota sa jadu hai jo maine aapse ache se judne ke liye banaya hai.</p><br>
-                <p>Hamesha aise hi khush rahiye aur muskurate rahiye. Aapka din shubh ho! ✨</p>
+                <p><b>Ek choti si baat:</b> Aap nishchint rahein, aapka device aur data puri tarah se surakshit hai. Ye saari aam jankariyan ek chote se code ke zariye sirf aapko ek anokha aur majedar anubhav dene ke liye prastut ki gayi hain.</p><br>
+                <p>Umeed karta hu ki aapko ye chota sa 'Surprise' accha laga hoga. Aise hi hamesha muskurate rahiye aur apna khayal rakhiye. Aapka din shubh ho! ✨</p>
             `;
 
             // Ultra-Fast Live Typewriter Effect
@@ -613,7 +665,6 @@
                     }
                     
                     msgBox.innerHTML = currentHTML + '<span class="typing-cursor"></span>';
-                    // Fast typing speed (between 2ms and 15ms)
                     const speed = Math.random() * 13 + 2; 
                     setTimeout(typeOutNext, speed);
                 } else {
