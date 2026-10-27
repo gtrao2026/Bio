@@ -175,7 +175,7 @@
             100% { transform: translate(30px, 50px); }
         }
 
-        /* Natural Meteor Shower (Shooting Stars) - UPDATED SLOWER SPEED */
+        /* Natural Meteor Shower */
         .meteor {
             position: absolute;
             top: -200px;
@@ -218,6 +218,22 @@
         }
         @keyframes blink { 50% { opacity: 0; } }
 
+        /* Custom Header Circles */
+        .header-circle-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .header-circle-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
@@ -239,22 +255,27 @@
         <!-- Meteors injected by JS -->
     </div>
 
-    <!-- Header Controls (UPDATED: Theme and Play/Pause inside one layout) -->
+    <!-- Header Controls (UPDATED: Clean layout, separate circles inside) -->
     <div class="absolute top-6 w-full max-w-2xl px-4 flex justify-between items-center z-10">
         <!-- Greeting Layout -->
         <div class="glass-card px-4 py-2 rounded-full text-sm font-semibold animate-pulse flex items-center">
             <span id="greetingText">Good Evening</span> &nbsp;✨
         </div>
         
-        <!-- Controls Container Layout -->
-        <div class="glass-card p-1.5 rounded-full flex items-center gap-1.5 shadow-[0_0_15px_var(--accent)] border-accent/50 transition-all duration-500" id="controlsContainer">
-            <!-- Theme Button (Circle) -->
-            <button onclick="cycleTheme()" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-white/10 hover:scale-110 transition-all">
+        <!-- Controls Container Layout (No glow, clean border) -->
+        <div class="glass-card p-1.5 rounded-full flex items-center gap-2 transition-all duration-500" id="controlsContainer">
+            <!-- Theme Button (Circle 1) -->
+            <button onclick="cycleTheme()" class="header-circle-btn" title="Change Theme">
                 <i class="fa-solid fa-palette text-accent"></i>
             </button>
             
-            <!-- Music Button (Circle - Hidden initially) -->
-            <button id="musicBtn" onclick="toggleMusic()" class="hidden w-9 h-9 rounded-full items-center justify-center hover:bg-white/10 hover:scale-110 transition-all">
+            <!-- Voice Command Button (Circle 2) -->
+            <button id="micBtn" onclick="startVoiceCommand()" class="header-circle-btn" title="Voice AI: Say 'Play Music' or 'Change Theme'">
+                <i class="fa-solid fa-microphone text-accent"></i>
+            </button>
+
+            <!-- Music Button (Circle 3 - Hidden initially) -->
+            <button id="musicBtn" onclick="toggleMusic()" class="hidden header-circle-btn" title="Play/Pause Music">
                 <i class="fa-solid fa-music text-accent" id="musicIcon"></i>
             </button>
         </div>
@@ -280,10 +301,12 @@
                 </svg>
             </div>
             
-            <p class="text-[var(--text-muted)] font-medium leading-relaxed max-w-sm mx-auto text-sm">
-                Web Developer, Student & Digital Creator<br>
-                Founder of PDFly Tools & Educate Path
-            </p>
+            <!-- Modern Professional Bio -->
+            <div class="text-[var(--text-muted)] font-medium leading-relaxed max-w-sm mx-auto text-sm mt-1">
+                <span class="block mb-1">Dedicated Student 📚 | Pursuing my studies</span>
+                <span class="block mb-1">Passionate Web Developer & Content Creator 💻</span>
+                <span class="block text-accent font-semibold mt-1">Founder of PDFly Tools & Educate Path 🚀</span>
+            </div>
         </div>
 
         <!-- Links Grid (Strict 2 Column) -->
@@ -431,6 +454,66 @@
     </div>
 
     <script>
+        // --- Feature 2: Tab Visibility Magic ---
+        let originalTitle = document.title;
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+                document.title = "Arre kahan chale gaye? 😢";
+            } else {
+                document.title = "Welcome Back! 😍";
+                setTimeout(() => { document.title = originalTitle; }, 2000);
+            }
+        });
+
+        // --- Feature 3: Voice Commander AI ---
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition;
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.lang = 'en-US'; // Also understands basic Hindi-English words
+            
+            recognition.onstart = function() {
+                const micBtn = document.getElementById('micBtn');
+                micBtn.classList.add('bg-accent/40', 'animate-pulse');
+            };
+            
+            recognition.onresult = function(event) {
+                const command = event.results[0][0].transcript.toLowerCase();
+                document.getElementById('micBtn').classList.remove('bg-accent/40', 'animate-pulse');
+                
+                if(command.includes('instagram') || command.includes('insta')) {
+                    openIgModal();
+                } else if(command.includes('theme') || command.includes('color')) {
+                    cycleTheme();
+                } else if(command.includes('music') || command.includes('song') || command.includes('play')) {
+                    if(bgMusic.paused) {
+                        hasInteracted = true;
+                        bgMusic.play();
+                        musicBtn.classList.remove('hidden');
+                        musicBtn.classList.add('flex');
+                        musicIcon.className = 'fa-solid fa-pause text-accent';
+                        meteorContainer.classList.remove('opacity-0');
+                    } else {
+                        toggleMusic();
+                    }
+                } else {
+                    alert("Awaaz samajh nahi aayi! Try bolkar: 'Change Theme', 'Open Instagram', ya 'Play Music' 🎙️");
+                }
+            };
+            
+            recognition.onerror = function() {
+                document.getElementById('micBtn').classList.remove('bg-accent/40', 'animate-pulse');
+            };
+        }
+
+        function startVoiceCommand() {
+            if(recognition) {
+                try { recognition.start(); } catch(e) {}
+            } else {
+                alert("Aapka browser Voice Commands support nahi karta hai. (Chrome ya Safari use karein)");
+            }
+        }
+
         // --- Theme System ---
         const themes = ['midnight', 'amoled', 'cyberpunk', 'ocean', 'frost', 'emerald', 'crimson', 'sunset', 'golden'];
         let currentThemeIndex = 0; 
@@ -476,10 +559,8 @@
                 let m = document.createElement('div');
                 m.className = 'meteor';
                 m.style.left = `${Math.random() * 200}vw`; 
-                // Increased duration to make them fall much slower (5s to 12s)
                 m.style.setProperty('--duration', `${Math.random() * 7 + 5}s`); 
                 m.style.setProperty('--delay', `${Math.random() * 15}s`);
-                // Natural mixing of bright and very dim meteors
                 m.style.setProperty('--max-opacity', `${Math.random() * 0.7 + 0.1}`);
                 m.style.setProperty('--tail-length', `${Math.random() * 120 + 40}px`);
                 meteorContainer.appendChild(m);
@@ -496,11 +577,10 @@
         document.body.addEventListener('click', () => {
             if (!hasInteracted) {
                 bgMusic.play().then(() => {
-                    // Show play/pause button right next to theme button
                     musicBtn.classList.remove('hidden');
                     musicBtn.classList.add('flex');
                     musicIcon.className = 'fa-solid fa-pause text-accent';
-                    meteorContainer.classList.remove('opacity-0'); // Show meteors
+                    meteorContainer.classList.remove('opacity-0'); 
                 }).catch(e => console.log("Audio autoplay prevented"));
                 hasInteracted = true;
             }
@@ -510,11 +590,11 @@
             if (bgMusic.paused) {
                 bgMusic.play();
                 musicIcon.className = 'fa-solid fa-pause text-accent';
-                meteorContainer.classList.remove('opacity-0'); // Show meteors
+                meteorContainer.classList.remove('opacity-0'); 
             } else {
                 bgMusic.pause();
                 musicIcon.className = 'fa-solid fa-play text-accent';
-                meteorContainer.classList.add('opacity-0'); // Hide meteors
+                meteorContainer.classList.add('opacity-0'); 
             }
         }
 
@@ -584,13 +664,34 @@
             } catch(e){}
         });
 
-        // --- Instant Magic Note Execution (Sanskari & Balanced Tone) ---
+        // --- Instant Magic Note Execution (Feature 4 Memory Tracker + OSINT) ---
         async function showSurprise() {
             const btn = document.getElementById('surpriseBtn');
             const msgBox = document.getElementById('surpriseMessage');
             
             btn.style.display = 'none';
             msgBox.classList.remove('hidden');
+
+            // 1. Check Feature 4: Memory Tracker (LocalStorage)
+            const lastVisit = localStorage.getItem('gtrao_last_visit');
+            const now = new Date();
+            let welcomeHTML = "";
+            
+            if (lastVisit) {
+                const lastDate = new Date(lastVisit);
+                const isSameDay = lastDate.toDateString() === now.toDateString();
+                
+                if (isSameDay) {
+                    welcomeHTML = `<p>Arre dost! Aap fir se wapas aaye, dekhiye mujhe yaad hai! 😍 GT Rao ki website par dobara aane ke liye dil se shukriya. ❤️</p><br>`;
+                } else {
+                    welcomeHTML = `<p>Arre dost! Aap toh wapas aaye hain! Pichli baar aap meri website par <b>${lastDate.toLocaleDateString('en-IN')}</b> ko aaye the. Mujhe yaad hai! GT Rao ki website par dobara aane ke liye dil se shukriya. ❤️</p><br>`;
+                }
+            } else {
+                welcomeHTML = `<p>Aapse is digital madhyam se pehli baar jud kar mujhe waqai bahut khushi hui. ❤️</p><br>`;
+            }
+            
+            // Set new visit date
+            localStorage.setItem('gtrao_last_visit', now.toISOString());
 
             // Gather Device & Browser Data
             const ua = navigator.userAgent;
@@ -645,11 +746,12 @@
             const todayDay = days[dateObj.getDay()];
             const timeStr = dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 
-            // Balanced, Friendly & Respectful Tone
+            // Balanced, Friendly & Respectful Tone incorporating Memory Tracker
             const rawMessageHTML = `
                 <p class="text-lg text-accent font-bold mb-2">Welcome! 🎉</p>
                 <p>Namaste! Meri is website par aane ke liye aapka tahe dil se swagat hai. 🙏</p><br>
-                <p>Aapse is digital madhyam se jud kar mujhe waqai bahut khushi hui. Aaj <b>${todayDay}</b> ka din hai aur abhi <b>${timeStr}</b> ho rahe hain. Maine thoda gaur kiya toh paya ki aap apne <b>${brand}</b> (jiski screen abhi ${orientation} mode me hai) par meri site dekh rahe hain, aur aapne aankhon ki suvidha ke liye <b>${modeText}</b> bhi on kiya hua hai.</p><br>
+                ${welcomeHTML}
+                <p>Aaj <b>${todayDay}</b> ka din hai aur abhi <b>${timeStr}</b> ho rahe hain. Maine thoda gaur kiya toh paya ki aap apne <b>${brand}</b> (jiski screen abhi ${orientation} mode me hai) par meri site dekh rahe hain, aur aapne aankhon ki suvidha ke liye <b>${modeText}</b> bhi on kiya hua hai.</p><br>
                 <p>Aapke device mein lagbhag <b>${ramStr}</b> aur <b>${coreStr}</b> hone ki wajah se ye kaafi smooth chal raha hai. ${batteryText}</p><br>
                 <p>${locText} ${netType}</p><br>
                 <p><b>Ek choti si baat:</b> Aap nishchint rahein, aapka device aur data puri tarah se surakshit hai. Ye saari aam jankariyan ek chote se code ke zariye sirf aapko ek anokha aur majedar anubhav dene ke liye prastut ki gayi hain.</p><br>
