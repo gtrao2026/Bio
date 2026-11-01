@@ -1,806 +1,484 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GT Rao - Personal Portfolio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
-                    colors: { accent: 'var(--accent)' }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        :root {
-            --bg-color: #0d0914;
-            --card-bg: rgba(20, 15, 35, 0.4);
-            --border-color: rgba(168, 85, 247, 0.2);
-            --accent: #a855f7;
-            --text-main: #ffffff;
-            --text-muted: #a1a1aa;
-            --glow: 0 0 20px rgba(168, 85, 247, 0.3);
-        }
-
-        [data-theme="amoled"] { --bg-color: #000000; --card-bg: rgba(15, 15, 15, 0.7); --border-color: rgba(255, 107, 0, 0.3); --accent: #ff6b00; --text-main: #ffffff; --text-muted: #9ca3af; --glow: 0 0 20px rgba(255, 107, 0, 0.2); }
-        [data-theme="cyberpunk"] { --bg-color: #0a0a1a; --card-bg: rgba(20, 20, 40, 0.6); --border-color: rgba(0, 255, 255, 0.4); --accent: #00ffff; --text-main: #ffffff; --text-muted: #a5b4fc; --glow: 0 0 25px rgba(0, 255, 255, 0.4); }
-        [data-theme="ocean"] { --bg-color: #051923; --card-bg: rgba(10, 40, 60, 0.5); --border-color: rgba(0, 168, 232, 0.3); --accent: #00a8e8; --text-main: #ffffff; --text-muted: #94a3b8; --glow: 0 0 20px rgba(0, 168, 232, 0.3); }
-        [data-theme="frost"] { --bg-color: #f1f5f9; --card-bg: rgba(255, 255, 255, 0.7); --border-color: rgba(56, 189, 248, 0.4); --accent: #0284c7; --text-main: #0f172a; --text-muted: #475569; --glow: 0 5px 15px rgba(2, 132, 199, 0.15); }
-        [data-theme="emerald"] { --bg-color: #022c22; --card-bg: rgba(6, 78, 59, 0.4); --border-color: rgba(16, 185, 129, 0.3); --accent: #10b981; --text-main: #ffffff; --text-muted: #94a3b8; --glow: 0 0 20px rgba(16, 185, 129, 0.3); }
-        [data-theme="crimson"] { --bg-color: #2a0408; --card-bg: rgba(80, 7, 18, 0.4); --border-color: rgba(225, 29, 72, 0.3); --accent: #e11d48; --text-main: #ffffff; --text-muted: #cbd5e1; --glow: 0 0 20px rgba(225, 29, 72, 0.3); }
-        [data-theme="sunset"] { --bg-color: #1f0d11; --card-bg: rgba(60, 20, 30, 0.4); --border-color: rgba(244, 63, 94, 0.3); --accent: #f43f5e; --text-main: #ffffff; --text-muted: #cbd5e1; --glow: 0 0 20px rgba(244, 63, 94, 0.3); }
-        [data-theme="midnight"] { --bg-color: #020617; --card-bg: rgba(15, 23, 42, 0.6); --border-color: rgba(99, 102, 241, 0.3); --accent: #6366f1; --text-main: #ffffff; --text-muted: #94a3b8; --glow: 0 0 20px rgba(99, 102, 241, 0.3); }
-        [data-theme="golden"] { --bg-color: #1a1500; --card-bg: rgba(40, 30, 5, 0.5); --border-color: rgba(234, 179, 8, 0.3); --accent: #eab308; --text-main: #ffffff; --text-muted: #d6d3d1; --glow: 0 0 20px rgba(234, 179, 8, 0.3); }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            transition: all 0.5s ease;
-            overflow-x: hidden;
-        }
-
-        .glass-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .link-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .link-card:hover {
-            transform: translateY(-4px) scale(1.02);
-            border-color: var(--accent);
-            box-shadow: var(--glow);
-        }
-        .link-card:hover i:not(.fa-instagram), .link-card:hover svg {
-            animation: bounceIcon 0.5s ease;
-        }
-
-        @keyframes bounceIcon {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
-        /* Profile Ring Animation */
-        .profile-container {
-            position: relative;
-            width: 124px;
-            height: 124px;
-            margin: 0 auto;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .profile-ring {
-            position: absolute;
-            inset: -4px;
-            border-radius: 50%;
-            background: conic-gradient(from 0deg, transparent 0%, var(--accent) 30%, transparent 60%);
-            animation: spinRing 3s linear infinite;
-            z-index: 0;
-        }
-        .profile-pic {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid var(--bg-color);
-            position: relative;
-            z-index: 1;
-        }
-        @keyframes spinRing {
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Quotes Slider */
-        .quote-container {
-            position: relative;
-            overflow: hidden;
-            width: 100%;
-            height: 100px;
-        }
-        .quote-track {
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-            height: 100%;
-        }
-        .quote-slide {
-            min-width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 20px;
-            text-align: center;
-            font-style: italic;
-            font-weight: 500;
-        }
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 4px;
-            background: var(--border-color);
-            transition: all 0.3s;
-        }
-        .dot.active {
-            width: 24px;
-            background: var(--accent);
-        }
-
-        /* Modals */
-        #igModal, #profilePreviewModal { backdrop-filter: blur(8px); }
-
-        /* Fireworks */
-        .firework {
-            position: fixed;
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            animation: explode 1.2s ease-out forwards;
-        }
-        @keyframes explode {
-            0% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 var(--accent); }
-            100% { transform: scale(1.5); opacity: 0; 
-                box-shadow: -35px -35px 0 0 var(--accent), 35px -35px 0 0 #fff, 
-                            -35px 35px 0 0 var(--accent), 35px 35px 0 0 #fff, 
-                            0 -50px 0 0 var(--accent), 0 50px 0 0 #fff,
-                            -50px 0 0 0 var(--accent), 50px 0 0 0 #fff; 
-            }
-        }
-        
-        /* Floating Orbs */
-        .floating-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(80px);
-            z-index: -2;
-            opacity: 0.3;
-            animation: floatOrb 10s infinite alternate;
-        }
-        @keyframes floatOrb {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(30px, 50px); }
-        }
-
-        /* Natural Meteor Shower */
-        .meteor {
-            position: absolute;
-            top: -200px;
-            width: 2px;
-            height: var(--tail-length, 100px);
-            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.6));
-            transform: rotate(45deg);
-            opacity: 0;
-            animation: meteorFall var(--duration, 7s) linear infinite;
-            animation-delay: var(--delay, 0s);
-            border-radius: 999px;
-            z-index: -1;
-        }
-        .meteor::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: -1px;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background-color: #fff;
-            box-shadow: 0 0 15px 4px var(--accent);
-        }
-        @keyframes meteorFall {
-            0% { transform: translate(0, 0) rotate(45deg); opacity: 0; }
-            10% { opacity: var(--max-opacity, 0.5); }
-            70% { opacity: var(--max-opacity, 0.5); }
-            100% { transform: translate(-1500px, 1500px) rotate(45deg); opacity: 0; }
-        }
-        
-        .typing-cursor {
-            display: inline-block;
-            width: 2px;
-            height: 1.2em;
-            background-color: var(--accent);
-            vertical-align: text-bottom;
-            animation: blink 1s step-end infinite;
-            margin-left: 2px;
-        }
-        @keyframes blink { 50% { opacity: 0; } }
-
-        /* Custom Header Circles */
-        .header-circle-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-        .header-circle-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
-        }
-
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#020617">
+<meta name="description" content="GT Rao - student, web developer & content creator. Founder of PDFly Tools & Educate Path.">
+<meta property="og:title" content="GT Rao - Personal Portfolio">
+<title>GT Rao - Personal Portfolio</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+tailwind.config={theme:{extend:{fontFamily:{sans:['"Plus Jakarta Sans"','sans-serif']},colors:{accent:'rgb(var(--ac) / <alpha-value>)'}}}}
+</script>
+<script>var AV="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20200%20200%22%3E%3Crect%20width=%22200%22%20height=%22200%22%20fill=%22%236366f1%22/%3E%3Ctext%20x=%2250%25%22%20y=%2255%25%22%20font-size=%2290%22%20font-family=%22sans-serif%22%20font-weight=%22700%22%20fill=%22%23fff%22%20text-anchor=%22middle%22%20dominant-baseline=%22middle%22%3EGT%3C/text%3E%3C/svg%3E"</script>
+<style>
+:root{--hl:rgba(255,255,255,.14);--hl2:rgba(255,255,255,.07);--bg-color:#020617;--ac:99 102 241;--accent:rgb(var(--ac));--card-bg:rgb(15 23 42/.55);--border-color:rgb(var(--ac)/.3);--text-main:#fff;--text-muted:#94a3b8;--glow:0 0 20px rgb(var(--ac)/.3)}
+body{background:var(--bg-color);color:var(--text-main);transition:background .5s,color .5s;overflow-x:hidden}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.glass-card{background:linear-gradient(135deg,var(--hl2),transparent 55%),var(--card-bg);backdrop-filter:blur(22px) saturate(1.6);-webkit-backdrop-filter:blur(22px) saturate(1.6);border:1px solid var(--border-color);box-shadow:0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 var(--hl)}
+.link-card{transition:all .3s cubic-bezier(.4,0,.2,1)}
+.link-card:hover{transform:translateY(-4px) scale(1.02);border-color:var(--accent);box-shadow:var(--glow)}
+.link-card:hover i:not(.ig-grad),.link-card:hover svg{animation:bounceIcon .5s ease}
+@keyframes bounceIcon{50%{transform:translateY(-5px)}}
+.ig-grad{background:linear-gradient(#f09433,#e6683c,#dc2743,#cc2366,#bc1888);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.profile-container{position:relative;width:124px;height:124px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.aura{position:absolute;inset:-6px;border-radius:50%;border:2px solid rgb(var(--ac)/.85);box-shadow:0 0 12px rgb(var(--ac)/.5),inset 0 0 8px rgb(var(--ac)/.25);animation:breathe 3s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.035);opacity:1}}
+.orbit{position:absolute;inset:-6px;border-radius:50%;animation:spin 12s linear infinite}
+.orbit::before{content:'';position:absolute;top:-3px;left:calc(50% - 3px);width:6px;height:6px;border-radius:50%;background:rgb(var(--ac));box-shadow:0 0 8px 1px rgb(var(--ac))}
+.ripple{position:absolute;inset:-6px;border-radius:50%;border:1.5px solid rgb(var(--ac));opacity:0;animation:ripple 3s ease-out infinite}
+@keyframes ripple{0%{transform:scale(1);opacity:.5}100%{transform:scale(1.22);opacity:0}}
+.music-on .orbit{animation-duration:9s}.music-on .ripple{animation-duration:3.5s}
+.profile-pic{width:100%;height:100%;border-radius:50%;object-fit:cover;border:4px solid var(--bg-color);position:relative;z-index:1}
+@keyframes spin{to{transform:rotate(360deg)}}
+.quote-container{overflow:hidden;width:100%;height:100px}
+.quote-track{display:flex;transition:transform .5s ease-in-out;height:100%}
+.quote-slide{min-width:100%;display:flex;align-items:center;justify-content:center;padding:0 20px;text-align:center;font-style:italic;font-weight:500}
+.dot{width:8px;height:8px;border-radius:4px;background:var(--border-color);transition:all .3s}
+.dot.active{width:24px;background:var(--accent)}
+#igModal,#profilePreviewModal{backdrop-filter:blur(8px)}
+.firework{position:fixed;width:5px;height:5px;border-radius:50%;pointer-events:none;z-index:9999;animation:explode 1.2s ease-out forwards}
+@keyframes explode{0%{transform:scale(1);opacity:1;box-shadow:0 0 0 0 var(--accent)}100%{transform:scale(1.5);opacity:0;box-shadow:-35px -35px 0 0 var(--accent),35px -35px 0 0 #fff,-35px 35px 0 0 var(--accent),35px 35px 0 0 #fff,0 -50px 0 0 var(--accent),0 50px 0 0 #fff,-50px 0 0 0 var(--accent),50px 0 0 0 #fff}}
+.floating-orb{position:fixed;border-radius:50%;filter:blur(70px);z-index:-2;opacity:.42;animation:floatOrb 10s infinite alternate}
+@keyframes floatOrb{to{transform:translate(50px,80px) scale(1.15)}}
+.meteor{position:absolute;top:-200px;width:3px;height:var(--tail-length,100px);background:linear-gradient(to bottom,transparent,rgba(255,255,255,.85));transform:rotate(45deg);opacity:0;animation:meteorFall var(--duration,7s) linear infinite;animation-delay:var(--delay,0s);border-radius:999px;z-index:-1}
+.meteor::after{content:'';position:absolute;bottom:0;left:-1px;width:5px;height:5px;border-radius:50%;background:#fff;box-shadow:0 0 18px 5px var(--accent)}
+@keyframes meteorFall{0%{transform:translate(0,0) rotate(45deg);opacity:0}10%,70%{opacity:var(--max-opacity,.5)}100%{transform:translate(-1500px,1500px) rotate(45deg);opacity:0}}
+.typing-cursor{display:inline-block;width:2px;height:1.2em;background:var(--accent);vertical-align:text-bottom;animation:blink 1s step-end infinite;margin-left:2px}
+@keyframes blink{50%{opacity:0}}
+.header-circle-btn{width:36px;height:36px;border-radius:50%;background:rgb(var(--ac)/.14);display:flex;align-items:center;justify-content:center;transition:all .3s ease}
+.header-circle-btn:hover{background:rgb(var(--ac)/.28);transform:scale(1.1)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:10px}
+.swipe{touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.pdot{display:block;width:6px;height:6px;border-radius:3px;background:var(--border-color);transition:all .4s cubic-bezier(.3,1.4,.5,1)}.pdot.active{width:22px;background:var(--accent);box-shadow:0 0 10px rgb(var(--ac)/.6)}
+#pvImg{transition:opacity .28s ease,transform .35s ease}
+#pvDots button{display:flex;align-items:center;justify-content:center;min-width:18px;min-height:24px}
+@media(prefers-reduced-motion:reduce){.orbit,.aura,.ripple,.meteor,.pdot{animation:none!important;transition:none!important}}
+#cursorGlow{position:fixed;left:0;top:0;width:420px;height:420px;margin:-210px 0 0 -210px;border-radius:50%;pointer-events:none;z-index:-1;background:radial-gradient(circle,rgb(var(--ac)/.16),transparent 60%);opacity:0;transition:opacity .4s}
+.rise{animation:rise .7s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:var(--rd,0s)}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}}
+.slide-l{animation:sl .4s cubic-bezier(.2,.7,.2,1)}.slide-r{animation:sr .4s cubic-bezier(.2,.7,.2,1)}
+@keyframes sl{from{opacity:0;transform:translateX(40px) scale(.98)}}@keyframes sr{from{opacity:0;transform:translateX(-40px) scale(.98)}}
+.pop{animation:pop .45s cubic-bezier(.3,1.5,.5,1)}
+@keyframes pop{from{transform:scale(.8);opacity:.3}}
+.shine-btn{position:relative;overflow:hidden}.shine-btn::after{content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);animation:sweep 3s ease-in-out infinite}
+@keyframes sweep{60%,100%{left:130%}}
+.confetti{position:fixed;top:-14px;width:8px;height:14px;z-index:9999;pointer-events:none;animation:fall var(--t,3s) linear forwards}
+@keyframes fall{to{transform:translate(var(--x,0),105vh) rotate(720deg)}}
+</style>
 </head>
 <body class="antialiased min-h-screen relative flex flex-col items-center justify-center p-4">
 
-    <!-- Audio Element -->
-    <audio id="bgMusic" loop>
-        <source src="music.mp4" type="audio/mp4">
-    </audio>
+<audio id="bgMusic" loop preload="none"></audio>
 
-    <!-- Background Elements -->
-    <div class="floating-orb w-64 h-64 top-0 left-0 bg-[var(--accent)]"></div>
-    <div class="floating-orb w-72 h-72 bottom-0 right-0 bg-blue-500"></div>
+<div class="floating-orb w-64 h-64 top-0 left-0 bg-accent"></div>
+<div class="floating-orb w-72 h-72 bottom-0 right-0 bg-blue-500"></div>
+<div class="floating-orb w-56 h-56 bg-purple-500" style="top:45%;left:55%;animation-duration:14s;animation-delay:-5s;opacity:.2"></div>
+<div id="cursorGlow"></div>
+<div id="meteorContainer" class="fixed inset-0 pointer-events-none z-[-1] opacity-0 transition-opacity duration-1000 overflow-hidden"></div>
 
-    <!-- Meteor Shower Container -->
-    <div id="meteorContainer" class="fixed inset-0 pointer-events-none z-[-1] opacity-0 transition-opacity duration-1000 overflow-hidden">
-        <!-- Meteors injected by JS -->
+<!-- Header -->
+<div class="absolute top-6 w-full max-w-2xl px-4 flex justify-between items-center z-10">
+  <div class="glass-card px-4 py-2 rounded-full text-sm font-semibold flex items-center"><span id="greetingText">Good Evening</span>&nbsp;✨</div>
+  <div class="glass-card p-1.5 rounded-full flex items-center gap-2">
+    <button onclick="cycleTheme()" class="header-circle-btn" title="Change theme" aria-label="Change theme"><i class="fa-solid fa-palette text-accent"></i></button>
+    <button onclick="shareSite()" class="header-circle-btn" title="Share" aria-label="Share"><i class="fa-solid fa-share-nodes text-accent"></i></button>
+    <button id="musicBtn" onclick="toggleMusic()" class="header-circle-btn" style="display:none" title="Play/Pause music" aria-label="Play or pause music"><i class="fa-solid fa-music text-accent" id="musicIcon"></i></button>
+  </div>
+</div>
+
+<main class="w-full max-w-2xl mt-20 mb-10 relative z-10">
+
+  <!-- Profile -->
+  <div class="text-center mb-8 flex flex-col items-center">
+    <div class="profile-container mb-4">
+      <div class="aura"></div><div class="orbit"></div><div class="ripple"></div>
+      <img id="avatar" src="image-1.png" alt="GT Rao" draggable="false" tabindex="0" role="button" class="profile-pic swipe cursor-pointer hover:scale-105 transition-transform duration-300" onerror="this.onerror=null;this.src=AV">
     </div>
-
-    <!-- Header Controls (UPDATED: Clean layout, separate circles inside) -->
-    <div class="absolute top-6 w-full max-w-2xl px-4 flex justify-between items-center z-10">
-        <!-- Greeting Layout -->
-        <div class="glass-card px-4 py-2 rounded-full text-sm font-semibold animate-pulse flex items-center">
-            <span id="greetingText">Good Evening</span> &nbsp;✨
-        </div>
-        
-        <!-- Controls Container Layout (No glow, clean border) -->
-        <div class="glass-card p-1.5 rounded-full flex items-center gap-2 transition-all duration-500" id="controlsContainer">
-            <!-- Theme Button (Circle 1) -->
-            <button onclick="cycleTheme()" class="header-circle-btn" title="Change Theme">
-                <i class="fa-solid fa-palette text-accent"></i>
-            </button>
-            
-            <!-- Voice Command Button (Circle 2) -->
-            <button id="micBtn" onclick="startVoiceCommand()" class="header-circle-btn" title="Voice AI: Say 'Play Music' or 'Change Theme'">
-                <i class="fa-solid fa-microphone text-accent"></i>
-            </button>
-
-            <!-- Music Button (Circle 3 - Hidden initially) -->
-            <button id="musicBtn" onclick="toggleMusic()" class="hidden header-circle-btn" title="Play/Pause Music">
-                <i class="fa-solid fa-music text-accent" id="musicIcon"></i>
-            </button>
-        </div>
+    <div class="flex items-center justify-center gap-2 mb-2">
+      <h1 class="text-3xl font-bold">GT Rao</h1>
+      <svg aria-label="Verified" role="img" viewBox="0 0 40 40" class="w-6 h-6 fill-[#0095F6]"><path d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Zm7.415 11.225 2.254 2.287-11.43 11.5-6.835-6.93 2.244-2.258 4.587 4.581 9.18-9.18Z" fill-rule="evenodd"></path></svg>
     </div>
-
-    <!-- Main Container -->
-    <main class="w-full max-w-2xl mt-20 mb-10 relative z-10">
-        
-        <!-- Profile Section -->
-        <div class="text-center mb-8 relative flex flex-col items-center">
-            <div class="profile-container mb-4">
-                <div class="profile-ring"></div>
-                <!-- Profile Image -->
-                <img src="dev-Profile.png" alt="GT Rao" class="profile-pic cursor-pointer hover:scale-105 transition-transform duration-300" onclick="openProfilePreview()" onerror="this.src='https://ui-avatars.com/api/?name=GT+Rao&background=random&color=fff&size=200'">
-            </div>
-            
-            <!-- Name and Verified Badge -->
-            <div class="flex items-center justify-center gap-2 mb-2">
-                <h1 class="text-3xl font-bold">GT Rao</h1>
-                <!-- Verified Badge -->
-                <svg aria-label="Verified" role="img" viewBox="0 0 40 40" class="w-6 h-6 fill-[#0095F6]">
-                    <path d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Zm7.415 11.225 2.254 2.287-11.43 11.5-6.835-6.93 2.244-2.258 4.587 4.581 9.18-9.18Z" fill-rule="evenodd"></path>
-                </svg>
-            </div>
-            
-            <!-- Modern Professional Bio -->
-            <div class="text-[var(--text-muted)] font-medium leading-relaxed max-w-sm mx-auto text-sm mt-1">
-                <span class="block mb-1">Dedicated Student 📚 | Pursuing my studies</span>
-                <span class="block mb-1">Passionate Web Developer & Content Creator 💻</span>
-                <span class="block text-accent font-semibold mt-1">Founder of PDFly Tools & Educate Path 🚀</span>
-            </div>
-        </div>
-
-        <!-- Links Grid (Strict 2 Column) -->
-        <div class="grid grid-cols-2 gap-4 mb-8">
-            <!-- Website -->
-            <a href="https://pdflytools.github.io/Home/" target="_blank" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center">
-                <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center mb-1 group-hover:bg-accent/20 transition-colors">
-                    <i class="fa-solid fa-globe text-2xl text-accent"></i>
-                </div>
-                <span class="font-semibold text-sm">Website</span>
-            </a>
-            
-            <!-- Instagram -->
-            <button onclick="openIgModal()" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center w-full relative overflow-hidden">
-                <div class="w-12 h-12 rounded-full bg-pink-500/10 flex items-center justify-center mb-1 group-hover:bg-pink-500/20 transition-colors">
-                    <i class="fa-brands fa-instagram text-2xl group-hover:scale-110 transition-transform" style="background: -webkit-linear-gradient(#f09433, #e6683c, #dc2743, #cc2366, #bc1888); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
-                </div>
-                <span class="font-semibold text-sm">Instagram</span>
-            </button>
-
-            <!-- Telegram -->
-            <a href="https://t.me/Gt_Rao" target="_blank" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center">
-                <div class="w-12 h-12 rounded-full bg-[#0088cc]/10 flex items-center justify-center mb-1 group-hover:bg-[#0088cc]/20 transition-colors">
-                    <i class="fa-brands fa-telegram text-2xl text-[#0088cc]"></i>
-                </div>
-                <span class="font-semibold text-sm">Telegram</span>
-            </a>
-
-            <!-- WhatsApp -->
-            <a href="https://whatsapp.com/channel/0029Vb8s6FTLNSa1Hh33k607" target="_blank" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group text-center">
-                <div class="w-12 h-12 rounded-full bg-[#25D366]/10 flex items-center justify-center mb-1 group-hover:bg-[#25D366]/20 transition-colors">
-                    <i class="fa-brands fa-whatsapp text-2xl text-[#25D366]"></i>
-                </div>
-                <span class="font-semibold text-sm">WhatsApp</span>
-            </a>
-
-            <!-- X (Twitter) -->
-            <a href="javascript:void(0)" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-1 group text-center cursor-default">
-                <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-1 group-hover:bg-white/20 transition-colors">
-                    <svg viewBox="0 0 24 24" class="w-6 h-6 fill-current" aria-hidden="true">
-                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
-                    </svg>
-                </div>
-                <span class="font-semibold text-sm">X</span>
-                <span class="text-[0.55rem] uppercase tracking-wider font-bold bg-white/10 text-gray-300 px-2 py-0.5 rounded-full mt-0.5">Coming Soon</span>
-            </a>
-
-            <!-- YouTube -->
-            <a href="javascript:void(0)" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-1 group text-center cursor-default">
-                <div class="w-12 h-12 rounded-full bg-[#FF0000]/10 flex items-center justify-center mb-1 group-hover:bg-[#FF0000]/20 transition-colors">
-                    <i class="fa-brands fa-youtube text-2xl text-[#FF0000]"></i>
-                </div>
-                <span class="font-semibold text-sm">YouTube</span>
-                <span class="text-[0.55rem] uppercase tracking-wider font-bold bg-[#FF0000]/20 text-red-200 px-2 py-0.5 rounded-full mt-0.5">Coming Soon</span>
-            </a>
-
-            <!-- Facebook -->
-            <a href="javascript:void(0)" class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-1 group text-center col-span-2 cursor-default">
-                <div class="w-12 h-12 rounded-full bg-[#1877F2]/10 flex items-center justify-center mb-1 group-hover:bg-[#1877F2]/20 transition-colors">
-                    <i class="fa-brands fa-facebook-f text-2xl text-[#1877F2]"></i>
-                </div>
-                <span class="font-semibold text-sm">Facebook</span>
-                <span class="text-[0.55rem] uppercase tracking-wider font-bold bg-[#1877F2]/20 text-blue-200 px-2 py-0.5 rounded-full mt-0.5">Coming Soon</span>
-            </a>
-        </div>
-
-        <!-- Surprise For You Section -->
-        <div class="glass-card rounded-3xl p-6 mb-8 relative overflow-hidden transition-all duration-300">
-            <h3 class="text-xl font-bold mb-3 flex items-center justify-center gap-2">
-                <i class="fa-solid fa-gift text-accent"></i> Surprise for You
-            </h3>
-            <p class="text-[var(--text-muted)] text-sm mb-5 text-center">
-                Something special surprise for you. Bas ek tap karke dekhiye ki is digital box mein aapke liye kya hai! ✨
-            </p>
-            
-            <button id="surpriseBtn" onclick="showSurprise()" class="w-full bg-accent hover:bg-accent/80 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 flex justify-center items-center gap-2 shadow-[0_0_15px_var(--accent)]">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Magic Dekho
-            </button>
-
-            <!-- Hidden Message Box for Typewriter -->
-            <div id="surpriseMessage" class="hidden mt-2 p-5 bg-black/40 rounded-2xl border border-white/10 text-sm leading-relaxed text-left text-gray-200 min-h-[150px]">
-                <!-- Typing content goes here -->
-            </div>
-        </div>
-
-        <!-- Quotes Slider -->
-        <div class="glass-card rounded-3xl py-6 px-2 mb-8">
-            <div class="quote-container" id="quoteContainer">
-                <div class="quote-track" id="quoteTrack">
-                    <!-- JS se populate hoga -->
-                </div>
-            </div>
-            <div class="flex justify-center gap-2 mt-4" id="quoteDots">
-                <div class="dot active"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <footer class="text-center text-sm text-[var(--text-muted)] mt-12 pb-6">
-            Crafted with <i class="fa-solid fa-heart text-accent mx-1 animate-pulse"></i> by GT Rao
-        </footer>
-
-    </main>
-
-    <!-- Profile Picture Preview Modal -->
-    <div id="profilePreviewModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/90 opacity-0 transition-opacity duration-300 backdrop-blur-sm" onclick="closeProfilePreview()">
-        <div class="relative transform scale-95 transition-transform duration-300 flex flex-col items-center" id="profilePreviewContent" onclick="event.stopPropagation()">
-            <button onclick="closeProfilePreview()" class="absolute -top-12 right-0 text-white/70 hover:text-white transition-colors">
-                <i class="fa-solid fa-xmark text-3xl"></i>
-            </button>
-            <img src="dev-Profile.png" class="w-64 h-64 md:w-80 md:h-80 object-cover rounded-full border-4 border-accent shadow-[0_0_40px_var(--accent)]" alt="GT Rao Preview" onerror="this.src='https://ui-avatars.com/api/?name=GT+Rao&background=random&color=fff&size=500'">
-        </div>
+    <div class="h-6 text-sm font-semibold text-accent" id="roleTyper"></div>
+    <div class="text-[var(--text-muted)] font-medium leading-relaxed max-w-sm mx-auto text-sm mt-1">
+      <span class="block mb-1">Dedicated Student 📚 | Pursuing my studies</span>
+      <span class="block mb-1">Passionate Web Developer &amp; Content Creator 💻</span>
+      <span class="block text-accent font-semibold mt-1">Founder of PDFly Tools &amp; Educate Path 🚀</span>
     </div>
+  </div>
 
-    <!-- Instagram Split Modal -->
-    <div id="igModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 opacity-0 transition-opacity duration-300">
-        <div class="glass-card w-full max-w-sm rounded-3xl p-6 transform scale-95 transition-transform duration-300" id="igModalContent">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-lg font-bold">Select Instagram Account</h3>
-                <button onclick="closeIgModal()" class="text-[var(--text-muted)] hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
-            </div>
-            <div class="space-y-4">
-                <a href="https://instagram.com/mr_gt_rao" target="_blank" class="flex items-center gap-4 w-full p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-accent transition-all text-left group">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-lg">
-                        <i class="fa-brands fa-instagram text-white text-2xl"></i>
-                    </div>
-                    <div>
-                        <span class="block font-bold mb-0.5 text-base">Personal Account</span>
-                        <span class="text-sm text-[var(--text-muted)] group-hover:text-accent transition-colors block">@mr_gt_rao</span>
-                    </div>
-                </a>
-                <a href="https://instagram.com/educate_path" target="_blank" class="flex items-center gap-4 w-full p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-accent transition-all text-left group">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-400 to-blue-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-lg">
-                        <i class="fa-brands fa-instagram text-white text-2xl"></i>
-                    </div>
-                    <div>
-                        <span class="block font-bold mb-0.5 text-base">Professional Account</span>
-                        <span class="text-sm text-[var(--text-muted)] group-hover:text-accent transition-colors block">@educate_path</span>
-                    </div>
-                </a>
-            </div>
-        </div>
+  <!-- Links (built from the list in the script) -->
+  <div class="grid grid-cols-2 gap-4 mb-8" id="linksGrid"></div>
+
+  <!-- Surprise -->
+  <div class="glass-card rounded-3xl p-6 mb-8 overflow-hidden">
+    <h3 class="text-xl font-bold mb-3 flex items-center justify-center gap-2"><i class="fa-solid fa-gift text-accent"></i> Surprise for You</h3>
+    <p class="text-[var(--text-muted)] text-sm mb-5 text-center">Something special surprise for you. Bas ek tap karke dekhiye ki is digital box mein aapke liye kya hai! ✨</p>
+    <button id="surpriseBtn" onclick="showSurprise()" class="shine-btn w-full bg-accent hover:bg-accent/80 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 flex justify-center items-center gap-2 shadow-[0_0_15px_var(--accent)]"><i class="fa-solid fa-wand-magic-sparkles"></i> Magic Dekho</button>
+    <div id="surpriseMessage" class="hidden mt-2 p-5 bg-black/25 backdrop-blur-md rounded-2xl border border-white/10 text-sm leading-relaxed text-left text-gray-200 min-h-[150px]"></div>
+  </div>
+
+  <!-- Quotes -->
+  <div class="glass-card rounded-3xl py-6 px-2 mb-8">
+    <div class="quote-container"><div class="quote-track" id="quoteTrack"></div></div>
+    <div class="flex justify-center gap-2 mt-4"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+  </div>
+
+  <footer class="text-center text-sm text-[var(--text-muted)] mt-12 pb-6">Crafted with <i class="fa-solid fa-heart text-accent mx-1 animate-pulse"></i> by GT Rao</footer>
+</main>
+
+<!-- Profile preview: clean square image, swipe for next image + song, dots only -->
+<div id="profilePreviewModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-5 bg-black/85 opacity-0 transition-opacity duration-300" onclick="closeProfilePreview()">
+  <div class="glass-card w-full max-w-sm rounded-3xl p-3 scale-95 transition-transform duration-300" style="box-shadow:var(--glow)" onclick="event.stopPropagation()">
+    <div id="pvStage" class="relative overflow-hidden rounded-2xl swipe">
+      <img id="pvImg" src="" alt="GT Rao" draggable="false" class="w-full aspect-square object-cover pointer-events-none select-none" onerror="this.onerror=null;this.src=AV">
+      <button onclick="closeProfilePreview()" class="header-circle-btn absolute top-3 right-3" style="background:rgba(0,0,0,.55)" aria-label="Close"><i class="fa-solid fa-xmark text-white"></i></button>
     </div>
+    <div id="pvDots" class="flex justify-center items-center gap-1 pt-3 pb-1 min-h-[24px]"></div>
+    <div class="flex items-center justify-between px-2 pt-2 pb-2">
+      <div>
+        <div class="font-bold flex items-center gap-1.5">GT Rao <i class="fa-solid fa-circle-check text-[#0095F6] text-sm"></i></div>
+        <div class="text-xs text-[var(--text-muted)] mt-0.5">@mr_gt_rao</div>
+      </div>
+      <a href="https://x.com/mr_gt_rao" target="_blank" rel="noopener" class="text-xs font-semibold px-4 py-2 rounded-full bg-accent text-white">Follow</a>
+    </div>
+  </div>
+</div>
 
-    <script>
-        // --- Feature 2: Tab Visibility Magic ---
-        let originalTitle = document.title;
-        document.addEventListener("visibilitychange", () => {
-            if (document.hidden) {
-                document.title = "Arre kahan chale gaye? 😢";
-            } else {
-                document.title = "Welcome Back! 😍";
-                setTimeout(() => { document.title = originalTitle; }, 2000);
-            }
-        });
+<!-- Instagram modal -->
+<div id="igModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 opacity-0 transition-opacity duration-300" onclick="closeIgModal()">
+  <div class="glass-card w-full max-w-sm rounded-3xl p-6 scale-95 transition-transform duration-300" onclick="event.stopPropagation()">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-lg font-bold">Select Instagram Account</h3>
+      <button onclick="closeIgModal()" class="text-[var(--text-muted)]" aria-label="Close"><i class="fa-solid fa-xmark text-xl"></i></button>
+    </div>
+    <div class="space-y-4">
+      <a href="https://instagram.com/mr_gt_rao" target="_blank" rel="noopener" class="flex items-center gap-4 w-full p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-accent transition-all group">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"><i class="fa-brands fa-instagram text-white text-2xl"></i></div>
+        <div><span class="block font-bold text-base">Personal Account</span><span class="text-sm text-[var(--text-muted)]">@mr_gt_rao</span></div>
+      </a>
+      <a href="https://instagram.com/educate_path" target="_blank" rel="noopener" class="flex items-center gap-4 w-full p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-accent transition-all group">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-400 to-blue-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"><i class="fa-brands fa-instagram text-white text-2xl"></i></div>
+        <div><span class="block font-bold text-base">Professional Account</span><span class="text-sm text-[var(--text-muted)]">@educate_path</span></div>
+      </a>
+    </div>
+  </div>
+</div>
 
-        // --- Feature 3: Voice Commander AI ---
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        let recognition;
-        if (SpeechRecognition) {
-            recognition = new SpeechRecognition();
-            recognition.lang = 'en-US'; // Also understands basic Hindi-English words
-            
-            recognition.onstart = function() {
-                const micBtn = document.getElementById('micBtn');
-                micBtn.classList.add('bg-accent/40', 'animate-pulse');
-            };
-            
-            recognition.onresult = function(event) {
-                const command = event.results[0][0].transcript.toLowerCase();
-                document.getElementById('micBtn').classList.remove('bg-accent/40', 'animate-pulse');
-                
-                if(command.includes('instagram') || command.includes('insta')) {
-                    openIgModal();
-                } else if(command.includes('theme') || command.includes('color')) {
-                    cycleTheme();
-                } else if(command.includes('music') || command.includes('song') || command.includes('play')) {
-                    if(bgMusic.paused) {
-                        hasInteracted = true;
-                        bgMusic.play();
-                        musicBtn.classList.remove('hidden');
-                        musicBtn.classList.add('flex');
-                        musicIcon.className = 'fa-solid fa-pause text-accent';
-                        meteorContainer.classList.remove('opacity-0');
-                    } else {
-                        toggleMusic();
-                    }
-                } else {
-                    alert("Awaaz samajh nahi aayi! Try bolkar: 'Change Theme', 'Open Instagram', ya 'Play Music' 🎙️");
-                }
-            };
-            
-            recognition.onerror = function() {
-                document.getElementById('micBtn').classList.remove('bg-accent/40', 'animate-pulse');
-            };
-        }
+<script>
+const $=id=>document.getElementById(id);
 
-        function startVoiceCommand() {
-            if(recognition) {
-                try { recognition.start(); } catch(e) {}
-            } else {
-                alert("Aapka browser Voice Commands support nahi karta hai. (Chrome ya Safari use karein)");
-            }
-        }
+// Toast
+function toast(m){const t=document.createElement('div');t.className='glass-card fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] px-4 py-2.5 rounded-full text-sm font-medium transition-opacity duration-300 opacity-0 text-center';t.textContent=m;document.body.appendChild(t);requestAnimationFrame(()=>t.classList.remove('opacity-0'));setTimeout(()=>{t.classList.add('opacity-0');setTimeout(()=>t.remove(),300)},2400)}
 
-        // --- Theme System ---
-        const themes = ['midnight', 'amoled', 'cyberpunk', 'ocean', 'frost', 'emerald', 'crimson', 'sunset', 'golden'];
-        let currentThemeIndex = 0; 
-        
-        function cycleTheme() {
-            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-            document.documentElement.setAttribute('data-theme', themes[currentThemeIndex]);
-        }
-        document.documentElement.setAttribute('data-theme', themes[currentThemeIndex]);
+// Links
+const XIcon='<svg viewBox="0 0 24 24" class="w-6 h-6 fill-current" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>';
+const LINKS=[
+ ['Website','<i class="fa-solid fa-globe"></i>','var(--accent)','https://pdflytools.github.io/Home/'],
+ ['Instagram','<i class="fa-brands fa-instagram ig-grad"></i>','#dc2743','ig'],
+ ['Telegram','<i class="fa-brands fa-telegram"></i>','#0088cc','https://t.me/Gt_Rao'],
+ ['WhatsApp','<i class="fa-brands fa-whatsapp"></i>','#25D366','https://whatsapp.com/channel/0029Vb8s6FTLNSa1Hh33k607'],
+ ['X',XIcon,'var(--text-main)','https://x.com/mr_gt_rao'],
+ ['YouTube','<i class="fa-brands fa-youtube"></i>','#FF0000',''],
+ ['Facebook','<i class="fa-brands fa-facebook-f"></i>','#1877F2','','col-span-2']
+];
+$('linksGrid').innerHTML=LINKS.map(([n,ic,c,u,x])=>{
+  const soon=!u,tag=u==='ig'?'button':soon?'div':'a';
+  const at=u==='ig'?'onclick="openIgModal()"':soon?'':`href="${u}" target="_blank" rel="noopener"`;
+  return `<${tag} ${at} class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-1 text-center w-full ${x||''} ${soon?'cursor-default':''}">
+   <div class="w-12 h-12 rounded-full flex items-center justify-center mb-1 text-2xl" style="color:${c};background:color-mix(in srgb,${c} 14%,transparent)">${ic}</div>
+   <span class="font-semibold text-sm">${n}</span>
+   ${soon?'<span class="text-[0.55rem] uppercase tracking-wider font-bold bg-white/10 px-2 py-0.5 rounded-full mt-0.5">Coming Soon</span>':''}
+  </${tag}>`}).join('');
 
-        // --- Dynamic Greeting ---
-        const dInfo = new Date();
-        const hour = dInfo.getHours();
-        let greeting = 'Good Evening';
-        if (hour < 12) greeting = 'Good Morning';
-        else if (hour < 17) greeting = 'Good Afternoon';
-        document.getElementById('greetingText').innerText = greeting;
+// Tab title
+const origTitle=document.title;
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden)document.title='Arre kahan chale gaye? 😢';
+  else{document.title='Welcome Back! 😍';setTimeout(()=>document.title=origTitle,2000)}
+});
 
-        // --- Profile Preview Modal ---
-        const profilePreviewModal = document.getElementById('profilePreviewModal');
-        const profilePreviewContent = document.getElementById('profilePreviewContent');
+// Themes (remembered between visits)
+const TH={
+ midnight:['#020617','15 23 42','99 102 241','#fff','#94a3b8'],
+ amoled:['#000','15 15 15','255 107 0','#fff','#9ca3af'],
+ cyberpunk:['#0a0a1a','20 20 40','0 255 255','#fff','#a5b4fc'],
+ ocean:['#051923','10 40 60','0 168 232','#fff','#94a3b8'],
+ frost:['#f1f5f9','255 255 255','2 132 199','#0f172a','#475569'],
+ emerald:['#022c22','6 78 59','16 185 129','#fff','#94a3b8'],
+ crimson:['#2a0408','80 7 18','225 29 72','#fff','#cbd5e1'],
+ sunset:['#1f0d11','60 20 30','244 63 94','#fff','#cbd5e1'],
+ golden:['#1a1500','40 30 5','234 179 8','#fff','#d6d3d1']
+};
+const names=Object.keys(TH);
+let ti=0;
+try{ti=Math.max(0,names.indexOf(localStorage.getItem('gtrao_theme')))}catch(e){}
+function applyTheme(){
+  const n=names[ti],[bg,c,a,t,m]=TH[n],s=document.documentElement.style;
+  s.setProperty('--bg-color',bg);s.setProperty('--ac',a);s.setProperty('--card-bg',`rgb(${c}/${n==='frost'?.6:.42})`);
+  s.setProperty('--text-main',t);s.setProperty('--text-muted',m);s.setProperty('--hl',n==='frost'?'rgba(255,255,255,.95)':'rgba(255,255,255,.14)');s.setProperty('--hl2',n==='frost'?'rgba(255,255,255,.6)':'rgba(255,255,255,.07)');
+  document.querySelector('meta[name=theme-color]').content=bg;
+  try{localStorage.setItem('gtrao_theme',n)}catch(e){}
+}
+function cycleTheme(){ti=(ti+1)%names.length;applyTheme();toast('Theme: '+names[ti])}
+applyTheme();
 
-        function openProfilePreview() {
-            profilePreviewModal.classList.remove('hidden');
-            setTimeout(() => {
-                profilePreviewModal.classList.remove('opacity-0');
-                profilePreviewContent.classList.remove('scale-95');
-            }, 10);
-        }
+// Greeting
+const hr=new Date().getHours();
+$('greetingText').innerText=hr<12?'Good Morning':hr<17?'Good Afternoon':'Good Evening';
 
-        function closeProfilePreview() {
-            profilePreviewModal.classList.add('opacity-0');
-            profilePreviewContent.classList.add('scale-95');
-            setTimeout(() => {
-                profilePreviewModal.classList.add('hidden');
-            }, 300);
-        }
+// Modals
+function setModal(id,show){
+  const m=$(id),c=m.firstElementChild;
+  if(show){m.classList.remove('hidden');setTimeout(()=>{m.classList.remove('opacity-0');c.classList.remove('scale-95')},10)}
+  else{m.classList.add('opacity-0');c.classList.add('scale-95');setTimeout(()=>m.classList.add('hidden'),300)}
+}
+const openProfilePreview=()=>{show(0);setModal('profilePreviewModal',true)},closeProfilePreview=()=>setModal('profilePreviewModal',false);
+const openIgModal=()=>setModal('igModal',true),closeIgModal=()=>setModal('igModal',false);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeProfilePreview();closeIgModal()}});
 
-        // --- Generate Meteors (Slower, Smooth Tootta Tara) ---
-        const meteorContainer = document.getElementById('meteorContainer');
-        function initMeteors() {
-            for(let i=0; i<35; i++) {
-                let m = document.createElement('div');
-                m.className = 'meteor';
-                m.style.left = `${Math.random() * 200}vw`; 
-                m.style.setProperty('--duration', `${Math.random() * 7 + 5}s`); 
-                m.style.setProperty('--delay', `${Math.random() * 15}s`);
-                m.style.setProperty('--max-opacity', `${Math.random() * 0.7 + 0.1}`);
-                m.style.setProperty('--tail-length', `${Math.random() * 120 + 40}px`);
-                meteorContainer.appendChild(m);
-            }
-        }
-        initMeteors();
+// Share
+async function shareSite(){
+  const d={title:'GT Rao',text:"Check out GT Rao's portfolio",url:location.href};
+  try{if(navigator.share)await navigator.share(d);else{await navigator.clipboard.writeText(d.url);toast('Link copy ho gaya ✅')}}catch(e){}
+}
 
-        // --- Music System (Header Controls Integration) ---
-        const bgMusic = document.getElementById('bgMusic');
-        const musicBtn = document.getElementById('musicBtn');
-        const musicIcon = document.getElementById('musicIcon');
-        let hasInteracted = false;
+// Meteors
+const meteors=$('meteorContainer');
+for(let i=0;i<18;i++){
+  const m=document.createElement('div');m.className='meteor';
+  m.style.left=`${Math.random()*200}vw`;
+  m.style.setProperty('--duration',`${Math.random()*7+9}s`);
+  m.style.setProperty('--delay',`${Math.random()*6}s`);
+  m.style.setProperty('--max-opacity',`${Math.random()*.25+.25}`);
+  m.style.setProperty('--tail-length',`${Math.random()*140+60}px`);
+  meteors.appendChild(m);
+}
 
-        document.body.addEventListener('click', () => {
-            if (!hasInteracted) {
-                bgMusic.play().then(() => {
-                    musicBtn.classList.remove('hidden');
-                    musicBtn.classList.add('flex');
-                    musicIcon.className = 'fa-solid fa-pause text-accent';
-                    meteorContainer.classList.remove('opacity-0'); 
-                }).catch(e => console.log("Audio autoplay prevented"));
-                hasInteracted = true;
-            }
-        }, { once: true });
+// Gallery + music: slide the profile picture to change image and song.
+// Put these files next to index.html (or edit names/titles in this list).
+const GALLERY=[
+ {img:'image-1.png',song:'song-1.mp3',title:'Song 1'},
+ {img:'image-2.png',song:'song-2.mp3',title:'Song 2'},
+ {img:'image-3.png',song:'song-3.mp3',title:'Song 3'},
+ {img:'image-4.png',song:'song-4.mp3',title:'Song 4'},
+ {img:'image-5.png',song:'song-5.mp3',title:'Song 5'}
+];
+let slides=[{img:AV,song:'',title:''}],cur=0;
+const bgMusic=$('bgMusic'),musicBtn=$('musicBtn'),avatar=$('avatar'),pvImg=$('pvImg');
+function setMusic(on){musicBtn.innerHTML=`<i class="fa-solid fa-${on?'pause':'play'} text-accent"></i>`;document.body.classList.toggle('music-on',on)}
+function playSong(){
+  const s=slides[cur];if(!s.song)return Promise.resolve();
+  if(!bgMusic.src.endsWith(s.song))bgMusic.src=s.song;
+  return bgMusic.play().then(()=>{musicBtn.style.display='flex';setMusic(true)}).catch(()=>setMusic(false));
+}
+let userPaused=false;
+function toggleMusic(){if(bgMusic.paused){userPaused=false;playSong()}else{userPaused=true;bgMusic.pause();setMusic(false)}}
+// Shooting stars + song start only after the first touch/click anywhere
+let shown=false;
+function startShow(){if(!shown){shown=true;meteors.classList.remove('opacity-0')}if(bgMusic.paused&&!userPaused)playSong()}
+['click','touchend','keydown'].forEach(ev=>addEventListener(ev,startShow,{passive:true}));
+function buildDots(){$('pvDots').innerHTML=slides.length>1?slides.map((_,i)=>`<button class="p-1.5" onclick="goTo(${i})" aria-label="Image ${i+1}"><span class="pdot"></span></button>`).join(''):''}
+function show(d){
+  const s=slides[cur];
+  avatar.src=s.img;
+  if(d){avatar.classList.remove('pop');void avatar.offsetWidth;avatar.classList.add('pop')}
+  pvImg.src=s.img;pvImg.classList.remove('slide-l','slide-r');void pvImg.offsetWidth;pvImg.classList.add(d<0?'slide-r':'slide-l');
+  document.querySelectorAll('#pvDots .pdot').forEach((e,i)=>e.classList.toggle('active',i===cur));
+}
+function go(d){if(slides.length<2)return;cur=(cur+d+slides.length)%slides.length;userPaused=false;show(d);playSong()}
+function goTo(i){if(i===cur)return;const d=i>cur?1:-1;cur=i;userPaused=false;show(d);playSong()}
+function swipe(el){
+  let x=null,y=0;
+  el.addEventListener('pointerdown',e=>{x=e.clientX;y=e.clientY});
+  el.addEventListener('pointerup',e=>{
+    if(x===null)return;const dx=e.clientX-x,dy=e.clientY-y;x=null;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy))go(dx<0?1:-1);
 
-        function toggleMusic() {
-            if (bgMusic.paused) {
-                bgMusic.play();
-                musicIcon.className = 'fa-solid fa-pause text-accent';
-                meteorContainer.classList.remove('opacity-0'); 
-            } else {
-                bgMusic.pause();
-                musicIcon.className = 'fa-solid fa-play text-accent';
-                meteorContainer.classList.add('opacity-0'); 
-            }
-        }
+  });
+  el.addEventListener('pointercancel',()=>x=null);
+}
+swipe(avatar);swipe($('pvStage'));
+avatar.addEventListener('click',openProfilePreview);
 
-        // --- Instagram Modal ---
-        const igModal = document.getElementById('igModal');
-        const igModalContent = document.getElementById('igModalContent');
+avatar.addEventListener('keydown',e=>{if(e.key==='Enter')openProfilePreview()});
+document.addEventListener('keydown',e=>{if(!$('profilePreviewModal').classList.contains('hidden')){if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1)}});
+Promise.all(GALLERY.map(g=>new Promise(r=>{const i=new Image();i.onload=()=>r(g);i.onerror=()=>r(0);i.src=g.img}))).then(a=>{const ok=a.filter(Boolean);if(ok.length)slides=ok;buildDots();show(0)});
 
-        function openIgModal() {
-            igModal.classList.remove('hidden');
-            setTimeout(() => {
-                igModal.classList.remove('opacity-0');
-                igModalContent.classList.remove('scale-95');
-            }, 10);
-        }
+// Quotes
+const quotes=["Education is the most powerful weapon.","Push yourself, because no one else is going to do it for you.","Sometimes later becomes never. Do it now.","Great things never come from comfort zones.","Dream it. Wish it. Do it.","Success doesn't just find you. You have to go out and get it.","The harder you work for something, the greater you'll feel when you achieve it.","Dream bigger. Do bigger.","Don't stop when you're tired. Stop when you're done.","Wake up with determination. Go to bed with satisfaction.","Do something today that your future self will thank you for.","Little things make big days.","It's going to be hard, but hard does not mean impossible.","Don't wait for opportunity. Create it.","A goal without a plan is just a wish."].sort(()=>Math.random()-.5);
+const track=$('quoteTrack'),dots=document.querySelectorAll('.dot');
+quotes.forEach(q=>{const d=document.createElement('div');d.className='quote-slide';d.textContent=`"${q}"`;track.appendChild(d)});
+let slide=0;
+setInterval(()=>{
+  slide=(slide+1)%quotes.length;
+  track.style.transform=`translateX(-${slide*100}%)`;
+  dots.forEach((d,i)=>d.classList.toggle('active',i===slide%3));
+},4000);
 
-        function closeIgModal() {
-            igModal.classList.add('opacity-0');
-            igModalContent.classList.add('scale-95');
-            setTimeout(() => {
-                igModal.classList.add('hidden');
-            }, 300);
-        }
+// Info collection (starts after page load; used by the surprise)
+const sleep=ms=>new Promise(r=>setTimeout(r,ms)),info={};
+async function measureSpeed(){
+  try{
+    const t0=performance.now();
+    const r=await fetch('https://speed.cloudflare.com/__down?bytes=1000000',{cache:'no-store'});
+    const b=await r.blob();
+    return b.size*8/((performance.now()-t0)/1000)/1e6;
+  }catch(e){return null}
+}
+function measureHz(){
+  return new Promise(res=>{let n=0,t0=0;const f=t=>{if(!t0)t0=t;n++;
+    if(t-t0<600)requestAnimationFrame(f);
+    else{const hz=(n-1)*1000/(t-t0);res([30,60,75,90,120,144,165].reduce((a,b)=>Math.abs(b-hz)<Math.abs(a-hz)?b:a))}};
+    requestAnimationFrame(f)});
+}
+function gpuName(){
+  try{
+    const g=document.createElement('canvas').getContext('webgl'),e=g.getExtension('WEBGL_debug_renderer_info');
+    if(!e)return '';
+    const p=g.getParameter(e.UNMASKED_RENDERER_WEBGL).replace(/^ANGLE \(|\)$/g,'').split(',').map(x=>x.trim());
+    return (p[1]||p[0]).replace(/\s*(Direct3D|vs_|OpenGL).*$/,'');
+  }catch(e){return ''}
+}
+async function collect(){
+  const tasks=[];
+  tasks.push(measureSpeed().then(v=>{if(Number.isFinite(v))info.mbps=v;}).catch(()=>{}));
+  tasks.push(measureHz().then(v=>{if(Number.isFinite(v))info.hz=v;}).catch(()=>{}));
+  tasks.push((async()=>{try{if(navigator.getBattery)info.bat=await navigator.getBattery()}catch(e){}})());
+  tasks.push((async()=>{try{if(navigator.userAgentData)info.uad=await navigator.userAgentData.getHighEntropyValues(['model','platformVersion'])}catch(e){}})());
+  await Promise.allSettled(tasks);
+  info.done=true;
+}
+let ready=Promise.resolve();
+addEventListener('load',()=>{ready=collect().then(()=>info.done=true)});
 
-        // --- Quotes Slider ---
-        const quotes = [
-            "Education is the most powerful weapon.", "Push yourself, because no one else is going to do it for you.",
-            "Sometimes later becomes never. Do it now.", "Great things never come from comfort zones.",
-            "Dream it. Wish it. Do it.", "Success doesn't just find you. You have to go out and get it.",
-            "The harder you work for something, the greater you'll feel when you achieve it.", "Dream bigger. Do bigger.",
-            "Don't stop when you're tired. Stop when you're done.", "Wake up with determination. Go to bed with satisfaction.",
-            "Do something today that your future self will thank you for.", "Little things make big days.",
-            "It's going to be hard, but hard does not mean impossible.", "Don't wait for opportunity. Create it.",
-            "A goal without a plan is just a wish."
-        ];
-        
-        let fullQuotes = [...quotes].sort(() => Math.random() - 0.5);
-        const track = document.getElementById('quoteTrack');
-        fullQuotes.forEach(q => {
-            const div = document.createElement('div');
-            div.className = 'quote-slide';
-            div.innerText = `"${q}"`;
-            track.appendChild(div);
-        });
+const wt=c=>c===0?'aasman bilkul saaf hai':c<3?'halke badal chhaye hain':c===3?'badal chhaye hue hain':c<50?'kohra hai':c<60?'halki phuhaar ho rahi hai':c<70?'baarish ho rahi hai':c<80?'barfbari ho rahi hai':c<83?'baarish ki bauchhar aa rahi hai':c<87?'barfbari ho rahi hai':'aandhi-toofan chal raha hai';
+const P=(...a)=>{const t=a.filter(Boolean).join(' ');return t?`<p class="mb-3">${t}</p>`:''};
 
-        let currentSlide = 0;
-        const dots = document.querySelectorAll('.dot');
-        
-        setInterval(() => {
-            currentSlide = (currentSlide + 1) % fullQuotes.length;
-            track.style.transform = `translateX(-${currentSlide * 100}%)`;
-            dots.forEach(d => d.classList.remove('active'));
-            dots[currentSlide % 3].classList.add('active');
-        }, 4000);
+// Surprise: written like a real person talking
+async function showSurprise(){
+  const btn=$('surpriseBtn'),box=$('surpriseMessage');
+  if(btn.disabled)return;
+  btn.disabled=true;
+  btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Bas ek pal…';
+  box.classList.remove('hidden');
+  box.setAttribute('aria-live','polite');
+  box.innerHTML='<p class="text-accent font-semibold">Aapke liye ek chhota sa surprise… ✨</p><p class="text-[var(--text-muted)]">Bas ek pal, kuch interesting baatein batata hoon.</p>';
+  try{
+    if(!info.done) await Promise.race([ready,sleep(1800)]);
+    const now=new Date(),u=navigator.userAgent||'',uad=info.uad||{};
+    const hour=now.getHours();
+    const greeting=hour<5?'Itni raat ko jaag rahe hain? Apna khayal bhi rakhiye 😊':
+      hour<12?'Good morning! Umeed hai aapka din achha ja raha hoga ☀️':
+      hour<17?'Good afternoon! Thoda break lena bhi zaroori hai 😊':
+      hour<21?'Good evening! Din kaisa raha aapka? 🌆':'Raat ka sukoon enjoy kijiye, aur aaram bhi zaroor kijiye 🌙';
+    const date=now.toLocaleDateString('hi-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    const time=now.toLocaleTimeString('hi-IN',{hour:'2-digit',minute:'2-digit'});
+    let device='aapka device',os='aapka operating system';
+    if(/Android/i.test(u)){device=uad.model||'Android phone';os='Android';}
+    else if(/iPhone/i.test(u)){device='iPhone';os='iOS';}
+    else if(/iPad/i.test(u)){device='iPad';os='iPadOS';}
+    else if(/Windows/i.test(u)){device='computer ya laptop';os='Windows';}
+    else if(/Mac OS/i.test(u)){device='Mac';os='macOS';}
+    else if(/Linux/i.test(u)){device='computer';os='Linux';}
+    const browser=/EdgA?\/([\d.]+)/.test(u)?'Microsoft Edge':
+      /SamsungBrowser\/([\d.]+)/.test(u)?'Samsung Internet':
+      /OPR\/([\d.]+)/.test(u)?'Opera':
+      /Firefox\/([\d.]+)/.test(u)?'Firefox':
+      /Chrome\/([\d.]+)/.test(u)?'Chrome':
+      /Safari\//.test(u)?'Safari':'aapka browser';
+    const conn=navigator.connection||navigator.mozConnection||navigator.webkitConnection||{};
+    const battery=info.bat;
+    const parts=[];
+    parts.push(`<p class="text-lg text-accent font-bold mb-3">Aapke liye ek chhota sa surprise! 🎁</p>`);
+    parts.push(`<p>Namaste! 🙏 ${greeting} Aapne yahan click kiya, toh socha aapse thodi normal si baat kar loon.</p>`);
+    parts.push(`<p><b>Aaj ka din:</b> ${date}, aur abhi lagbhag <b>${time}</b> baj rahe hain.</p>`);
+    parts.push(`<p><b>Aapka device:</b> Aap is website ko <b>${device}</b> par, <b>${os}</b> ke saath use kar rahe hain. Browser ki baat karun toh <b>${browser}</b> chal raha hai.</p>`);
+    parts.push(`<p><b>Screen:</b> Aapki screen ka size <b>${screen.width} × ${screen.height}</b> pixels hai. ${innerHeight>innerWidth?'Aap phone ko portrait mode mein use kar rahe hain.':'Aap landscape mode mein website dekh rahe hain.'}</p>`);
+    if(info.hz)parts.push(`<p><b>Display:</b> Screen ka refresh rate lagbhag <b>${info.hz} Hz</b> detect hua. Isse scrolling aur animations kitni smooth dikhti hain, us par asar padta hai.</p>`);
+    if(Number.isFinite(info.mbps))parts.push(`<p><b>Internet:</b> Ek chhote test mein speed lagbhag <b>${info.mbps.toFixed(1)} Mbps</b> mili. Ye sirf us waqt ka estimate hai, speed badal sakti hai.</p>`);
+    else if(conn.effectiveType)parts.push(`<p><b>Network:</b> Browser ke hisaab se connection <b>${conn.effectiveType}</b> jaisa report ho raha hai.</p>`);
+    if(battery){
+      const level=Math.round(battery.level*100);
+      parts.push(`<p><b>Battery:</b> Abhi lagbhag <b>${level}%</b> ${battery.charging?'hai aur device charging par hai ⚡':'baaki hai 🔋'}.</p>`);
+    }
+    parts.push(`<p><b>Ek chhoti si baat:</b> Ye details browser aur device se milne wali basic information hain. Har detail har phone ya browser mein available nahi hoti, isliye jo detail nahi mili use main guess nahi karunga.</p>`);
+    parts.push(`<p>Bas itna hi! Website par aane ke liye dil se shukriya. Apne goals par kaam karte rahiye, seekhte rahiye aur khush rahiye. Phir milenge! ❤️</p>`);
+    const html=parts.join('');
+    const tokens=html.match(/<[^>]*>|[^<]+/g)||[];
+    let tokenIndex=0,charIndex=0,done=false,out='';
+    const finish=()=>{if(done)return;done=true;box.innerHTML=html;celebrate();};
+    box.onclick=finish;
+    const type=()=>{
+      if(done)return;
+      let added=0;
+      while(tokenIndex<tokens.length&&added<14){
+        const token=tokens[tokenIndex];
+        if(token.startsWith('<')){out+=token;tokenIndex++;continue;}
+        const take=Math.min(14-added,token.length-charIndex);
+        out+=token.slice(charIndex,charIndex+take);
+        charIndex+=take;added+=take;
+        if(charIndex>=token.length){tokenIndex++;charIndex=0;}
+      }
+      box.innerHTML=out+(tokenIndex<tokens.length?'<span class="typing-cursor"></span>':'');
+      if(tokenIndex<tokens.length)setTimeout(type,24);else finish();
+    };
+    type();
+    btn.innerHTML='<i class="fa-solid fa-check"></i> Surprise unlocked';
+    btn.disabled=false;
+  }catch(err){
+    console.error('Surprise message error:',err);
+    box.innerHTML='<p class="text-accent font-bold mb-2">Aapke liye ek surprise! 🎁</p><p>Namaste! Website par aane ke liye bahut-bahut shukriya. Aapka din achha rahe, apne sapno ke liye mehnat karte rahiye aur muskurate rahiye. ❤️</p>';
+    btn.innerHTML='<i class="fa-solid fa-check"></i> Surprise unlocked';
+    btn.disabled=false;
+  }
+}
+function fireworks(){
+  for(let i=0;i<10;i++)setTimeout(()=>{
+    const f=document.createElement('div');f.className='firework';
+    f.style.left=Math.random()*100+'vw';f.style.top=Math.random()*100+'vh';
+    document.body.appendChild(f);setTimeout(()=>f.remove(),1200);
+  },i*150);
+}
+function confetti(){
+  const col=['var(--accent)','#fff','#facc15','#34d399','#f472b6','#60a5fa'];
+  for(let i=0;i<60;i++){
+    const e=document.createElement('div');e.className='confetti';
+    e.style.left=Math.random()*100+'vw';e.style.background=col[i%6];
+    e.style.setProperty('--x',(Math.random()*160-80)+'px');e.style.setProperty('--t',(2.4+Math.random()*2)+'s');
+    e.style.animationDelay=Math.random()*.6+'s';
+    document.body.appendChild(e);setTimeout(()=>e.remove(),5500);
+  }
+}
+function celebrate(){fireworks();confetti()}
 
-        // --- FAST OSINT DATA PRE-FETCHING ---
-        let preloadedIpData = null;
-        let preloadedBattery = null;
-        
-        window.addEventListener('load', async () => {
-            try {
-                const res = await fetch('https://ipwho.is/');
-                preloadedIpData = await res.json();
-            } catch(e){}
-            
-            try {
-                if(navigator.getBattery) preloadedBattery = await navigator.getBattery();
-            } catch(e){}
-        });
-
-        // --- Instant Magic Note Execution (Feature 4 Memory Tracker + OSINT) ---
-        async function showSurprise() {
-            const btn = document.getElementById('surpriseBtn');
-            const msgBox = document.getElementById('surpriseMessage');
-            
-            btn.style.display = 'none';
-            msgBox.classList.remove('hidden');
-
-            // 1. Check Feature 4: Memory Tracker (LocalStorage)
-            const lastVisit = localStorage.getItem('gtrao_last_visit');
-            const now = new Date();
-            let welcomeHTML = "";
-            
-            if (lastVisit) {
-                const lastDate = new Date(lastVisit);
-                const isSameDay = lastDate.toDateString() === now.toDateString();
-                
-                if (isSameDay) {
-                    welcomeHTML = `<p>Arre dost! Aap fir se wapas aaye, dekhiye mujhe yaad hai! 😍 GT Rao ki website par dobara aane ke liye dil se shukriya. ❤️</p><br>`;
-                } else {
-                    welcomeHTML = `<p>Arre dost! Aap toh wapas aaye hain! Pichli baar aap meri website par <b>${lastDate.toLocaleDateString('en-IN')}</b> ko aaye the. Mujhe yaad hai! GT Rao ki website par dobara aane ke liye dil se shukriya. ❤️</p><br>`;
-                }
-            } else {
-                welcomeHTML = `<p>Aapse is digital madhyam se pehli baar jud kar mujhe waqai bahut khushi hui. ❤️</p><br>`;
-            }
-            
-            // Set new visit date
-            localStorage.setItem('gtrao_last_visit', now.toISOString());
-
-            // Gather Device & Browser Data
-            const ua = navigator.userAgent;
-            let brand = "phone";
-            if (/vivo/i.test(ua)) brand = "Vivo smartphone";
-            else if (/oppo|cph/i.test(ua)) brand = "Oppo smartphone";
-            else if (/samsung|sm-/i.test(ua)) brand = "Samsung device";
-            else if (/redmi|poco|mi\s/i.test(ua)) brand = "Xiaomi/Redmi phone";
-            else if (/realme/i.test(ua)) brand = "Realme smartphone";
-            else if (/oneplus/i.test(ua)) brand = "OnePlus phone";
-            else if (/motorola|moto/i.test(ua)) brand = "Motorola device";
-            else if (/iphone/i.test(ua)) brand = "iPhone";
-            else if (/macintosh|mac os/i.test(ua)) brand = "MacBook/Mac";
-            else if (/windows/i.test(ua)) brand = "Windows PC/Laptop";
-
-            const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const modeText = isDarkMode ? "Dark Mode 🌙" : "Light Mode ☀️";
-            const orientation = window.innerHeight > window.innerWidth ? 'portrait' : 'landscape';
-
-            let netType = "";
-            if (navigator.connection && navigator.connection.effectiveType) {
-                const type = navigator.connection.effectiveType.toUpperCase(); 
-                netType = `Sath hi, aapka <b>${type}</b> internet kaafi behtareen chal raha hai. `;
-            }
-
-            let ramStr = navigator.deviceMemory ? navigator.deviceMemory + "GB+ RAM" : "achi memory";
-            let coreStr = navigator.hardwareConcurrency ? navigator.hardwareConcurrency + "-core processor" : "achi speed";
-
-            // Process Battery
-            let batteryText = "";
-            if (preloadedBattery) {
-                const lvl = Math.round(preloadedBattery.level * 100);
-                if (preloadedBattery.charging) {
-                    batteryText = `Waise aapka phone charge me laga hai (abhi <b>${lvl}%</b> hai) ⚡, aaram se istemaal kijiye.`;
-                } else if (lvl < 50) {
-                    batteryText = `Ek choti si jankari: aapke phone ki battery abhi <b>${lvl}%</b> bachi hai. Agar charger paas ho toh laga lijiye, taaki aapka koi zaruri kaam na ruke. 😅`;
-                } else {
-                    batteryText = `Aapke phone me abhi <b>${lvl}%</b> battery hai, jo ki kaafi acchi tarah chal jayegi.`;
-                }
-            }
-
-            // IP Data 
-            let locText = "";
-            if(preloadedIpData && preloadedIpData.success) {
-                const ispName = preloadedIpData.connection.isp || preloadedIpData.connection.org || 'achi telecom company';
-                locText = `Aap is waqt <b>${preloadedIpData.city}, ${preloadedIpData.region} (${preloadedIpData.country})</b> ke aas-paas se mujhse jude hue hain. Aap <b>${ispName}</b> ka internet upyog kar rahe hain (IP: ${preloadedIpData.ip}).`;
-            }
-
-            // Time logic
-            const dateObj = new Date();
-            const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-            const todayDay = days[dateObj.getDay()];
-            const timeStr = dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-
-            // Balanced, Friendly & Respectful Tone incorporating Memory Tracker
-            const rawMessageHTML = `
-                <p class="text-lg text-accent font-bold mb-2">Welcome! 🎉</p>
-                <p>Namaste! Meri is website par aane ke liye aapka tahe dil se swagat hai. 🙏</p><br>
-                ${welcomeHTML}
-                <p>Aaj <b>${todayDay}</b> ka din hai aur abhi <b>${timeStr}</b> ho rahe hain. Maine thoda gaur kiya toh paya ki aap apne <b>${brand}</b> (jiski screen abhi ${orientation} mode me hai) par meri site dekh rahe hain, aur aapne aankhon ki suvidha ke liye <b>${modeText}</b> bhi on kiya hua hai.</p><br>
-                <p>Aapke device mein lagbhag <b>${ramStr}</b> aur <b>${coreStr}</b> hone ki wajah se ye kaafi smooth chal raha hai. ${batteryText}</p><br>
-                <p>${locText} ${netType}</p><br>
-                <p><b>Ek choti si baat:</b> Aap nishchint rahein, aapka device aur data puri tarah se surakshit hai. Ye saari aam jankariyan ek chote se code ke zariye sirf aapko ek anokha aur majedar anubhav dene ke liye prastut ki gayi hain.</p><br>
-                <p>Umeed karta hu ki aapko ye chota sa 'Surprise' accha laga hoga. Aise hi hamesha muskurate rahiye aur apna khayal rakhiye. Aapka din shubh ho! ✨</p>
-            `;
-
-            // Ultra-Fast Live Typewriter Effect
-            let currentHTML = "";
-            let i = 0;
-            
-            function typeOutNext() {
-                if (i < rawMessageHTML.length) {
-                    if (rawMessageHTML[i] === '<') {
-                        let endIdx = rawMessageHTML.indexOf('>', i);
-                        if (endIdx !== -1) {
-                            currentHTML += rawMessageHTML.substring(i, endIdx + 1);
-                            i = endIdx + 1;
-                        } else {
-                            currentHTML += rawMessageHTML[i];
-                            i++;
-                        }
-                    } else {
-                        currentHTML += rawMessageHTML[i];
-                        i++;
-                    }
-                    
-                    msgBox.innerHTML = currentHTML + '<span class="typing-cursor"></span>';
-                    const speed = Math.random() * 13 + 2; 
-                    setTimeout(typeOutNext, speed);
-                } else {
-                    msgBox.innerHTML = currentHTML; 
-                    triggerFireworks();
-                }
-            }
-            typeOutNext();
-
-            function triggerFireworks() {
-                for(let i=0; i<10; i++) {
-                    setTimeout(() => {
-                        const fw = document.createElement('div');
-                        fw.className = 'firework';
-                        fw.style.left = (Math.random() * 100) + 'vw';
-                        fw.style.top = (Math.random() * 100) + 'vh';
-                        document.body.appendChild(fw);
-                        setTimeout(() => fw.remove(), 1200);
-                    }, i * 150);
-                }
-            }
-        }
-    </script>
+// Extra animations
+(function(){
+  // cursor glow (mouse only)
+  if(matchMedia('(pointer:fine)').matches){
+    const g=$('cursorGlow');let raf;
+    addEventListener('pointermove',e=>{g.style.opacity=1;cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>g.style.transform=`translate(${e.clientX}px,${e.clientY}px)`)});
+  }
+  // 3D tilt on link cards (mouse only)
+  document.querySelectorAll('.link-card').forEach(c=>{
+    c.addEventListener('pointermove',e=>{if(e.pointerType!=='mouse')return;const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform=`perspective(600px) rotateX(${-y*10}deg) rotateY(${x*10}deg) translateY(-4px) scale(1.02)`});
+    c.addEventListener('pointerleave',()=>c.style.transform='');
+  });
+  // staggered entrance
+  document.querySelectorAll('main > :not(#linksGrid), #linksGrid > *').forEach((el,i)=>{el.classList.add('rise');el.style.setProperty('--rd',i*.07+'s')});
+  // rotating role line
+  const roles=['Web Developer','Content Creator','Student','Founder of PDFly Tools','Founder of Educate Path'],el=$('roleTyper');
+  let r=0,c=0,del=false;
+  (function tick(){
+    const t=roles[r];el.innerHTML=t.slice(0,c)+'<span class="typing-cursor"></span>';
+    if(!del&&c===t.length){del=true;return setTimeout(tick,1600)}
+    if(del&&c===0){del=false;r=(r+1)%roles.length}
+    c+=del?-1:1;setTimeout(tick,del?35:70);
+  })();
+})();
+</script>
 </body>
 </html>
