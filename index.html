@@ -44,9 +44,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 @keyframes explode{0%{transform:scale(1);opacity:1;box-shadow:0 0 0 0 var(--accent)}100%{transform:scale(1.5);opacity:0;box-shadow:-35px -35px 0 0 var(--accent),35px -35px 0 0 #fff,-35px 35px 0 0 var(--accent),35px 35px 0 0 #fff,0 -50px 0 0 var(--accent),0 50px 0 0 #fff,-50px 0 0 0 var(--accent),50px 0 0 0 #fff}}
 .floating-orb{position:fixed;border-radius:50%;filter:blur(70px);z-index:-2;opacity:.42;animation:floatOrb 10s infinite alternate}
 @keyframes floatOrb{to{transform:translate(50px,80px) scale(1.15)}}
-.meteor{position:absolute;top:-200px;width:3px;height:var(--tail-length,100px);background:linear-gradient(to bottom,transparent,rgba(255,255,255,.85));transform:rotate(45deg);opacity:0;animation:meteorFall var(--duration,7s) linear infinite;animation-delay:var(--delay,0s);border-radius:999px;z-index:-1}
-.meteor::after{content:'';position:absolute;bottom:0;left:-1px;width:5px;height:5px;border-radius:50%;background:#fff;box-shadow:0 0 18px 5px var(--accent)}
-@keyframes meteorFall{0%{transform:translate(0,0) rotate(45deg);opacity:0}10%,70%{opacity:var(--max-opacity,.5)}100%{transform:translate(-1500px,1500px) rotate(45deg);opacity:0}}
 .typing-cursor{display:inline-block;width:2px;height:1.2em;background:var(--accent);vertical-align:text-bottom;animation:blink 1s step-end infinite;margin-left:2px}
 @keyframes blink{50%{opacity:0}}
 .header-circle-btn{width:36px;height:36px;border-radius:50%;background:rgb(var(--ac)/.14);display:flex;align-items:center;justify-content:center;transition:all .3s ease}
@@ -54,9 +51,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:10px}
 .swipe{touch-action:pan-y;user-select:none;-webkit-user-select:none}
 .pdot{display:block;width:6px;height:6px;border-radius:3px;background:var(--border-color);transition:all .4s cubic-bezier(.3,1.4,.5,1)}.pdot.active{width:22px;background:var(--accent);box-shadow:0 0 10px rgb(var(--ac)/.6)}
-#pvImg{transition:opacity .28s ease,transform .35s ease}
-#pvDots button{display:flex;align-items:center;justify-content:center;min-width:18px;min-height:24px}
-@media(prefers-reduced-motion:reduce){.orbit,.aura,.ripple,.meteor,.pdot{animation:none!important;transition:none!important}}
 #cursorGlow{position:fixed;left:0;top:0;width:420px;height:420px;margin:-210px 0 0 -210px;border-radius:50%;pointer-events:none;z-index:-1;background:radial-gradient(circle,rgb(var(--ac)/.16),transparent 60%);opacity:0;transition:opacity .4s}
 .rise{animation:rise .7s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:var(--rd,0s)}
 @keyframes rise{from{opacity:0;transform:translateY(18px)}}
@@ -68,6 +62,19 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 @keyframes sweep{60%,100%{left:130%}}
 .confetti{position:fixed;top:-14px;width:8px;height:14px;z-index:9999;pointer-events:none;animation:fall var(--t,3s) linear forwards}
 @keyframes fall{to{transform:translate(var(--x,0),105vh) rotate(720deg)}}
+.meteor{position:absolute;width:var(--w,2px);height:var(--tail-length,100px);background:linear-gradient(to bottom,transparent,rgba(255,255,255,.9));border-radius:999px;opacity:0;transform:rotate(var(--rot,45deg));animation:meteorFall var(--duration,18s) cubic-bezier(.22,.6,.35,1) infinite}
+.meteor::after{content:'';position:absolute;bottom:0;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:#fff;box-shadow:0 0 10px 3px var(--accent)}
+@keyframes meteorFall{0%{transform:translate(0,0) rotate(var(--rot,45deg));opacity:0}2%,16%{opacity:var(--max-opacity,.8)}22%,100%{transform:translate(var(--dx,-700px),var(--dy,700px)) rotate(var(--rot,45deg));opacity:0}}
+.star{position:absolute;border-radius:50%;background:#fff;opacity:.15;animation:twinkle var(--d,3s) ease-in-out infinite;animation-delay:var(--l,0s)}
+@keyframes twinkle{0%,100%{opacity:.12;transform:scale(.7)}50%{opacity:.85;transform:scale(1.25)}}
+#pvImg{transition:opacity .28s ease,transform .35s ease}
+#pvDots button{display:flex;align-items:center;justify-content:center;min-width:18px;min-height:24px}
+#surpriseMessage{background:rgb(var(--ac)/.07);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--text-main)}
+.sx{padding:12px 14px;margin-bottom:10px;border-radius:16px;background:rgb(255 255 255/.05);border:1px solid rgb(255 255 255/.09);border-left:3px solid var(--accent);animation:rise .45s ease backwards}
+.sx-h{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.sx b{color:var(--text-main);font-weight:700}
+.tdots{display:inline-flex;gap:3px}.tdots span{width:4px;height:4px;border-radius:50%;background:var(--accent);animation:tdot 1s infinite ease-in-out}.tdots span:nth-child(2){animation-delay:.15s}.tdots span:nth-child(3){animation-delay:.3s}
+@keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-3px);opacity:1}}
 </style>
 </head>
 <body class="antialiased min-h-screen relative flex flex-col items-center justify-center p-4">
@@ -85,8 +92,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
   <div class="glass-card px-4 py-2 rounded-full text-sm font-semibold flex items-center"><span id="greetingText">Good Evening</span>&nbsp;✨</div>
   <div class="glass-card p-1.5 rounded-full flex items-center gap-2">
     <button onclick="cycleTheme()" class="header-circle-btn" title="Change theme" aria-label="Change theme"><i class="fa-solid fa-palette text-accent"></i></button>
-    <button onclick="shareSite()" class="header-circle-btn" title="Share" aria-label="Share"><i class="fa-solid fa-share-nodes text-accent"></i></button>
     <button id="musicBtn" onclick="toggleMusic()" class="header-circle-btn" style="display:none" title="Play/Pause music" aria-label="Play or pause music"><i class="fa-solid fa-music text-accent" id="musicIcon"></i></button>
+    <button onclick="shareSite()" class="header-circle-btn" title="Share" aria-label="Share"><i class="fa-solid fa-share-nodes text-accent"></i></button>
   </div>
 </div>
 
@@ -96,7 +103,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
   <div class="text-center mb-8 flex flex-col items-center">
     <div class="profile-container mb-4">
       <div class="aura"></div><div class="orbit"></div><div class="ripple"></div>
-      <img id="avatar" src="image-1.png" alt="GT Rao" draggable="false" tabindex="0" role="button" class="profile-pic swipe cursor-pointer hover:scale-105 transition-transform duration-300" onerror="this.onerror=null;this.src=AV">
+      <img id="avatar" src="dev-profile.png" alt="GT Rao" draggable="false" tabindex="0" role="button" class="profile-pic swipe cursor-pointer hover:scale-105 transition-transform duration-300" onerror="this.onerror=null;this.src=AV">
     </div>
     <div class="flex items-center justify-center gap-2 mb-2">
       <h1 class="text-3xl font-bold">GT Rao</h1>
@@ -104,8 +111,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
     </div>
     <div class="h-6 text-sm font-semibold text-accent" id="roleTyper"></div>
     <div class="text-[var(--text-muted)] font-medium leading-relaxed max-w-sm mx-auto text-sm mt-1">
-      <span class="block mb-1">Dedicated Student 📚 | Pursuing my studies</span>
-      <span class="block mb-1">Passionate Web Developer &amp; Content Creator 💻</span>
+      <span class="block mb-1">Student 📚 · Learning something new every day</span>
+      <span class="block mb-1">Web developer &amp; content creator 💻 · Building things that help others learn</span>
       <span class="block text-accent font-semibold mt-1">Founder of PDFly Tools &amp; Educate Path 🚀</span>
     </div>
   </div>
@@ -118,7 +125,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
     <h3 class="text-xl font-bold mb-3 flex items-center justify-center gap-2"><i class="fa-solid fa-gift text-accent"></i> Surprise for You</h3>
     <p class="text-[var(--text-muted)] text-sm mb-5 text-center">Something special surprise for you. Bas ek tap karke dekhiye ki is digital box mein aapke liye kya hai! ✨</p>
     <button id="surpriseBtn" onclick="showSurprise()" class="shine-btn w-full bg-accent hover:bg-accent/80 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 flex justify-center items-center gap-2 shadow-[0_0_15px_var(--accent)]"><i class="fa-solid fa-wand-magic-sparkles"></i> Magic Dekho</button>
-    <div id="surpriseMessage" class="hidden mt-2 p-5 bg-black/25 backdrop-blur-md rounded-2xl border border-white/10 text-sm leading-relaxed text-left text-gray-200 min-h-[150px]"></div>
+    <div id="surpriseMessage" class="hidden mt-2 p-4 rounded-2xl border border-white/10 text-sm leading-relaxed text-left min-h-[150px]"></div>
   </div>
 
   <!-- Quotes -->
@@ -246,41 +253,76 @@ async function shareSite(){
   try{if(navigator.share)await navigator.share(d);else{await navigator.clipboard.writeText(d.url);toast('Link copy ho gaya ✅')}}catch(e){}
 }
 
-// Meteors
+// Meteors + twinkling stars (hidden until the first click/touch)
 const meteors=$('meteorContainer');
-for(let i=0;i<18;i++){
-  const m=document.createElement('div');m.className='meteor';
-  m.style.left=`${Math.random()*200}vw`;
-  m.style.setProperty('--duration',`${Math.random()*7+9}s`);
-  m.style.setProperty('--delay',`${Math.random()*6}s`);
-  m.style.setProperty('--max-opacity',`${Math.random()*.25+.25}`);
-  m.style.setProperty('--tail-length',`${Math.random()*140+60}px`);
-  meteors.appendChild(m);
-}
+(function(){
+  for(let i=0;i<80;i++){
+    const s=document.createElement('span'),z=Math.random()*1.8+.8;
+    s.className='star';
+    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${z}px;height:${z}px;--d:${2.5+Math.random()*4}s;--l:${Math.random()*5}s`;
+    meteors.appendChild(s);
+  }
+  // every shooting star re-randomises its path each time it comes round again
+  const seed=m=>{
+    const a=(30+Math.random()*25)*Math.PI/180,L=800+Math.random()*700,S=m.style;
+    S.left=(Math.random()*100+30)+'vw';S.top=(Math.random()*55-10)+'vh';
+    S.setProperty('--rot',(a*180/Math.PI).toFixed(1)+'deg');
+    S.setProperty('--dx',(-Math.sin(a)*L).toFixed(0)+'px');
+    S.setProperty('--dy',(Math.cos(a)*L).toFixed(0)+'px');
+    S.setProperty('--tail-length',(70+Math.random()*130).toFixed(0)+'px');
+    S.setProperty('--w',(1+Math.random()*1.5).toFixed(1)+'px');
+    S.setProperty('--max-opacity',(.45+Math.random()*.5).toFixed(2));
+  };
+  for(let i=0;i<40;i++){
+    const m=document.createElement('div'),cyc=14+Math.random()*16;
+    m.className='meteor';seed(m);
+    m.style.setProperty('--duration',cyc.toFixed(1)+'s');
+    m.style.animationDelay=(-Math.random()*cyc).toFixed(1)+'s';
+    m.addEventListener('animationiteration',()=>seed(m));
+    meteors.appendChild(m);
+  }
+})();
 
-// Gallery + music: slide the profile picture to change image and song.
-// Put these files next to index.html (or edit names/titles in this list).
+// Gallery + music.
+// On GitHub right now: dev-profile.png (image) and music.MP4 (song) = slide 1.
+// Add more later as image-2.png / song-2.mp3 ... image-5.png / song-5.mp3
+// (a missing image or song simply reuses slide 1 until you upload it).
+const FIRST_IMG=['dev-profile.png','dev-Profile.png'],FIRST_SONG=['music.MP4','music.mp4'];
 const GALLERY=[
- {img:'image-1.png',song:'song-1.mp3',title:'Song 1'},
- {img:'image-2.png',song:'song-2.mp3',title:'Song 2'},
- {img:'image-3.png',song:'song-3.mp3',title:'Song 3'},
- {img:'image-4.png',song:'song-4.mp3',title:'Song 4'},
- {img:'image-5.png',song:'song-5.mp3',title:'Song 5'}
+ {},
+ {img:'image-2.png',song:'song-2.mp3'},
+ {img:'image-3.png',song:'song-3.mp3'},
+ {img:'image-4.png',song:'song-4.mp3'},
+ {img:'image-5.png',song:'song-5.mp3'}
 ];
-let slides=[{img:AV,song:'',title:''}],cur=0;
+let slides=[{img:AV,song:''}],cur=0,userPaused=false,shown=false,justSwiped=false;
 const bgMusic=$('bgMusic'),musicBtn=$('musicBtn'),avatar=$('avatar'),pvImg=$('pvImg');
-function setMusic(on){musicBtn.innerHTML=`<i class="fa-solid fa-${on?'pause':'play'} text-accent"></i>`;document.body.classList.toggle('music-on',on)}
+const imgOk=u=>new Promise(r=>{const i=new Image();i.onload=()=>r(true);i.onerror=()=>r(false);i.src=u});
+const songOk=u=>fetch(u,{method:'HEAD'}).then(r=>r.ok).catch(()=>true);
+const firstOk=async(list,test)=>{for(const u of list)if(await test(u))return u;return ''};
+
+function setMusic(on){
+  musicBtn.innerHTML=`<i class="fa-solid fa-${on?'pause':'play'} text-accent"></i>`;
+  musicBtn.title=on?'Pause music':'Play music';
+  document.body.classList.toggle('music-on',on);
+}
 function playSong(){
   const s=slides[cur];if(!s.song)return Promise.resolve();
   if(!bgMusic.src.endsWith(s.song))bgMusic.src=s.song;
-  return bgMusic.play().then(()=>{musicBtn.style.display='flex';setMusic(true)}).catch(()=>setMusic(false));
+  return bgMusic.play().then(()=>{
+    if(musicBtn.style.display!=='flex'){musicBtn.style.display='flex';musicBtn.classList.add('pop')}
+    setMusic(true);
+  }).catch(()=>setMusic(false));
 }
-let userPaused=false;
 function toggleMusic(){if(bgMusic.paused){userPaused=false;playSong()}else{userPaused=true;bgMusic.pause();setMusic(false)}}
-// Shooting stars + song start only after the first touch/click anywhere
-let shown=false;
-function startShow(){if(!shown){shown=true;meteors.classList.remove('opacity-0')}if(bgMusic.paused&&!userPaused)playSong()}
+
+// Shooting stars + song start on the first click/touch anywhere (retries if the browser blocked it)
+function startShow(){
+  if(!shown){shown=true;meteors.classList.remove('opacity-0')}
+  if(bgMusic.paused&&!userPaused)playSong();
+}
 ['click','touchend','keydown'].forEach(ev=>addEventListener(ev,startShow,{passive:true}));
+
 function buildDots(){$('pvDots').innerHTML=slides.length>1?slides.map((_,i)=>`<button class="p-1.5" onclick="goTo(${i})" aria-label="Image ${i+1}"><span class="pdot"></span></button>`).join(''):''}
 function show(d){
   const s=slides[cur];
@@ -296,17 +338,20 @@ function swipe(el){
   el.addEventListener('pointerdown',e=>{x=e.clientX;y=e.clientY});
   el.addEventListener('pointerup',e=>{
     if(x===null)return;const dx=e.clientX-x,dy=e.clientY-y;x=null;
-    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy))go(dx<0?1:-1);
-
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){justSwiped=true;setTimeout(()=>justSwiped=false,350);go(dx<0?1:-1)}
   });
   el.addEventListener('pointercancel',()=>x=null);
 }
 swipe(avatar);swipe($('pvStage'));
-avatar.addEventListener('click',openProfilePreview);
-
+avatar.addEventListener('click',()=>{if(!justSwiped)openProfilePreview()});
 avatar.addEventListener('keydown',e=>{if(e.key==='Enter')openProfilePreview()});
 document.addEventListener('keydown',e=>{if(!$('profilePreviewModal').classList.contains('hidden')){if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1)}});
-Promise.all(GALLERY.map(g=>new Promise(r=>{const i=new Image();i.onload=()=>r(g);i.onerror=()=>r(0);i.src=g.img}))).then(a=>{const ok=a.filter(Boolean);if(ok.length)slides=ok;buildDots();show(0)});
+(async()=>{
+  const mi=(await firstOk(FIRST_IMG,imgOk))||AV,ms=await firstOk(FIRST_SONG,songOk);
+  slides=await Promise.all(GALLERY.map(async(g,i)=>i===0?{img:mi,song:ms}:{img:(await imgOk(g.img))?g.img:mi,song:(await songOk(g.song))?g.song:ms}));
+  buildDots();show(0);
+  if(shown&&bgMusic.paused&&!userPaused)playSong();
+})();
 
 // Quotes
 const quotes=["Education is the most powerful weapon.","Push yourself, because no one else is going to do it for you.","Sometimes later becomes never. Do it now.","Great things never come from comfort zones.","Dream it. Wish it. Do it.","Success doesn't just find you. You have to go out and get it.","The harder you work for something, the greater you'll feel when you achieve it.","Dream bigger. Do bigger.","Don't stop when you're tired. Stop when you're done.","Wake up with determination. Go to bed with satisfaction.","Do something today that your future self will thank you for.","Little things make big days.","It's going to be hard, but hard does not mean impossible.","Don't wait for opportunity. Create it.","A goal without a plan is just a wish."].sort(()=>Math.random()-.5);
@@ -319,7 +364,7 @@ setInterval(()=>{
   dots.forEach((d,i)=>d.classList.toggle('active',i===slide%3));
 },4000);
 
-// Info collection (starts after page load; used by the surprise)
+// ---------- Data for the surprise (collected quietly in the background after load) ----------
 const sleep=ms=>new Promise(r=>setTimeout(r,ms)),info={};
 async function measureSpeed(){
   try{
@@ -339,102 +384,211 @@ function gpuName(){
   try{
     const g=document.createElement('canvas').getContext('webgl'),e=g.getExtension('WEBGL_debug_renderer_info');
     if(!e)return '';
-    const p=g.getParameter(e.UNMASKED_RENDERER_WEBGL).replace(/^ANGLE \(|\)$/g,'').split(',').map(x=>x.trim());
+    const p=String(g.getParameter(e.UNMASKED_RENDERER_WEBGL)).replace(/^ANGLE \(|\)$/g,'').split(',').map(x=>x.trim());
     return (p[1]||p[0]).replace(/\s*(Direct3D|vs_|OpenGL).*$/,'');
   }catch(e){return ''}
 }
+async function getIP(){
+  try{
+    const j=await(await fetch('https://ipwho.is/')).json();
+    if(j.success)return{ip:j.ip,type:j.type,city:j.city,region:j.region,country:j.country,flag:j.flag&&j.flag.emoji,postal:j.postal,lat:j.latitude,lon:j.longitude,isp:j.connection&&(j.connection.isp||j.connection.org),asn:j.connection&&j.connection.asn};
+  }catch(e){}
+  try{
+    const j=await(await fetch('https://ipapi.co/json/')).json();
+    if(j.ip&&!j.error)return{ip:j.ip,type:j.version,city:j.city,region:j.region,country:j.country_name,postal:j.postal,lat:j.latitude,lon:j.longitude,isp:j.org,asn:String(j.asn||'').replace('AS','')};
+  }catch(e){}
+  return null;
+}
+async function getWeather(la,lo){
+  try{return(await(await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${la}&longitude=${lo}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m,is_day&timezone=auto`)).json()).current}catch(e){return null}
+}
 async function collect(){
-  const tasks=[];
-  tasks.push(measureSpeed().then(v=>{if(Number.isFinite(v))info.mbps=v;}).catch(()=>{}));
-  tasks.push(measureHz().then(v=>{if(Number.isFinite(v))info.hz=v;}).catch(()=>{}));
-  tasks.push((async()=>{try{if(navigator.getBattery)info.bat=await navigator.getBattery()}catch(e){}})());
-  tasks.push((async()=>{try{if(navigator.userAgentData)info.uad=await navigator.userAgentData.getHighEntropyValues(['model','platformVersion'])}catch(e){}})());
-  await Promise.allSettled(tasks);
+  const t=[];
+  t.push(measureSpeed().then(v=>{if(Number.isFinite(v))info.mbps=v}));
+  t.push(measureHz().then(v=>{info.hz=v}));
+  t.push((async()=>{try{if(navigator.getBattery)info.bat=await navigator.getBattery()}catch(e){}})());
+  t.push((async()=>{try{if(navigator.userAgentData)info.uad=await navigator.userAgentData.getHighEntropyValues(['model','platformVersion','architecture','bitness'])}catch(e){}})());
+  t.push((async()=>{info.ip=await getIP();if(info.ip)info.w=await getWeather(info.ip.lat,info.ip.lon)})());
+  await Promise.allSettled(t);
   info.done=true;
 }
-let ready=Promise.resolve();
-addEventListener('load',()=>{ready=collect().then(()=>info.done=true)});
+let ready=null;
+const ensure=()=>ready||(ready=collect());
+addEventListener('load',ensure);
 
+// ---------- Device helpers ----------
+const BRANDS=[[/SM-|GT-[IPNS]\d|Galaxy/i,'Samsung'],[/CPH\d|OPPO|PEEM|PFUM|PGJM|PHM|PJ[A-Z]\d/i,'Oppo'],[/RMX\d|realme/i,'Realme'],[/vivo|\bV\d{4}|PD\d{4}/i,'vivo'],[/Redmi|POCO|Xiaomi|\bMI \b|M\d{4}[A-Z]\d|\b\d{7}[A-Z]{1,2}\b/i,'Xiaomi / Redmi / Poco'],[/Pixel/i,'Google Pixel'],[/OnePlus|\b(LE|IN|KB|NE|HD|GM|BE|DN|EB)\d{4}\b/i,'OnePlus'],[/moto|XT\d{4}/i,'Motorola'],[/Infinix/i,'Infinix'],[/TECNO/i,'Tecno'],[/itel/i,'itel'],[/HONOR/i,'Honor'],[/HUAWEI|\bHW-|ANE-|ELE-/i,'Huawei'],[/Nokia/i,'Nokia'],[/Sony|XQ-/i,'Sony'],[/ASUS/i,'Asus'],[/Lava/i,'Lava'],[/Nothing/i,'Nothing']];
+const IPH={'320x568@2':'iPhone 5s / SE (1st gen)','375x667@2':'iPhone 6 / 7 / 8 / SE (2nd-3rd gen)','414x736@3':'iPhone 6 / 7 / 8 Plus','375x812@3':'iPhone X / XS / 11 Pro / 12 mini / 13 mini','414x896@2':'iPhone XR / 11','414x896@3':'iPhone XS Max / 11 Pro Max','390x844@3':'iPhone 12 / 13 / 14','428x926@3':'iPhone 12 / 13 Pro Max / 14 Plus','393x852@3':'iPhone 14 Pro / 15 / 15 Pro / 16','430x932@3':'iPhone 14 Pro Max / 15 Plus / 15 Pro Max / 16 Plus','402x874@3':'iPhone 16 Pro','440x956@3':'iPhone 16 Pro Max'};
+function dev(){
+  const u=navigator.userAgent,uad=info.uad||{},m=r=>(u.match(r)||[])[1];
+  let model=uad.model||m(/Android [\d.]+; ([^;)]+)/)||'';
+  model=model.replace(/\s*Build.*/,'');if(model==='K')model='';
+  const a=Math.min(screen.width,screen.height),b=Math.max(screen.width,screen.height);
+  let os='',kind='device',name='';
+  if(/Android/.test(u)){
+    os='Android '+(uad.platformVersion||m(/Android ([\d.]+)/)||'').split('.')[0];kind='smartphone';
+    const br=(BRANDS.find(([r])=>r.test(model))||BRANDS.find(([r])=>r.test(u))||[0,''])[1];
+    name=br?`<b>${br}</b>${model?` (model code <b>${model}</b>)`:''}`:model?`<b>${model}</b>`:'<b>Android phone</b>';
+  }else if(/iPhone|iPad/.test(u)){
+    const pad=/iPad/.test(u),g=IPH[`${a}x${b}@${devicePixelRatio}`];
+    os=(pad?'iPadOS ':'iOS ')+(m(/OS (\d+[_.]\d+)/)||'').replace('_','.');kind=pad?'tablet':'smartphone';
+    name=pad?'<b>iPad</b> (Apple)':`<b>iPhone</b> (Apple)${g?`, screen ke hisaab se lagbhag <b>${g}</b>`:''}`;
+  }else if(/Windows/.test(u)){os=parseInt(uad.platformVersion)>=13?'Windows 11':'Windows 10/11';kind='computer';name='<b>Windows PC / Laptop</b>'}
+  else if(/Mac OS X/.test(u)){os='macOS';kind='computer';name='<b>Mac</b> (Apple)'}
+  else if(/CrOS/.test(u)){os='ChromeOS';kind='computer';name='<b>Chromebook</b>'}
+  else if(/Linux/.test(u)){os='Linux';kind='computer';name='<b>Linux computer</b>'}
+  const BR=[[/EdgA?\/(\d+)/,'Edge'],[/OPR\/(\d+)/,'Opera'],[/SamsungBrowser\/(\d+)/,'Samsung Internet'],[/(?:Firefox|FxiOS)\/(\d+)/,'Firefox'],[/(?:Chrome|CriOS)\/(\d+)/,'Chrome'],[/Version\/(\d+).*Safari/,'Safari']];
+  const bm=BR.find(([r])=>r.test(u));let br=bm?`${bm[1]} ${u.match(bm[0])[1]}`:'koi browser';
+  if(navigator.brave)br='Brave';
+  const app=m(/(Instagram|FBAN|FBAV|Snapchat|Telegram|LinkedInApp)/);
+  return{kind,name,os,br,app:app&&({FBAN:'Facebook',FBAV:'Facebook',LinkedInApp:'LinkedIn'}[app]||app)};
+}
+
+// ---------- Text helpers ----------
 const wt=c=>c===0?'aasman bilkul saaf hai':c<3?'halke badal chhaye hain':c===3?'badal chhaye hue hain':c<50?'kohra hai':c<60?'halki phuhaar ho rahi hai':c<70?'baarish ho rahi hai':c<80?'barfbari ho rahi hai':c<83?'baarish ki bauchhar aa rahi hai':c<87?'barfbari ho rahi hai':'aandhi-toofan chal raha hai';
-const P=(...a)=>{const t=a.filter(Boolean).join(' ');return t?`<p class="mb-3">${t}</p>`:''};
+const wx=(w,who)=>w?`${who} abhi <b>${Math.round(w.temperature_2m)}°C</b> hai (mehsoos <b>${Math.round(w.apparent_temperature)}°C</b> jaisa), ${wt(w.weather_code)}, humidity <b>${w.relative_humidity_2m}%</b> aur hawa <b>${Math.round(w.wind_speed_10m)} km/h</b> ki chal rahi hai${w.precipitation>0?` (pichle ghante me ${w.precipitation} mm baarish)`:''}. ${w.weather_code>=51&&w.weather_code<87?'Chhatri saath rakhiye ☔':w.temperature_2m>=35?'Garmi kaafi hai, paani peete rahiye 💧':w.temperature_2m<=12?'Thand hai, garam kapde pehen lijiye 🧣':w.is_day?'Mausam kaafi suhana hai 🌤️':'Raat suhani hai 🌙'}`:'';
+const J=(...a)=>a.filter(Boolean).join(' ');
+const mins=s=>s&&isFinite(s)?(s>=3600?`${Math.floor(s/3600)} ghante ${Math.round(s%3600/60)} minute`:`${Math.round(s/60)} minute`):'';
 
-// Surprise: written like a real person talking
+// Types html into el like a person typing (tap the message box to skip ahead)
+function typeInto(el,html,isSkip){
+  return new Promise(res=>{
+    let i=0,out='';
+    (function tick(){
+      if(isSkip()){el.innerHTML=html;return res()}
+      for(let k=0;k<10&&i<html.length;k++){
+        if(html[i]==='<'){const e=html.indexOf('>',i),j=e<0?i+1:e+1;out+=html.slice(i,j);i=j}
+        else out+=html[i++];
+      }
+      el.innerHTML=out+(i<html.length?'<span class="typing-cursor"></span>':'');
+      const c=el.querySelector('.typing-cursor');if(c)c.scrollIntoView({block:'nearest'});
+      if(i<html.length)setTimeout(tick,16);else res();
+    })();
+  });
+}
+
+// Optional: exact address + weather, only after the visitor allows location access
+function exactLocation(btn){
+  if(!navigator.geolocation){toast('Aapka browser location support nahi karta');return}
+  btn.disabled=true;btn.textContent='Location pata kar raha hu…';
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    const la=pos.coords.latitude,lo=pos.coords.longitude;
+    let addr='';
+    try{
+      const j=await(await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${la}&longitude=${lo}&localityLanguage=en`)).json();
+      addr=[j.locality,j.city,j.principalSubdivision,j.postcode,j.countryName].filter((v,i,a)=>v&&a.indexOf(v)===i).join(', ');
+    }catch(e){}
+    const w=await getWeather(la,lo),sec=document.createElement('div');
+    sec.className='sx';
+    sec.innerHTML=`<div class="sx-h"><span>🎯</span><span>Exact Location</span></div><div>Aapki permission ke baad: aap lagbhag <b>${addr||'is jagah'}</b> ke paas hain (coordinates ${la.toFixed(4)}, ${lo.toFixed(4)}, accuracy ~${Math.round(pos.coords.accuracy)} m). ${wx(w,'Wahan')}</div>`;
+    btn.closest('.sx').insertAdjacentElement('afterend',sec);btn.remove();
+  },()=>{btn.disabled=false;btn.textContent='📍 Permission nahi mili — dobara try karein'},{enableHighAccuracy:true,timeout:12000});
+}
+
+// ---------- Surprise: a respectful, conversational chat, section by section ----------
 async function showSurprise(){
   const btn=$('surpriseBtn'),box=$('surpriseMessage');
-  if(btn.disabled)return;
-  btn.disabled=true;
-  btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Bas ek pal…';
-  box.classList.remove('hidden');
-  box.setAttribute('aria-live','polite');
-  box.innerHTML='<p class="text-accent font-semibold">Aapke liye ek chhota sa surprise… ✨</p><p class="text-[var(--text-muted)]">Bas ek pal, kuch interesting baatein batata hoon.</p>';
+  btn.style.display='none';box.classList.remove('hidden');box.setAttribute('aria-live','polite');
+  box.innerHTML=`<div class="flex items-center gap-3 mb-3"><img src="${avatar.src}" alt="" class="w-10 h-10 rounded-full object-cover" onerror="this.onerror=null;this.src=AV"><div><div class="font-bold text-sm flex items-center gap-1.5">GT Rao <i class="fa-solid fa-circle-check text-[#0095F6] text-xs"></i></div><div id="chatStatus" class="text-xs text-[var(--text-muted)] flex items-center gap-1.5">typing <span class="tdots"><span></span><span></span><span></span></span></div></div></div><div id="chatBody"></div>`;
+  ensure();
+  const body=$('chatBody'),status=$('chatStatus'),now=new Date();
+  let skip=false;box.onclick=()=>skip=true;
+  const need=()=>info.done?0:Promise.race([ensure(),sleep(2500)]);
+
+  // visits (stored only in this browser)
+  let n=1,first=null,last=null;
   try{
-    if(!info.done) await Promise.race([ready,sleep(1800)]);
-    const now=new Date(),u=navigator.userAgent||'',uad=info.uad||{};
-    const hour=now.getHours();
-    const greeting=hour<5?'Itni raat ko jaag rahe hain? Apna khayal bhi rakhiye 😊':
-      hour<12?'Good morning! Umeed hai aapka din achha ja raha hoga ☀️':
-      hour<17?'Good afternoon! Thoda break lena bhi zaroori hai 😊':
-      hour<21?'Good evening! Din kaisa raha aapka? 🌆':'Raat ka sukoon enjoy kijiye, aur aaram bhi zaroor kijiye 🌙';
-    const date=now.toLocaleDateString('hi-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-    const time=now.toLocaleTimeString('hi-IN',{hour:'2-digit',minute:'2-digit'});
-    let device='aapka device',os='aapka operating system';
-    if(/Android/i.test(u)){device=uad.model||'Android phone';os='Android';}
-    else if(/iPhone/i.test(u)){device='iPhone';os='iOS';}
-    else if(/iPad/i.test(u)){device='iPad';os='iPadOS';}
-    else if(/Windows/i.test(u)){device='computer ya laptop';os='Windows';}
-    else if(/Mac OS/i.test(u)){device='Mac';os='macOS';}
-    else if(/Linux/i.test(u)){device='computer';os='Linux';}
-    const browser=/EdgA?\/([\d.]+)/.test(u)?'Microsoft Edge':
-      /SamsungBrowser\/([\d.]+)/.test(u)?'Samsung Internet':
-      /OPR\/([\d.]+)/.test(u)?'Opera':
-      /Firefox\/([\d.]+)/.test(u)?'Firefox':
-      /Chrome\/([\d.]+)/.test(u)?'Chrome':
-      /Safari\//.test(u)?'Safari':'aapka browser';
-    const conn=navigator.connection||navigator.mozConnection||navigator.webkitConnection||{};
-    const battery=info.bat;
-    const parts=[];
-    parts.push(`<p class="text-lg text-accent font-bold mb-3">Aapke liye ek chhota sa surprise! 🎁</p>`);
-    parts.push(`<p>Namaste! 🙏 ${greeting} Aapne yahan click kiya, toh socha aapse thodi normal si baat kar loon.</p>`);
-    parts.push(`<p><b>Aaj ka din:</b> ${date}, aur abhi lagbhag <b>${time}</b> baj rahe hain.</p>`);
-    parts.push(`<p><b>Aapka device:</b> Aap is website ko <b>${device}</b> par, <b>${os}</b> ke saath use kar rahe hain. Browser ki baat karun toh <b>${browser}</b> chal raha hai.</p>`);
-    parts.push(`<p><b>Screen:</b> Aapki screen ka size <b>${screen.width} × ${screen.height}</b> pixels hai. ${innerHeight>innerWidth?'Aap phone ko portrait mode mein use kar rahe hain.':'Aap landscape mode mein website dekh rahe hain.'}</p>`);
-    if(info.hz)parts.push(`<p><b>Display:</b> Screen ka refresh rate lagbhag <b>${info.hz} Hz</b> detect hua. Isse scrolling aur animations kitni smooth dikhti hain, us par asar padta hai.</p>`);
-    if(Number.isFinite(info.mbps))parts.push(`<p><b>Internet:</b> Ek chhote test mein speed lagbhag <b>${info.mbps.toFixed(1)} Mbps</b> mili. Ye sirf us waqt ka estimate hai, speed badal sakti hai.</p>`);
-    else if(conn.effectiveType)parts.push(`<p><b>Network:</b> Browser ke hisaab se connection <b>${conn.effectiveType}</b> jaisa report ho raha hai.</p>`);
-    if(battery){
-      const level=Math.round(battery.level*100);
-      parts.push(`<p><b>Battery:</b> Abhi lagbhag <b>${level}%</b> ${battery.charging?'hai aur device charging par hai ⚡':'baaki hai 🔋'}.</p>`);
-    }
-    parts.push(`<p><b>Ek chhoti si baat:</b> Ye details browser aur device se milne wali basic information hain. Har detail har phone ya browser mein available nahi hoti, isliye jo detail nahi mili use main guess nahi karunga.</p>`);
-    parts.push(`<p>Bas itna hi! Website par aane ke liye dil se shukriya. Apne goals par kaam karte rahiye, seekhte rahiye aur khush rahiye. Phir milenge! ❤️</p>`);
-    const html=parts.join('');
-    const tokens=html.match(/<[^>]*>|[^<]+/g)||[];
-    let tokenIndex=0,charIndex=0,done=false,out='';
-    const finish=()=>{if(done)return;done=true;box.innerHTML=html;celebrate();};
-    box.onclick=finish;
-    const type=()=>{
-      if(done)return;
-      let added=0;
-      while(tokenIndex<tokens.length&&added<14){
-        const token=tokens[tokenIndex];
-        if(token.startsWith('<')){out+=token;tokenIndex++;continue;}
-        const take=Math.min(14-added,token.length-charIndex);
-        out+=token.slice(charIndex,charIndex+take);
-        charIndex+=take;added+=take;
-        if(charIndex>=token.length){tokenIndex++;charIndex=0;}
-      }
-      box.innerHTML=out+(tokenIndex<tokens.length?'<span class="typing-cursor"></span>':'');
-      if(tokenIndex<tokens.length)setTimeout(type,24);else finish();
-    };
-    type();
-    btn.innerHTML='<i class="fa-solid fa-check"></i> Surprise unlocked';
-    btn.disabled=false;
-  }catch(err){
-    console.error('Surprise message error:',err);
-    box.innerHTML='<p class="text-accent font-bold mb-2">Aapke liye ek surprise! 🎁</p><p>Namaste! Website par aane ke liye bahut-bahut shukriya. Aapka din achha rahe, apne sapno ke liye mehnat karte rahiye aur muskurate rahiye. ❤️</p>';
-    btn.innerHTML='<i class="fa-solid fa-check"></i> Surprise unlocked';
-    btn.disabled=false;
+    n=(+localStorage.getItem('gtrao_visits')||0)+1;localStorage.setItem('gtrao_visits',n);
+    first=localStorage.getItem('gtrao_first');if(!first){first=now.toISOString();localStorage.setItem('gtrao_first',first)}
+    last=localStorage.getItem('gtrao_last_visit');localStorage.setItem('gtrao_last_visit',now.toISOString());
+  }catch(e){}
+  const D=d=>new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  const same=last&&new Date(last).toDateString()===now.toDateString();
+
+  // time + where from
+  const h=now.getHours();
+  const wish=h<5?'Itni raat ko jaag rahe hain? Apna khayal bhi rakhiye 😊':h<12?'Din ki achhi shuruaat ho, yahi dua hai ☀️':h<17?'Din ke beech thoda sukoon ka waqt nikaal liya, ye achha laga 😊':h<21?'Din bhar ki bhaag-daud ke baad thoda aaram ka waqt hai 🌆':'Raat ka sukoon enjoy kijiye 🌙';
+  const date=now.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const time=now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  const tz=Intl.DateTimeFormat().resolvedOptions().timeZone,off=-now.getTimezoneOffset(),ao=Math.abs(off);
+  const utc=`UTC${off<0?'-':'+'}${Math.floor(ao/60)}${ao%60?':'+String(ao%60).padStart(2,'0'):''}`;
+  let rf='';try{rf=new URL(document.referrer).hostname.replace(/^www\./,'')}catch(e){}
+  const src=/instagram/.test(rf)?'Instagram':/facebook|fb\./.test(rf)?'Facebook':/t\.co|twitter|x\.com/.test(rf)?'X':/t\.me|telegram/.test(rf)?'Telegram':/whatsapp/.test(rf)?'WhatsApp':/google/.test(rf)?'Google':/youtube/.test(rf)?'YouTube':rf;
+
+  const SECTIONS=[
+    ['👋','Swagat',()=>J(
+      !last?'Namaste! 🙏 Main <b>GT Rao</b> hu. Meri website par aane ke liye aapka dil se shukriya.'
+       :same?'Namaste! Aap toh abhi thodi der pehle bhi aaye the — dobara aane ke liye bahut shukriya 😊'
+       :`Namaste! Aap wapas aaye, ye dekhkar bahut achha laga 😊 Pichli baar aap <b>${D(last)}</b> ko aaye the, mujhe yaad hai.`,
+      n>1?`Ye aapki <b>${n}vi</b> visit hai${first?`, aur sabse pehli baar aap <b>${D(first)}</b> ko aaye the`:''}.`:'',
+      'Chaliye, aapse thodi baat karte hain. Aapke phone aur browser se mujhe jo jankari mil rahi hai, wo ek-ek karke aaram se aapko bata deta hu.')],
+    ['🕒','Date aur Time',()=>J(
+      `Sabse pehle aaj ki baat: aaj <b>${date}</b> hai aur abhi <b>${time}</b> baj rahe hain.`,
+      `Aapka timezone <b>${tz}</b> (${utc}) hai.`,wish,
+      src?`Lagta hai aap <b>${src}</b> se hote hue yahan tak pahunche.`:'Lagta hai aap seedhe link kholkar yahan aaye hain.')],
+    ['📱','Aapka Device',async()=>{
+      await need();const d=dev();
+      return J(`Ab aapke device ki baat. Aap mujhse ek ${d.kind} se jude hain: ${d.name}.`,
+        `Isme <b>${d.os}</b> chal raha hai, aur aap <b>${d.br}</b> browser use kar rahe hain${d.app?`, wo bhi <b>${d.app}</b> ke andar wale browser me`:''}.`);
+    }],
+    ['⚙️','Hardware',async()=>{
+      await need();
+      const dpr=devicePixelRatio,sw=screen.width,sh=screen.height,ua=info.uad||{},tp=navigator.maxTouchPoints,gpu=gpuName(),mem=navigator.deviceMemory;
+      return J(`Ab hardware ki taraf chalte hain. Aapki screen <b>${sw}×${sh}</b> (CSS pixels) ki hai; ${dpr}x sharpness ke saath iska asli resolution lagbhag <b>${Math.round(sw*dpr)}×${Math.round(sh*dpr)}</b> pixels banta hai${info.hz?`, aur refresh rate lagbhag <b>${info.hz}Hz</b> hai`:''}.`,
+        `Display ${matchMedia('(color-gamut: p3)').matches?'wide-color (P3) hai':'normal sRGB colors dikhata hai'}${matchMedia('(dynamic-range: high)').matches?' aur HDR bhi support karta hai':''}, aur abhi screen <b>${innerHeight>innerWidth?'portrait':'landscape'}</b> orientation me hai.`,
+        navigator.hardwareConcurrency?`Processor me <b>${navigator.hardwareConcurrency} cores</b> dikh rahe hain${ua.architecture?` (${ua.architecture.toUpperCase()}${ua.bitness?' '+ua.bitness+'-bit':''} architecture)`:''}.`:'',
+        mem?`RAM lagbhag <b>${mem}GB${mem>=8?'+':''}</b> hai (browser 8GB se upar ka number nahi batata).`:'',
+        gpu?`Graphics chip ka naam <b>${gpu}</b> bata raha hai.`:'',
+        tp>0?`Touch screen <b>${tp} ungliyon</b> tak ka multi-touch support karti hai 👆.`:'');
+    }],
+    ['💻','Software aur Settings',()=>{
+      const d=dev(),langs=(navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language]).slice(0,3).map(l=>{try{return new Intl.DisplayNames(['en'],{type:'language'}).of(l)}catch(e){return l}}).join(', ');
+      return J(`Software ki taraf dekhein toh aapke device par <b>${d.os}</b> hai aur browser <b>${d.br}</b>.`,
+        `Bhasha <b>${langs}</b> set hai, aur aap <b>${matchMedia('(prefers-color-scheme: dark)').matches?'Dark':'Light'} Mode</b> use kar rahe hain.`,
+        `Cookies ${navigator.cookieEnabled?'on':'band'} hain${navigator.doNotTrack==='1'?', aur Do-Not-Track bhi on hai — privacy ka achha khayal 👏':''}${matchMedia('(display-mode: standalone)').matches?', aur aap ise app ki tarah chala rahe hain':''}.`,
+        `Browser ke hisaab se aap abhi <b>${navigator.onLine?'online':'offline'}</b> hain.`);
+    }],
+    ['🔋','Battery',async()=>{
+      await need();const b=info.bat;
+      if(!b)return 'Battery ki jankari aapka browser share nahi karta (iPhone/Safari aur Firefox me ye hamesha band rehti hai), isliye iske baare me main kuch nahi bata sakta.';
+      const l=Math.round(b.level*100);
+      return J(b.charging?`Battery abhi <b>${l}%</b> hai aur phone <b>charging</b> par laga hai ⚡${mins(b.chargingTime)?`, poora charge hone me lagbhag ${mins(b.chargingTime)} lagenge`:''}.`
+        :`Battery abhi <b>${l}%</b> hai${mins(b.dischargingTime)?`, jo lagbhag ${mins(b.dischargingTime)} chalegi`:''}.`,
+        b.charging?'Charging chal rahi hai, ye achhi baat hai 😊':l<20?'Battery kaafi kam hai, charger paas rakhiye 🪫':l<50?'Abhi chal jayegi, bas thoda dhyan rakhiye 🙂':'Battery kaafi achhi hai 🔋');
+    }],
+    ['🌐','Internet aur IP Address',async()=>{
+      await need();
+      const c=navigator.connection||{},ip=info.ip,mb=info.mbps??c.downlink??null,g=mb<.5?'2G':mb<3?'3G':mb<50?'4G':'5G';
+      return J(mb!=null?`Internet ki speed abhi lagbhag <b>${mb<10?mb.toFixed(1):Math.round(mb)} Mbps</b> aa rahi hai, jo <b>${g}</b> jaisi mani ja sakti hai${c.rtt?`, aur response aane me ~${c.rtt}ms lagta hai`:''}.`:'',
+        c.type==='wifi'?'Lagta hai aap Wi-Fi par hain 📶.':c.type==='cellular'?'Lagta hai aap mobile data par hain 📶.':'',
+        c.saveData?'Data Saver bhi on hai.':'',
+        ip?`Aapki internet company <b>${ip.isp||'pata nahi'}</b>${ip.asn?` (AS${ip.asn})`:''} hai, aur aapka public IP address <b>${ip.ip}</b> (${ip.type||'IP'}) dikh raha hai.`:'Aapka IP address abhi mujhe nahi mil paya (shayad network ya ad-blocker ne roka).');
+    }],
+    ['📍','Address aur Mausam',async()=>{
+      await need();const ip=info.ip;
+      if(!ip)return 'Location abhi detect nahi ho payi, isliye mausam bhi nahi bata paunga.';
+      return J(`IP address ke hisaab se aap lagbhag <b>${ip.city}, ${ip.region}, ${ip.country}</b> ${ip.flag||''} ke aas-paas hain${ip.postal?` (pin code ~${ip.postal})`:''}; coordinates lagbhag ${(+ip.lat).toFixed(2)}, ${(+ip.lon).toFixed(2)} hain.`,
+        'Dhyan rahe, IP se sirf shehar tak ka andaza lagta hai, ghar ka exact pata nahi.',
+        wx(info.w,'Wahan'),
+        '<br><button onclick="exactLocation(this)" class="mt-2 text-xs font-semibold px-4 py-2 rounded-full bg-accent text-white">📍 Exact address dekhein</button>');
+    }],
+    ['🔒','Ek zaroori baat',()=>J(
+      'Ye saari jankari aapke browser se hi milti hai, har website ko ye mil sakti hai; maine bas aapko dikha di.',
+      `Mere paas kuch save nahi hota aur kahin bheja bhi nahi jaata${info.ip?' (bas IP, location aur mausam ke liye free services se poocha gaya hai)':''}. Visit ki ginti sirf aapke phone me save rehti hai.`,
+      'Website par aane ke liye ek baar phir dil se shukriya. Apna khayal rakhiye aur muskurate rahiye! ❤️')]
+  ];
+
+  for(const [ic,title,gen] of SECTIONS){
+    let html='';try{html=await gen()}catch(e){}
+    if(!html)continue;
+    const sec=document.createElement('div');
+    sec.className='sx';
+    sec.innerHTML=`<div class="sx-h"><span>${ic}</span><span>${title}</span></div><div></div>`;
+    body.appendChild(sec);
+    await typeInto(sec.lastElementChild,html,()=>skip);
   }
+  status.textContent='Online 🟢';
+  celebrate();
 }
 function fireworks(){
   for(let i=0;i<10;i++)setTimeout(()=>{
