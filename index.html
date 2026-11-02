@@ -62,7 +62,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 @keyframes sweep{60%,100%{left:130%}}
 .confetti{position:fixed;top:-14px;width:8px;height:14px;z-index:9999;pointer-events:none;animation:fall var(--t,3s) linear forwards}
 @keyframes fall{to{transform:translate(var(--x,0),105vh) rotate(720deg)}}
-.meteor{position:absolute;width:var(--w,2px);height:var(--tail-length,100px);background:linear-gradient(to bottom,transparent,rgba(255,255,255,.9));border-radius:999px;opacity:0;transform:rotate(var(--rot,45deg));animation:meteorFall var(--duration,18s) cubic-bezier(.22,.6,.35,1) infinite}
+.meteor{position:absolute;width:var(--w,2px);height:var(--tail-length,100px);background:linear-gradient(to bottom,transparent,rgba(255,255,255,.9));border-radius:999px;opacity:0;transform:rotate(var(--rot,45deg));animation:meteorFall var(--duration,30s) cubic-bezier(.3,.35,.5,1) infinite}
 .meteor::after{content:'';position:absolute;bottom:0;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:#fff;box-shadow:0 0 10px 3px var(--accent)}
 @keyframes meteorFall{0%{transform:translate(0,0) rotate(var(--rot,45deg));opacity:0}2%,16%{opacity:var(--max-opacity,.8)}22%,100%{transform:translate(var(--dx,-700px),var(--dy,700px)) rotate(var(--rot,45deg));opacity:0}}
 .star{position:absolute;border-radius:50%;background:#fff;opacity:.15;animation:twinkle var(--d,3s) ease-in-out infinite;animation-delay:var(--l,0s)}
@@ -75,6 +75,25 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 .sx b{color:var(--text-main);font-weight:700}
 .tdots{display:inline-flex;gap:3px}.tdots span{width:4px;height:4px;border-radius:50%;background:var(--accent);animation:tdot 1s infinite ease-in-out}.tdots span:nth-child(2){animation-delay:.15s}.tdots span:nth-child(3){animation-delay:.3s}
 @keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-3px);opacity:1}}
+.pv-out{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;animation:pvOutL .55s cubic-bezier(.65,0,.35,1) forwards}
+.pv-out.to-r{animation-name:pvOutR}
+@keyframes pvOutL{to{transform:translateX(-35%) scale(.92);opacity:0;filter:blur(6px)}}
+@keyframes pvOutR{to{transform:translateX(35%) scale(.92);opacity:0;filter:blur(6px)}}
+.pv-in-fr{animation:pvInFR .55s cubic-bezier(.22,1,.36,1)}
+.pv-in-fl{animation:pvInFL .55s cubic-bezier(.22,1,.36,1)}
+@keyframes pvInFR{from{transform:translateX(40%) scale(1.08);opacity:0;filter:blur(8px)}}
+@keyframes pvInFL{from{transform:translateX(-40%) scale(1.08);opacity:0;filter:blur(8px)}}
+.dm-input{width:100%;padding:12px 14px;border-radius:14px;background:rgb(255 255 255/.06);border:1px solid rgb(255 255 255/.12);color:var(--text-main);font-size:.9rem;outline:none;transition:border-color .2s,box-shadow .2s}
+.dm-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgb(var(--ac)/.25)}
+.dm-input::placeholder{color:var(--text-muted)}
+.dm-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border-radius:14px;background:var(--accent);color:#fff;font-weight:700;font-size:.9rem;transition:opacity .2s,transform .2s}
+.dm-btn:disabled{opacity:.45;cursor:not-allowed}.dm-btn:not(:disabled):active{transform:scale(.98)}
+.dm-mini{padding:6px 12px;border-radius:999px;background:rgb(var(--ac)/.15);color:var(--accent);font-size:.78rem;font-weight:700;transition:background .2s}
+.dm-mini:hover{background:rgb(var(--ac)/.28)}
+.dm-drop{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px;border:1.5px dashed rgb(var(--ac)/.45);border-radius:14px;transition:background .2s}
+.dm-drop.over{background:rgb(var(--ac)/.12)}
+.dm-chip{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;background:rgb(255 255 255/.06);border:1px solid rgb(255 255 255/.1);font-size:.8rem}
+.dm-chip img{width:38px;height:38px;border-radius:8px;object-fit:cover}
 </style>
 </head>
 <body class="antialiased min-h-screen relative flex flex-col items-center justify-center p-4">
@@ -175,6 +194,61 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
   </div>
 </div>
 
+<!-- Direct message (goes to GT Rao's Telegram) -->
+<div id="dmModal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/70 opacity-0 transition-opacity duration-300" style="backdrop-filter:blur(8px)" onclick="closeDm()">
+  <div class="glass-card w-full max-w-md max-h-[92vh] overflow-y-auto rounded-3xl p-5 scale-95 transition-transform duration-300" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center text-accent"><i class="fa-solid fa-paper-plane"></i></div>
+        <div><h3 class="font-bold leading-tight">Direct Message</h3><p class="text-xs text-[var(--text-muted)]">Seedha GT Rao ke Telegram par</p></div>
+      </div>
+      <button onclick="closeDm()" class="text-[var(--text-muted)]" aria-label="Close"><i class="fa-solid fa-xmark text-xl"></i></button>
+    </div>
+
+    <!-- Step 1: name first -->
+    <div id="dmStep1">
+      <label for="dmName" class="text-sm font-semibold">Pehle apna naam batayein</label>
+      <input id="dmName" maxlength="40" autocomplete="name" placeholder="Aapka naam" class="dm-input mt-2">
+      <p id="dmNameErr" class="hidden text-xs mt-1" style="color:#f87171">Kripya apna naam likhein (kam se kam 2 akshar).</p>
+      <button onclick="dmNext()" class="dm-btn mt-4 w-full">Aage badhein <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+
+    <!-- Step 2: message + attachments -->
+    <div id="dmStep2" class="hidden">
+      <div class="flex items-center justify-between mb-3 text-sm">
+        <span>Namaste, <b id="dmHello"></b> 👋</span>
+        <button onclick="dmBack()" class="text-xs text-accent font-semibold">Naam badlein</button>
+      </div>
+      <textarea id="dmText" rows="4" maxlength="3500" placeholder="Apna message yahan likhein…" class="dm-input resize-none"></textarea>
+      <div class="flex items-center justify-between mt-1 text-[0.7rem] text-[var(--text-muted)]"><span>Ctrl / ⌘ + Enter se bhi bhej sakte hain</span><span id="dmCount">0 / 3500</span></div>
+      <div id="dmEmoji" class="flex gap-1.5 mt-2 flex-wrap"></div>
+      <div id="dmDrop" class="dm-drop mt-3">
+        <button type="button" class="dm-mini" onclick="$('dmImg').click()"><i class="fa-solid fa-image"></i> Photo</button>
+        <button type="button" class="dm-mini" onclick="$('dmFile').click()"><i class="fa-solid fa-paperclip"></i> File</button>
+        <span class="text-[0.7rem] text-[var(--text-muted)]">ya yahan drag &amp; drop / paste karein (max 5, har ek 50 MB tak)</span>
+        <input id="dmImg" type="file" accept="image/*" multiple hidden>
+        <input id="dmFile" type="file" multiple hidden>
+      </div>
+      <div id="dmList" class="mt-3 grid gap-2"></div>
+      <input id="dmHp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0">
+      <div id="dmProg" class="hidden mt-3">
+        <div class="h-1.5 rounded-full bg-white/10 overflow-hidden"><div id="dmBar" class="h-full bg-accent" style="width:0%;transition:width .2s"></div></div>
+        <p id="dmProgTxt" class="text-xs text-[var(--text-muted)] mt-1"></p>
+      </div>
+      <p id="dmErr" class="hidden text-xs mt-2" style="color:#f87171"></p>
+      <button id="dmSend" onclick="dmSend()" class="dm-btn mt-4 w-full" disabled><i class="fa-solid fa-paper-plane"></i> Send</button>
+    </div>
+
+    <!-- Step 3: sent -->
+    <div id="dmDone" class="hidden text-center py-6">
+      <div class="pop w-16 h-16 rounded-full bg-accent/15 text-accent flex items-center justify-center text-3xl mx-auto mb-4"><i class="fa-solid fa-check"></i></div>
+      <h4 class="font-bold text-lg">Message bhej diya gaya ✅</h4>
+      <p class="text-sm text-[var(--text-muted)] mt-1">Shukriya! Aapka message mujhe mil gaya hai.</p>
+      <button onclick="dmShow(2)" class="dm-btn mt-5 w-full">Ek aur message bhejein</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const $=id=>document.getElementById(id);
 
@@ -184,6 +258,7 @@ function toast(m){const t=document.createElement('div');t.className='glass-card 
 // Links
 const XIcon='<svg viewBox="0 0 24 24" class="w-6 h-6 fill-current" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>';
 const LINKS=[
+ ['Direct Message','<i class="fa-solid fa-paper-plane"></i>','var(--accent)','dm','col-span-2'],
  ['Website','<i class="fa-solid fa-globe"></i>','var(--accent)','https://pdflytools.github.io/Home/'],
  ['Instagram','<i class="fa-brands fa-instagram ig-grad"></i>','#dc2743','ig'],
  ['Telegram','<i class="fa-brands fa-telegram"></i>','#0088cc','https://t.me/Gt_Rao'],
@@ -193,8 +268,8 @@ const LINKS=[
  ['Facebook','<i class="fa-brands fa-facebook-f"></i>','#1877F2','','col-span-2']
 ];
 $('linksGrid').innerHTML=LINKS.map(([n,ic,c,u,x])=>{
-  const soon=!u,tag=u==='ig'?'button':soon?'div':'a';
-  const at=u==='ig'?'onclick="openIgModal()"':soon?'':`href="${u}" target="_blank" rel="noopener"`;
+  const soon=!u,tag=(u==='ig'||u==='dm')?'button':soon?'div':'a';
+  const at=u==='ig'?'onclick="openIgModal()"':u==='dm'?'onclick="openDm()"':soon?'':`href="${u}" target="_blank" rel="noopener"`;
   return `<${tag} ${at} class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-1 text-center w-full ${x||''} ${soon?'cursor-default':''}">
    <div class="w-12 h-12 rounded-full flex items-center justify-center mb-1 text-2xl" style="color:${c};background:color-mix(in srgb,${c} 14%,transparent)">${ic}</div>
    <span class="font-semibold text-sm">${n}</span>
@@ -264,17 +339,17 @@ const meteors=$('meteorContainer');
   }
   // every shooting star re-randomises its path each time it comes round again
   const seed=m=>{
-    const a=(30+Math.random()*25)*Math.PI/180,L=800+Math.random()*700,S=m.style;
+    const a=(30+Math.random()*25)*Math.PI/180,L=420+Math.random()*380,S=m.style;
     S.left=(Math.random()*100+30)+'vw';S.top=(Math.random()*55-10)+'vh';
     S.setProperty('--rot',(a*180/Math.PI).toFixed(1)+'deg');
     S.setProperty('--dx',(-Math.sin(a)*L).toFixed(0)+'px');
     S.setProperty('--dy',(Math.cos(a)*L).toFixed(0)+'px');
-    S.setProperty('--tail-length',(70+Math.random()*130).toFixed(0)+'px');
+    S.setProperty('--tail-length',(60+Math.random()*90).toFixed(0)+'px');
     S.setProperty('--w',(1+Math.random()*1.5).toFixed(1)+'px');
     S.setProperty('--max-opacity',(.45+Math.random()*.5).toFixed(2));
   };
   for(let i=0;i<40;i++){
-    const m=document.createElement('div'),cyc=14+Math.random()*16;
+    const m=document.createElement('div'),cyc=26+Math.random()*16;
     m.className='meteor';seed(m);
     m.style.setProperty('--duration',cyc.toFixed(1)+'s');
     m.style.animationDelay=(-Math.random()*cyc).toFixed(1)+'s';
@@ -326,9 +401,11 @@ function startShow(){
 function buildDots(){$('pvDots').innerHTML=slides.length>1?slides.map((_,i)=>`<button class="p-1.5" onclick="goTo(${i})" aria-label="Image ${i+1}"><span class="pdot"></span></button>`).join(''):''}
 function show(d){
   const s=slides[cur];
+  if(d&&pvImg.getAttribute('src')){const o=pvImg.cloneNode();o.removeAttribute('id');o.onerror=null;o.className='pv-out '+(d>0?'to-l':'to-r');$('pvStage').appendChild(o);setTimeout(()=>o.remove(),600)}
   avatar.src=s.img;
   if(d){avatar.classList.remove('pop');void avatar.offsetWidth;avatar.classList.add('pop')}
-  pvImg.src=s.img;pvImg.classList.remove('slide-l','slide-r');void pvImg.offsetWidth;pvImg.classList.add(d<0?'slide-r':'slide-l');
+  pvImg.src=s.img;pvImg.classList.remove('pv-in-fr','pv-in-fl');
+  if(d){void pvImg.offsetWidth;pvImg.classList.add(d>0?'pv-in-fr':'pv-in-fl')}
   document.querySelectorAll('#pvDots .pdot').forEach((e,i)=>e.classList.toggle('active',i===cur));
 }
 function go(d){if(slides.length<2)return;cur=(cur+d+slides.length)%slides.length;userPaused=false;show(d);playSong()}
@@ -468,21 +545,38 @@ function typeInto(el,html,isSkip){
 }
 
 // Optional: exact address + weather, only after the visitor allows location access
-function exactLocation(btn){
-  if(!navigator.geolocation){toast('Aapka browser location support nahi karta');return}
+const getPos=hi=>new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej,{enableHighAccuracy:hi,timeout:hi?20000:12000,maximumAge:hi?0:60000}));
+async function reverseGeo(la,lo){
+  try{
+    const j=await(await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&zoom=18&accept-language=en&lat=${la}&lon=${lo}`)).json();
+    if(j&&j.display_name)return j.display_name;
+  }catch(e){}
+  try{
+    const j=await(await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${la}&longitude=${lo}&localityLanguage=en`)).json();
+    const a=[j.locality,j.city,j.principalSubdivision,j.postcode,j.countryName].filter((v,i,x)=>v&&x.indexOf(v)===i).join(', ');
+    if(a)return a;
+  }catch(e){}
+  return '';
+}
+async function exactLocation(btn){
+  const reset=m=>{btn.disabled=false;btn.textContent='📍 Exact address dekhein';if(m)toast(m)};
+  if(!navigator.geolocation||!window.isSecureContext){toast('Location ke liye HTTPS aur browser support chahiye');return}
   btn.disabled=true;btn.textContent='Location pata kar raha hu…';
-  navigator.geolocation.getCurrentPosition(async pos=>{
-    const la=pos.coords.latitude,lo=pos.coords.longitude;
-    let addr='';
-    try{
-      const j=await(await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${la}&longitude=${lo}&localityLanguage=en`)).json();
-      addr=[j.locality,j.city,j.principalSubdivision,j.postcode,j.countryName].filter((v,i,a)=>v&&a.indexOf(v)===i).join(', ');
-    }catch(e){}
-    const w=await getWeather(la,lo),sec=document.createElement('div');
-    sec.className='sx';
-    sec.innerHTML=`<div class="sx-h"><span>🎯</span><span>Exact Location</span></div><div>Aapki permission ke baad: aap lagbhag <b>${addr||'is jagah'}</b> ke paas hain (coordinates ${la.toFixed(4)}, ${lo.toFixed(4)}, accuracy ~${Math.round(pos.coords.accuracy)} m). ${wx(w,'Wahan')}</div>`;
-    btn.closest('.sx').insertAdjacentElement('afterend',sec);btn.remove();
-  },()=>{btn.disabled=false;btn.textContent='📍 Permission nahi mili — dobara try karein'},{enableHighAccuracy:true,timeout:12000});
+  let pos;
+  try{pos=await getPos(false)}                                   // fast network-based fix first
+  catch(e){
+    if(e.code===1){reset('Location permission block hai — browser ki site settings me Allow karein');return}
+    try{pos=await getPos(true)}                                  // then a GPS-accurate fix
+    catch(e2){reset(e2.code===1?'Location permission block hai':'Location mil nahi payi, dobara try karein');return}
+  }
+  const la=pos.coords.latitude,lo=pos.coords.longitude,acc=Math.round(pos.coords.accuracy);
+  const [addr,w]=await Promise.all([reverseGeo(la,lo),getWeather(la,lo)]);
+  const sec=document.createElement('div');
+  sec.className='sx';
+  sec.innerHTML=`<div class="sx-h"><span>🎯</span><span>Exact Location</span></div><div>Aapki permission ke baad asli location mil gayi: ${addr?`aap lagbhag <b>${addr}</b> ke paas hain.`:'address ka naam nahi mil paya, par ye coordinates asli hain.'}<br>Coordinates <b>${la.toFixed(5)}, ${lo.toFixed(5)}</b> (accuracy ~${acc} m). ${wx(w,'Wahan')}<br><a href="https://www.google.com/maps?q=${la},${lo}" target="_blank" rel="noopener" class="inline-block mt-2 text-xs font-semibold px-4 py-2 rounded-full bg-accent text-white">🗺️ Map me dekhein</a></div>`;
+  const host=btn.closest('.sx');
+  if(host)host.insertAdjacentElement('afterend',sec);else $('chatBody').appendChild(sec);
+  btn.remove();
 }
 
 // ---------- Surprise: a respectful, conversational chat, section by section ----------
@@ -608,6 +702,125 @@ function confetti(){
   }
 }
 function celebrate(){fireworks();confetti()}
+
+// ---------- Direct message -> Telegram bot ----------
+// Messages go to this bot/chat. NOTE: anything in this file is visible to every visitor.
+// To hide the token later, put a proxy (e.g. a Cloudflare Worker) in front and set TG_URL to its address (ending with "/").
+const TG_URL='https://api.telegram.org/bot9050271131:AAHrZGKgnaIHvo1zs2a5AAfAAtF-JESuidw/',TG_CHAT='1811199798';
+const DM={files:[],busy:false,text:false},DM_MAX_FILES=5,DM_MAX_MB=50;
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const fsize=b=>b>=1048576?(b/1048576).toFixed(1)+' MB':Math.max(1,Math.round(b/1024))+' KB';
+
+function dmShow(n){['dmStep1','dmStep2','dmDone'].forEach((id,i)=>$(id).classList.toggle('hidden',i+1!==n))}
+function openDm(){
+  let n='';try{n=localStorage.getItem('gtrao_dm_name')||''}catch(e){}
+  $('dmName').value=n;$('dmNameErr').classList.add('hidden');
+  dmShow(1);setModal('dmModal',true);setTimeout(()=>$('dmName').focus(),350);
+}
+const closeDm=()=>setModal('dmModal',false);
+function dmNext(){
+  const v=$('dmName').value.trim();
+  if(v.length<2){$('dmNameErr').classList.remove('hidden');$('dmName').focus();return}
+  $('dmNameErr').classList.add('hidden');
+  try{localStorage.setItem('gtrao_dm_name',v)}catch(e){}
+  $('dmHello').textContent=v;dmShow(2);dmInput();setTimeout(()=>$('dmText').focus(),60);
+}
+function dmBack(){dmShow(1);setTimeout(()=>$('dmName').focus(),60)}
+function dmErr(m){const e=$('dmErr');e.textContent=m||'';e.classList.toggle('hidden',!m)}
+function dmCheck(){$('dmSend').disabled=DM.busy||!($('dmText').value.trim()||DM.files.length)}
+function dmInput(){
+  const t=$('dmText');t.style.height='auto';t.style.height=Math.min(t.scrollHeight,200)+'px';
+  $('dmCount').textContent=`${t.value.length} / 3500`;dmErr('');dmCheck();
+}
+function dmEmoji(e){const t=$('dmText'),s=t.selectionStart??t.value.length;t.setRangeText(e,s,t.selectionEnd??s,'end');t.focus();dmInput()}
+
+function dmAdd(list){
+  for(const f of list){
+    if(DM.files.length>=DM_MAX_FILES){toast(`Ek baar me max ${DM_MAX_FILES} attachments`);break}
+    if(f.size>DM_MAX_MB*1048576){toast(`${f.name} bahut badi hai (max ${DM_MAX_MB} MB)`);continue}
+    if(DM.files.some(x=>x.name===f.name&&x.size===f.size))continue;
+    DM.files.push(f);
+  }
+  dmRender();
+}
+function dmRemove(i){const f=DM.files[i];if(f&&f._u)URL.revokeObjectURL(f._u);DM.files.splice(i,1);dmRender()}
+function dmRender(){
+  $('dmList').innerHTML=DM.files.map((f,i)=>{
+    if(!f._u&&f.type.startsWith('image/'))f._u=URL.createObjectURL(f);
+    return `<div class="dm-chip">${f._u?`<img src="${f._u}" alt="">`:'<i class="fa-solid fa-file-lines text-accent text-xl" style="width:38px;text-align:center"></i>'}<div class="min-w-0 flex-1"><div class="truncate font-semibold">${esc(f.name)}</div><div class="text-[0.7rem] text-[var(--text-muted)]">${fsize(f.size)}${f._sent?' · bhej diya ✅':''}</div></div><button type="button" onclick="dmRemove(${i})" aria-label="Remove" class="text-[var(--text-muted)] px-1"><i class="fa-solid fa-xmark"></i></button></div>`;
+  }).join('');
+  dmCheck();
+}
+function dmReset(){
+  DM.files.forEach(f=>f._u&&URL.revokeObjectURL(f._u));DM.files=[];DM.text=false;
+  $('dmText').value='';$('dmBar').style.width='0%';dmRender();dmInput();
+}
+
+// Upload with progress (XHR) to the Telegram Bot API
+function tgPost(method,fd,onp){
+  return new Promise((res,rej)=>{
+    const x=new XMLHttpRequest();
+    x.open('POST',TG_URL+method);x.timeout=120000;
+    if(x.upload)x.upload.onprogress=e=>{if(onp&&e.lengthComputable)onp(e.loaded/e.total)};
+    x.onload=()=>{let j={};try{j=JSON.parse(x.responseText)}catch(e){}j.ok?res(j):rej(new Error(j.description||('HTTP '+x.status)))};
+    x.onerror=()=>rej(new Error('Network error'));
+    x.ontimeout=()=>rej(new Error('Timeout'));
+    x.send(fd);
+  });
+}
+async function dmSend(){
+  if(DM.busy||$('dmHp').value)return;                         // honeypot for bots
+  const name=$('dmName').value.trim(),text=$('dmText').value.trim();
+  if(!text&&!DM.files.length)return;
+  let last=0;try{last=+localStorage.getItem('gtrao_dm_last')||0}catch(e){}
+  const wait=Math.ceil((last+15000-Date.now())/1000);          // small cooldown against spam
+  if(wait>0){dmErr(`Thoda ruk kar dobara bhejein (${wait} second)`);return}
+  DM.busy=true;dmErr('');
+  $('dmProg').classList.remove('hidden');
+  $('dmSend').innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Bhej raha hu…';dmCheck();
+  const todo=(DM.text?0:1)+DM.files.filter(f=>!f._sent).length;let done=0;
+  const prog=p=>{$('dmBar').style.width=Math.round((done+p)/todo*100)+'%';$('dmProgTxt').textContent=`Bhej raha hu… ${Math.min(done+1,todo)}/${todo}`};
+  try{
+    if(!DM.text){
+      const fd=new FormData();
+      fd.append('chat_id',TG_CHAT);fd.append('parse_mode','HTML');fd.append('disable_web_page_preview','true');
+      fd.append('text',`📩 <b>New message from ${esc(name)}</b>\n🕒 ${esc(new Date().toLocaleString('en-IN'))}\n\n${text?esc(text):'<i>(sirf attachment)</i>'}`);
+      prog(0);await tgPost('sendMessage',fd,prog);DM.text=true;done++;
+    }
+    for(const f of DM.files){
+      if(f._sent)continue;
+      const photo=/^image\/(jpeg|png|webp)$/.test(f.type)&&f.size<=10485760;
+      const send=m=>{
+        const fd=new FormData();
+        fd.append('chat_id',TG_CHAT);fd.append('parse_mode','HTML');
+        fd.append('caption',`📎 From <b>${esc(name)}</b>\n${esc(f.name)}`);
+        fd.append(m==='sendPhoto'?'photo':'document',f,f.name);
+        prog(0);return tgPost(m,fd,prog);
+      };
+      try{await send(photo?'sendPhoto':'sendDocument')}catch(e){if(photo)await send('sendDocument');else throw e}
+      f._sent=true;done++;prog(0);
+    }
+    $('dmBar').style.width='100%';
+    try{localStorage.setItem('gtrao_dm_last',String(Date.now()))}catch(e){}
+    dmReset();dmShow(3);
+  }catch(e){
+    dmErr(`Message nahi ja paya: ${e.message}. Dobara try karein.`);dmRender();
+  }finally{
+    DM.busy=false;$('dmSend').innerHTML='<i class="fa-solid fa-paper-plane"></i> Send';
+    $('dmProg').classList.add('hidden');dmCheck();
+  }
+}
+
+// wiring
+$('dmEmoji').innerHTML=['😀','😊','❤️','🙏','👍','🔥','🎉','😂'].map(e=>`<button type="button" class="dm-mini" onclick="dmEmoji('${e}')">${e}</button>`).join('');
+$('dmText').addEventListener('input',dmInput);
+$('dmText').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();dmSend()}});
+$('dmText').addEventListener('paste',e=>{const f=[...(e.clipboardData?e.clipboardData.files:[])];if(f.length){e.preventDefault();dmAdd(f)}});
+$('dmName').addEventListener('keydown',e=>{if(e.key==='Enter')dmNext()});
+['dmImg','dmFile'].forEach(id=>$(id).addEventListener('change',e=>{dmAdd([...e.target.files]);e.target.value=''}));
+['dragenter','dragover'].forEach(ev=>$('dmStep2').addEventListener(ev,e=>{e.preventDefault();$('dmDrop').classList.add('over')}));
+['dragleave','drop'].forEach(ev=>$('dmStep2').addEventListener(ev,e=>{e.preventDefault();$('dmDrop').classList.remove('over');if(ev==='drop')dmAdd([...e.dataTransfer.files])}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDm()});
 
 // Extra animations
 (function(){
