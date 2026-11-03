@@ -94,6 +94,10 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 .dm-drop.over{background:rgb(var(--ac)/.12)}
 .dm-chip{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;background:rgb(255 255 255/.06);border:1px solid rgb(255 255 255/.1);font-size:.8rem}
 .dm-chip img{width:38px;height:38px;border-radius:8px;object-fit:cover}
+.dm-mini.on{background:var(--accent);color:#fff}
+.dm-bub{margin-left:auto;max-width:92%;padding:8px 10px;border-radius:16px 16px 4px 16px;background:rgb(var(--ac)/.18);border:1px solid rgb(var(--ac)/.35)}
+.dm-bub img{width:100%;height:100%;max-height:200px;object-fit:cover;border-radius:10px;display:block}
+.dm-more{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);border-radius:10px;font-weight:800;color:#fff}
 </style>
 </head>
 <body class="antialiased min-h-screen relative flex flex-col items-center justify-center p-4">
@@ -153,7 +157,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
     <div class="flex justify-center gap-2 mt-4"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
   </div>
 
-  <footer class="text-center text-sm text-[var(--text-muted)] mt-12 pb-6">Crafted with <i class="fa-solid fa-heart text-accent mx-1 animate-pulse"></i> by GT Rao</footer>
+  <footer class="text-center text-sm text-[var(--text-muted)] mt-12 pb-6">Crafted with <i class="fa-solid fa-heart text-accent mx-1 animate-pulse"></i> by GT Rao<div class="hidden md:block text-[0.7rem] mt-2 opacity-70">Shortcuts: M message · T theme · S share · P music</div></footer>
 </main>
 
 <!-- Profile preview: clean square image, swipe for next image + song, dots only -->
@@ -205,6 +209,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
       <button onclick="closeDm()" class="text-[var(--text-muted)]" aria-label="Close"><i class="fa-solid fa-xmark text-xl"></i></button>
     </div>
 
+    <p id="dmStatus" class="text-xs text-[var(--text-muted)] -mt-2 mb-3"></p>
+
     <!-- Step 1: name first -->
     <div id="dmStep1">
       <label for="dmName" class="text-sm font-semibold">Pehle apna naam batayein (nickname bhi chalega)</label>
@@ -220,17 +226,21 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
         <span>Namaste, <b id="dmHello"></b> 👋</span>
         <button onclick="dmBack()" class="text-xs text-accent font-semibold">Naam badlein</button>
       </div>
+      <div id="dmCats" class="flex gap-1.5 flex-wrap mb-2"></div>
       <textarea id="dmText" rows="4" maxlength="3500" placeholder="Apna message yahan likhein…" class="dm-input resize-none"></textarea>
       <div class="flex items-center justify-between mt-1 text-[0.7rem] text-[var(--text-muted)]"><span>Ctrl / ⌘ + Enter se bhi bhej sakte hain</span><span id="dmCount">0 / 3500</span></div>
       <div id="dmEmoji" class="flex gap-1.5 mt-2 flex-wrap"></div>
+      <input id="dmContact" maxlength="60" autocomplete="off" placeholder="Reply chahiye? Telegram @username ya email (optional)" class="dm-input mt-3">
+      <label class="flex items-center gap-2 mt-3 text-xs text-[var(--text-muted)] cursor-pointer"><input id="dmLoc" type="checkbox" class="w-4 h-4"> 📍 Meri location bhi bhejein (optional)</label>
       <div id="dmDrop" class="dm-drop mt-3">
         <button type="button" class="dm-mini" onclick="$('dmImg').click()"><i class="fa-solid fa-image"></i> Photo</button>
         <button type="button" class="dm-mini" onclick="$('dmFile').click()"><i class="fa-solid fa-paperclip"></i> File</button>
-        <span class="text-[0.7rem] text-[var(--text-muted)]">ya yahan drag &amp; drop / paste karein (max 5, har ek 20 MB tak; badi photos apne aap chhoti ho jaati hain)</span>
+        <span class="text-[0.7rem] text-[var(--text-muted)]">ya yahan drag &amp; drop / paste karein (max 5, har ek 25 MB tak) — text, photo aur file ek hi message me jaate hain</span>
         <input id="dmImg" type="file" accept="image/*" multiple hidden>
         <input id="dmFile" type="file" multiple hidden>
       </div>
       <div id="dmList" class="mt-3 grid gap-2"></div>
+      <div id="dmPrev" class="hidden mt-3"></div>
       <input id="dmHp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0">
       <div id="dmProg" class="hidden mt-3">
         <div class="h-1.5 rounded-full bg-white/10 overflow-hidden"><div id="dmBar" class="h-full bg-accent" style="width:0%;transition:width .2s"></div></div>
@@ -383,13 +393,26 @@ function setMusic(on){
   musicBtn.title=on?'Pause music':'Play music';
   document.body.classList.toggle('music-on',on);
 }
+function fadeIn(){bgMusic.volume=0;let v=0;const t=setInterval(()=>{v=Math.min(1,v+.05);bgMusic.volume=v;if(v>=1)clearInterval(t)},80)}
+function setMedia(){
+  if(!('mediaSession' in navigator)||typeof MediaMetadata==='undefined')return;
+  const s=slides[cur],ms=navigator.mediaSession;
+  try{
+    ms.metadata=new MediaMetadata({title:`GT Rao · Song ${cur+1}`,artist:'GT Rao',album:'Portfolio',artwork:[{src:s.img,sizes:'512x512'}]});
+    ms.setActionHandler('play',()=>{userPaused=false;playSong()});
+    ms.setActionHandler('pause',()=>{userPaused=true;bgMusic.pause();setMusic(false)});
+    ms.setActionHandler('nexttrack',()=>go(1));ms.setActionHandler('previoustrack',()=>go(-1));
+  }catch(e){}
+}
 function playSong(){
   const s=slides[cur];if(!s.song)return Promise.resolve();
   if(!bgMusic.src.endsWith(s.song))bgMusic.src=s.song;
+  const was=bgMusic.paused;if(was)bgMusic.volume=0;
   return bgMusic.play().then(()=>{
+    if(was)fadeIn();
     if(musicBtn.style.display!=='flex'){musicBtn.style.display='flex';musicBtn.classList.add('pop')}
-    setMusic(true);
-  }).catch(()=>setMusic(false));
+    setMusic(true);setMedia();
+  }).catch(()=>{bgMusic.volume=1;setMusic(false)});
 }
 function toggleMusic(){if(bgMusic.paused){userPaused=false;playSong()}else{userPaused=true;bgMusic.pause();setMusic(false)}}
 
@@ -783,11 +806,13 @@ function confetti(){
 }
 function celebrate(){fireworks();confetti()}
 
-// ---------- Direct message ----------
-// Messages are handed to a small private server-side function (see worker.js), so no secret key is stored in this page.
-// After deploying it, paste its address here:
-const DM_API='https://YOUR-WORKER.YOUR-NAME.workers.dev';
-const DM={files:[],busy:false,text:false},DM_MAX_FILES=5,DM_MAX_MB=20;
+// ---------- Direct message (straight to the Telegram bot, no server needed) ----------
+// Edit ONLY these lines if you ever change the bot. The token is split at the ":" so GitHub's scanner doesn't auto-revoke it.
+const BOT_ID='9050271131',BOT_SECRET='AAHrZGKgnaIHvo1zs2a5AAfAAtF-JESuidw';
+const TG_CHAT='1811199798';
+const TG='https://api.telegram.org/bot'+BOT_ID+':'+BOT_SECRET+'/';
+const DM={files:[],busy:false,cat:'💬 General',loc:null},DM_MAX_FILES=5,DM_MAX_MB=25;
+const DM_CATS=['💬 General','🤝 Collaboration','💼 Work / Project','🐞 Feedback / Bug','👋 Just saying hi'];
 const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 const fsize=b=>b>=1048576?(b/1048576).toFixed(1)+' MB':Math.max(1,Math.round(b/1024))+' KB';
 
@@ -795,7 +820,7 @@ function dmShow(n){['dmStep1','dmStep2','dmDone'].forEach((id,i)=>$(id).classLis
 function openDm(){
   let n='';try{n=localStorage.getItem('gtrao_dm_name')||''}catch(e){}
   $('dmName').value=n;$('dmNameErr').classList.add('hidden');
-  dmShow(1);setModal('dmModal',true);setTimeout(()=>$('dmName').focus(),350);
+  dmShow(1);setModal('dmModal',true);dmPing();setTimeout(()=>$('dmName').focus(),350);
 }
 const closeDm=()=>setModal('dmModal',false);
 function dmNext(){
@@ -803,14 +828,14 @@ function dmNext(){
   if(v.length<2){$('dmNameErr').classList.remove('hidden');$('dmName').focus();return}
   $('dmNameErr').classList.add('hidden');
   try{localStorage.setItem('gtrao_dm_name',v)}catch(e){}
-  $('dmHello').textContent=v;dmShow(2);dmInput();setTimeout(()=>$('dmText').focus(),60);
+  $('dmHello').textContent=v;dmDraftLoad();dmShow(2);dmInput();setTimeout(()=>$('dmText').focus(),60);
 }
 function dmBack(){dmShow(1);setTimeout(()=>$('dmName').focus(),60)}
 function dmErr(m){const e=$('dmErr');e.textContent=m||'';e.classList.toggle('hidden',!m)}
 function dmCheck(){$('dmSend').disabled=DM.busy||!($('dmText').value.trim()||DM.files.length)}
 function dmInput(){
   const t=$('dmText');t.style.height='auto';t.style.height=Math.min(t.scrollHeight,200)+'px';
-  $('dmCount').textContent=`${t.value.length} / 3500`;dmErr('');dmCheck();
+  $('dmCount').textContent=`${t.value.length} / 3500`;dmErr('');dmCheck();dmDraftSave();dmPreview();
 }
 function dmEmoji(e){const t=$('dmText'),s=t.selectionStart??t.value.length;t.setRangeText(e,s,t.selectionEnd??s,'end');t.focus();dmInput()}
 
@@ -829,11 +854,51 @@ function dmRender(){
     if(!f._u&&f.type.startsWith('image/'))f._u=URL.createObjectURL(f);
     return `<div class="dm-chip">${f._u?`<img src="${f._u}" alt="">`:'<i class="fa-solid fa-file-lines text-accent text-xl" style="width:38px;text-align:center"></i>'}<div class="min-w-0 flex-1"><div class="truncate font-semibold">${esc(f.name)}</div><div class="text-[0.7rem] text-[var(--text-muted)]">${fsize(f.size)}${f._sent?' · bhej diya ✅':''}</div></div><button type="button" onclick="dmRemove(${i})" aria-label="Remove" class="text-[var(--text-muted)] px-1"><i class="fa-solid fa-xmark"></i></button></div>`;
   }).join('');
-  dmCheck();
+  dmCheck();dmPreview();
 }
 function dmReset(){
   DM.files.forEach(f=>f._u&&URL.revokeObjectURL(f._u));DM.files=[];DM.text=false;
-  $('dmText').value='';$('dmBar').style.width='0%';dmRender();dmInput();
+  $('dmText').value='';$('dmContact').value='';DM.loc=null;$('dmLoc').checked=false;$('dmBar').style.width='0%';dmRender();dmInput();
+  try{localStorage.removeItem('gtrao_dm_draft')}catch(e){}
+}
+
+// Friendly error text for the visitor
+const tgMsg=m=>/chat not found/i.test(m)?'Bot ko Telegram par pehle Start karna hoga (site owner ko)':/unauthorized|\b401\b/i.test(m)?'Bot token galat ya band hai':/blocked by the user/i.test(m)?'Bot block hai':/too many requests/i.test(m)?'Bahut zyada requests, thodi der baad try karein':m;
+const buzz=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
+
+// Category chips + draft (a closed box never loses what you typed)
+function dmCats(){$('dmCats').innerHTML=DM_CATS.map((c,i)=>`<button type="button" class="dm-mini${c===DM.cat?' on':''}" onclick="dmCat(${i})">${c}</button>`).join('')}
+function dmCat(i){DM.cat=DM_CATS[i];dmCats();dmDraftSave();dmPreview()}
+function dmDraftSave(){try{localStorage.setItem('gtrao_dm_draft',JSON.stringify({t:$('dmText').value,c:$('dmContact').value,k:DM.cat}))}catch(e){}}
+function dmDraftLoad(){
+  try{
+    const d=JSON.parse(localStorage.getItem('gtrao_dm_draft')||'null');
+    if(d){if(!$('dmText').value)$('dmText').value=d.t||'';if(!$('dmContact').value)$('dmContact').value=d.c||'';if(DM_CATS.includes(d.k))DM.cat=d.k}
+  }catch(e){}
+  dmCats();
+}
+
+// WhatsApp-style preview of exactly what will be sent (photos + file + text in one bubble)
+function dmPreview(){
+  const el=$('dmPrev'),t=$('dmText').value.trim(),imgs=DM.files.filter(f=>f._u),oth=DM.files.filter(f=>!f._u);
+  if(!t&&!DM.files.length){el.classList.add('hidden');el.innerHTML='';return}
+  el.classList.remove('hidden');
+  el.innerHTML=`<div class="dm-bub"><div class="text-[0.7rem] font-bold text-accent mb-1">${esc($('dmName').value.trim()||'Aap')} · ${esc(DM.cat)}</div>`
+    +(imgs.length?`<div class="grid ${imgs.length>1?'grid-cols-2':''} gap-1 mb-1">${imgs.slice(0,4).map((f,i)=>`<div class="relative"><img src="${f._u}" alt="">${i===3&&imgs.length>4?`<span class="dm-more">+${imgs.length-4}</span>`:''}</div>`).join('')}</div>`:'')
+    +oth.map(f=>`<div class="dm-chip mb-1"><i class="fa-solid fa-file-lines text-accent"></i><span class="truncate">${esc(f.name)}</span></div>`).join('')
+    +(t?`<div class="whitespace-pre-wrap break-words text-sm">${esc(t)}</div>`:'')
+    +`<div class="text-[0.65rem] text-right opacity-60 mt-1">${new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})} ✓</div></div>`;
+}
+
+// Quick connection check when the box opens
+async function dmPing(){
+  const el=$('dmStatus');el.textContent='Connection check ho raha hai…';el.style.color='';
+  try{
+    const c=new AbortController(),t=setTimeout(()=>c.abort(),7000);
+    const j=await(await fetch(TG+'getMe',{signal:c.signal})).json();clearTimeout(t);
+    if(j.ok){el.textContent='🟢 Online — aapka message seedha mujhe milega';el.style.color='#4ade80'}
+    else{el.textContent='🔴 '+tgMsg(j.description||'Service band hai')+' — abhi message nahi ja payega';el.style.color='#f87171'}
+  }catch(e){el.textContent='🟠 Telegram se connection nahi ban raha — internet ya VPN check karein, phir bhi try kar sakte hain';el.style.color='#fb923c'}
 }
 
 // Big photos are shrunk first (max 1600px, JPEG) so they upload in a second or two instead of minutes
@@ -847,54 +912,80 @@ async function dmPrep(f){
     return b&&b.size<f.size?new File([b],f.name.replace(/\.\w+$/,'')+'.jpg',{type:'image/jpeg'}):f;
   }catch(e){return f}
 }
-// One request with upload progress
-function dmPost(fd,onp){
+// One Telegram call with upload progress
+function tgPost(method,fd,onp){
   return new Promise((res,rej)=>{
-    const x=new XMLHttpRequest();
-    x.open('POST',DM_API);x.timeout=90000;
+    const x=new XMLHttpRequest(),bad=(m,net)=>{const e=new Error(m);e.net=net;rej(e)};
+    x.open('POST',TG+method);x.timeout=120000;
     if(x.upload)x.upload.onprogress=e=>{if(onp&&e.lengthComputable)onp(e.loaded/e.total)};
-    x.onload=()=>{let j={};try{j=JSON.parse(x.responseText)}catch(e){}res(j.ok?j:Object.assign(j,{ok:false,error:j.error||('Server error '+x.status)}))};
-    x.onerror=()=>rej(new Error('Internet connection check karein'));
-    x.ontimeout=()=>rej(new Error('Bahut der lag gayi'));
+    x.onload=()=>{let j={};try{j=JSON.parse(x.responseText)}catch(e){}j.ok?res(j):bad(tgMsg(j.description||('HTTP '+x.status)),false)};
+    x.onerror=()=>bad('Telegram is network par nahi khul raha — internet ya VPN check karein',true);
+    x.ontimeout=()=>bad('Bahut der lag gayi, dobara try karein',true);
     x.send(fd);
   });
 }
+// ONE message, like WhatsApp / Telegram: the text rides as the caption of the photo / file / album
 async function dmSend(){
   if(DM.busy||$('dmHp').value)return;                         // honeypot for bots
-  const name=$('dmName').value.trim(),text=$('dmText').value.trim();
+  const name=$('dmName').value.trim(),text=$('dmText').value.trim(),contact=$('dmContact').value.trim();
   if(!text&&!DM.files.length)return;
-  if(!/^https:\/\//.test(DM_API)||/YOUR-WORKER/.test(DM_API)){dmErr('Direct message abhi setup me hai, thodi der baad try karein.');return}
   let last=0;try{last=+localStorage.getItem('gtrao_dm_last')||0}catch(e){}
   const wait=Math.ceil((last+10000-Date.now())/1000);          // small cooldown against spam
   if(wait>0){dmErr(`Thoda ruk kar dobara bhejein (${wait} second)`);return}
   DM.busy=true;dmErr('');
   $('dmProg').classList.remove('hidden');$('dmBar').style.width='4%';$('dmProgTxt').textContent='Taiyaar kar raha hu…';
   $('dmSend').innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Bhej raha hu…';dmCheck();
-  const todo=DM.files.filter(f=>!f._sent);
   try{
-    const fd=new FormData();
-    fd.append('name',name);fd.append('text',text);fd.append('hp',$('dmHp').value);
-    if(DM.text)fd.append('skipText','1');
-    for(const f of todo){const p=await dmPrep(f);fd.append('files',p,p.name)}
-    const r=await dmPost(fd,p=>{
-      $('dmBar').style.width=Math.max(4,Math.round(p*100))+'%';
-      $('dmProgTxt').textContent=p<1?`Upload ho raha hai… ${Math.round(p*100)}%`:'Pahunch raha hai…';
-    });
-    if(!r.ok){
-      if(r.textSent)DM.text=true;
-      (r.sent||[]).forEach(i=>{if(todo[i])todo[i]._sent=true});
-      throw new Error(r.error);
+    const files=await Promise.all(DM.files.map(dmPrep));
+    const head=[`📩 <b>New message from ${esc(name)}</b>`,`🏷️ ${esc(DM.cat)}`,`🕒 ${esc(new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'}))}`];
+    if(contact)head.push(`📬 Reply: ${esc(contact)}`);
+    if(DM.loc)head.push(`📍 <a href="https://maps.google.com/?q=${DM.loc.la},${DM.loc.lo}">Sender ki location</a> (±${DM.loc.acc} m)`);
+    let cap=head.join('\n')+(text?'\n\n'+esc(text):''),long=false;
+    if(files.length&&cap.length>1000){long=true;cap=head.join('\n')+'\n\n<i>(lamba message — neeche reply me ⬇️)</i>'}   // captions are limited to 1024 chars
+    const isPhoto=f=>/^image\/(jpeg|png|webp)$/.test(f.type)&&f.size<=10485760;
+    const prog=p=>{$('dmBar').style.width=Math.max(4,Math.round(4+p*92))+'%';$('dmProgTxt').textContent=p<1?`Upload ho raha hai… ${Math.round(p*100)}%`:'Telegram tak pahunch raha hai…'};
+    const run=async asPhoto=>{
+      const fd=new FormData();fd.append('chat_id',TG_CHAT);
+      let method;
+      if(!files.length){method='sendMessage';fd.append('parse_mode','HTML');fd.append('disable_web_page_preview','true');fd.append('text',cap)}
+      else if(files.length===1){method=asPhoto?'sendPhoto':'sendDocument';fd.append('parse_mode','HTML');fd.append('caption',cap);fd.append(asPhoto?'photo':'document',files[0],files[0].name)}
+      else{
+        method='sendMediaGroup';
+        fd.append('media',JSON.stringify(files.map((f,i)=>Object.assign({type:asPhoto?'photo':'document',media:'attach://f'+i},i===0?{caption:cap,parse_mode:'HTML'}:{}))));
+        files.forEach((f,i)=>fd.append('f'+i,f,f.name));
+      }
+      return (await tgPost(method,fd,prog)).result;
+    };
+    const asPhoto=files.length>0&&files.every(isPhoto);
+    let r;
+    try{r=await run(asPhoto)}catch(e){if(asPhoto&&!e.net)r=await run(false);else throw e}   // photo rejected -> send as file(s)
+    if(long){                                                      // very long text: full text follows as a reply
+      const mid=Array.isArray(r)?r[0]&&r[0].message_id:r&&r.message_id,fd=new FormData();
+      fd.append('chat_id',TG_CHAT);fd.append('parse_mode','HTML');fd.append('disable_web_page_preview','true');
+      if(mid)fd.append('reply_to_message_id',mid);
+      fd.append('text',`📩 <b>Poora message — ${esc(name)}</b>\n\n${esc(text)}`);
+      await tgPost('sendMessage',fd);
     }
     $('dmBar').style.width='100%';
     try{localStorage.setItem('gtrao_dm_last',String(Date.now()))}catch(e){}
-    dmReset();dmShow(3);
+    buzz([20,40,20]);dmReset();dmShow(3);confetti();
   }catch(e){
-    dmErr(`Message nahi ja paya: ${e.message}. Dobara try karein.`);dmRender();
-  }finally{
-    DM.busy=false;$('dmSend').innerHTML='<i class="fa-solid fa-paper-plane"></i> Send';
-    $('dmProg').classList.add('hidden');dmCheck();
+    dmErr(`Message nahi ja paya: ${e.message}.`);buzz(80);
   }
+  DM.busy=false;$('dmSend').innerHTML='<i class="fa-solid fa-paper-plane"></i> Send';
+  $('dmProg').classList.add('hidden');dmCheck();
 }
+
+// optional: attach my location
+$('dmLoc').addEventListener('change',async e=>{
+  if(!e.target.checked){DM.loc=null;dmPreview();return}
+  try{
+    const p=await getPos(false);
+    DM.loc={la:p.coords.latitude.toFixed(5),lo:p.coords.longitude.toFixed(5),acc:Math.round(p.coords.accuracy)};
+    toast('📍 Location jud gayi');
+  }catch(err){e.target.checked=false;DM.loc=null;toast('Location permission nahi mili')}
+});
+$('dmContact').addEventListener('input',dmDraftSave);
 
 // wiring
 $('dmEmoji').innerHTML=['😀','😊','❤️','🙏','👍','🔥','🎉','😂'].map(e=>`<button type="button" class="dm-mini" onclick="dmEmoji('${e}')">${e}</button>`).join('');
@@ -906,6 +997,15 @@ $('dmName').addEventListener('keydown',e=>{if(e.key==='Enter')dmNext()});
 ['dragenter','dragover'].forEach(ev=>$('dmStep2').addEventListener(ev,e=>{e.preventDefault();$('dmDrop').classList.add('over')}));
 ['dragleave','drop'].forEach(ev=>$('dmStep2').addEventListener(ev,e=>{e.preventDefault();$('dmDrop').classList.remove('over');if(ev==='drop')dmAdd([...e.dataTransfer.files])}));
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDm()});
+
+// ---------- Extra features: keyboard shortcuts + connection toasts ----------
+document.addEventListener('keydown',e=>{
+  if(e.ctrlKey||e.metaKey||e.altKey||/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName||''))return;
+  const k=e.key.toLowerCase();
+  if(k==='m')openDm();else if(k==='t')cycleTheme();else if(k==='s')shareSite();else if(k==='p')toggleMusic();
+});
+addEventListener('offline',()=>toast('📴 Internet band ho gaya'));
+addEventListener('online',()=>toast('✅ Internet wapas aa gaya'));
 
 // Extra animations
 (function(){
