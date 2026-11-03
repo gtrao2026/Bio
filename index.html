@@ -194,13 +194,13 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
   </div>
 </div>
 
-<!-- Direct message (goes to GT Rao's Telegram) -->
+<!-- Direct message -->
 <div id="dmModal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/70 opacity-0 transition-opacity duration-300" style="backdrop-filter:blur(8px)" onclick="closeDm()">
   <div class="glass-card w-full max-w-md max-h-[92vh] overflow-y-auto rounded-3xl p-5 scale-95 transition-transform duration-300" onclick="event.stopPropagation()">
     <div class="flex items-center justify-between mb-4">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center text-accent"><i class="fa-solid fa-paper-plane"></i></div>
-        <div><h3 class="font-bold leading-tight">Direct Message</h3><p class="text-xs text-[var(--text-muted)]">Seedha GT Rao ke Telegram par</p></div>
+        <div class="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center text-accent"><i class="fa-solid fa-message"></i></div>
+        <div><h3 class="font-bold leading-tight">Direct Message</h3><p class="text-xs text-[var(--text-muted)]">No app, no login, no signup — just write and send</p></div>
       </div>
       <button onclick="closeDm()" class="text-[var(--text-muted)]" aria-label="Close"><i class="fa-solid fa-xmark text-xl"></i></button>
     </div>
@@ -258,21 +258,21 @@ function toast(m){const t=document.createElement('div');t.className='glass-card 
 // Links
 const XIcon='<svg viewBox="0 0 24 24" class="w-6 h-6 fill-current" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>';
 const LINKS=[
- ['Direct Message','<i class="fa-solid fa-paper-plane"></i>','var(--accent)','dm','col-span-2'],
  ['Website','<i class="fa-solid fa-globe"></i>','var(--accent)','https://pdflytools.github.io/Home/'],
  ['Instagram','<i class="fa-brands fa-instagram ig-grad"></i>','#dc2743','ig'],
  ['Telegram','<i class="fa-brands fa-telegram"></i>','#0088cc','https://t.me/Gt_Rao'],
  ['WhatsApp','<i class="fa-brands fa-whatsapp"></i>','#25D366','https://whatsapp.com/channel/0029Vb8s6FTLNSa1Hh33k607'],
  ['X',XIcon,'var(--text-main)','https://x.com/mr_gt_rao'],
  ['YouTube','<i class="fa-brands fa-youtube"></i>','#FF0000',''],
- ['Facebook','<i class="fa-brands fa-facebook-f"></i>','#1877F2','','col-span-2']
+ ['Facebook','<i class="fa-brands fa-facebook-f"></i>','#1877F2','','col-span-2'],
+ ['Direct Message','<i class="fa-solid fa-message"></i>','var(--accent)','dm','col-span-2','Send me a message directly — no app, no login, no signup needed.']
 ];
-$('linksGrid').innerHTML=LINKS.map(([n,ic,c,u,x])=>{
+$('linksGrid').innerHTML=LINKS.map(([n,ic,c,u,x,sub])=>{
   const soon=!u,tag=(u==='ig'||u==='dm')?'button':soon?'div':'a';
   const at=u==='ig'?'onclick="openIgModal()"':u==='dm'?'onclick="openDm()"':soon?'':`href="${u}" target="_blank" rel="noopener"`;
   return `<${tag} ${at} class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-1 text-center w-full ${x||''} ${soon?'cursor-default':''}">
    <div class="w-12 h-12 rounded-full flex items-center justify-center mb-1 text-2xl" style="color:${c};background:color-mix(in srgb,${c} 14%,transparent)">${ic}</div>
-   <span class="font-semibold text-sm">${n}</span>
+   <span class="font-semibold text-sm">${n}</span>${sub?`<span class="text-xs text-[var(--text-muted)] max-w-xs leading-snug">${sub}</span>`:''}
    ${soon?'<span class="text-[0.55rem] uppercase tracking-wider font-bold bg-white/10 px-2 py-0.5 rounded-full mt-0.5">Coming Soon</span>':''}
   </${tag}>`}).join('');
 
@@ -443,19 +443,33 @@ setInterval(()=>{
 
 // ---------- Data for the surprise (collected quietly in the background after load) ----------
 const sleep=ms=>new Promise(r=>setTimeout(r,ms)),info={};
+const hav=(a,b,c,d)=>{const R=6371,t=x=>x*Math.PI/180,u=t(c-a),v=t(d-b),k=Math.sin(u/2)**2+Math.cos(t(a))*Math.cos(t(c))*Math.sin(v/2)**2;return 2*R*Math.asin(Math.sqrt(k))};
+
+// Speed: warm-up pings (median latency) + a 2.5 MB download timed from first to last byte
 async function measureSpeed(){
   try{
-    const t0=performance.now();
-    const r=await fetch('https://speed.cloudflare.com/__down?bytes=1000000',{cache:'no-store'});
-    const b=await r.blob();
-    return b.size*8/((performance.now()-t0)/1000)/1e6;
+    const base='https://speed.cloudflare.com/__down?bytes=',pings=[];
+    for(let i=0;i<4;i++){const a=performance.now();await(await fetch(base+'1&r='+i+Math.random(),{cache:'no-store'})).arrayBuffer();pings.push(performance.now()-a)}
+    pings.shift();pings.sort((a,b)=>a-b);info.ping=Math.round(pings[1]);
+    const url=base+'2500000&r='+Math.random(),t0=performance.now();
+    const b=await(await fetch(url,{cache:'no-store'})).blob();
+    let dt=performance.now()-t0;
+    const e=performance.getEntriesByName(url).pop();
+    if(e&&e.responseStart>0&&e.responseEnd>e.responseStart)dt=e.responseEnd-e.responseStart;
+    return b.size*8/(Math.max(dt,1)/1000)/1e6;
   }catch(e){return null}
 }
+// Refresh rate: median frame time over ~50 frames, snapped to the nearest standard rate
 function measureHz(){
-  return new Promise(res=>{let n=0,t0=0;const f=t=>{if(!t0)t0=t;n++;
-    if(t-t0<600)requestAnimationFrame(f);
-    else{const hz=(n-1)*1000/(t-t0);res([30,60,75,90,120,144,165].reduce((a,b)=>Math.abs(b-hz)<Math.abs(a-hz)?b:a))}};
-    requestAnimationFrame(f)});
+  return new Promise(res=>{
+    const d=[];let p=0;
+    const f=t=>{
+      if(p)d.push(t-p);p=t;
+      if(d.length<50)requestAnimationFrame(f);
+      else{d.sort((a,b)=>a-b);const hz=1000/d[d.length>>1];res([30,60,75,90,120,144,165,240].reduce((a,b)=>Math.abs(b-hz)<Math.abs(a-hz)?b:a))}
+    };
+    requestAnimationFrame(f);
+  });
 }
 function gpuName(){
   try{
@@ -465,27 +479,44 @@ function gpuName(){
     return (p[1]||p[0]).replace(/\s*(Direct3D|vs_|OpenGL).*$/,'');
   }catch(e){return ''}
 }
+// IP location: ask 3 services, keep the ones that agree, average them and report the spread as the accuracy
 async function getIP(){
-  try{
-    const j=await(await fetch('https://ipwho.is/')).json();
-    if(j.success)return{ip:j.ip,type:j.type,city:j.city,region:j.region,country:j.country,flag:j.flag&&j.flag.emoji,postal:j.postal,lat:j.latitude,lon:j.longitude,isp:j.connection&&(j.connection.isp||j.connection.org),asn:j.connection&&j.connection.asn};
-  }catch(e){}
-  try{
-    const j=await(await fetch('https://ipapi.co/json/')).json();
-    if(j.ip&&!j.error)return{ip:j.ip,type:j.version,city:j.city,region:j.region,country:j.country_name,postal:j.postal,lat:j.latitude,lon:j.longitude,isp:j.org,asn:String(j.asn||'').replace('AS','')};
-  }catch(e){}
-  return null;
+  const jf=u=>fetch(u).then(r=>r.json());
+  const jobs=[
+    jf('https://ipwho.is/').then(j=>j.success?{ip:j.ip,type:j.type,city:j.city,region:j.region,country:j.country,flag:j.flag&&j.flag.emoji,postal:j.postal,lat:+j.latitude,lon:+j.longitude,isp:j.connection&&(j.connection.isp||j.connection.org),asn:j.connection&&j.connection.asn,tz:j.timezone&&j.timezone.id}:null),
+    jf('https://ipapi.co/json/').then(j=>j.ip&&!j.error?{ip:j.ip,type:j.version,city:j.city,region:j.region,country:j.country_name,postal:j.postal,lat:+j.latitude,lon:+j.longitude,isp:j.org,asn:String(j.asn||'').replace('AS',''),tz:j.timezone}:null),
+    jf('https://get.geojs.io/v1/ip/geo.json').then(j=>j.ip?{ip:j.ip,city:j.city,region:j.region,country:j.country,lat:+j.latitude,lon:+j.longitude,isp:j.organization_name,asn:j.asn,tz:j.timezone,acc:+j.accuracy}:null)
+  ].map(p=>p.catch(()=>null));
+  const R=(await Promise.all(jobs)).filter(r=>r&&isFinite(r.lat)&&isFinite(r.lon)&&(r.lat||r.lon));
+  if(!R.length)return null;
+  const key=r=>(r.city||'').toLowerCase(),votes={};
+  R.forEach(r=>{votes[key(r)]=(votes[key(r)]||0)+1});
+  const top=Object.keys(votes).sort((a,b)=>votes[b]-votes[a])[0],base=R.find(r=>key(r)===top);
+  const A=R.filter(r=>hav(base.lat,base.lon,r.lat,r.lon)<60);
+  const lat=A.reduce((s,r)=>s+r.lat,0)/A.length,lon=A.reduce((s,r)=>s+r.lon,0)/A.length;
+  const spread=Math.max(...A.map(r=>hav(lat,lon,r.lat,r.lon))),pick=k=>{const r=A.find(x=>x[k]);return r?r[k]:''};
+  return{ip:pick('ip'),type:pick('type'),city:base.city,region:pick('region'),country:pick('country'),flag:pick('flag'),postal:pick('postal'),isp:pick('isp'),asn:pick('asn'),tz:pick('tz'),lat,lon,n:A.length,total:R.length,acc:Math.round(Math.max(A.length>1?10:25,spread,A.length===1?(base.acc||0):0))};
 }
 async function getWeather(la,lo){
-  try{return(await(await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${la}&longitude=${lo}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m,is_day&timezone=auto`)).json()).current}catch(e){return null}
+  try{
+    const j=await(await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${la}&longitude=${lo}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,cloud_cover,surface_pressure,wind_speed_10m,is_day&daily=sunrise,sunset,uv_index_max,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1`)).json();
+    return j.current?{...j.current,d:j.daily}:null;
+  }catch(e){return null}
+}
+async function getAir(la,lo){
+  try{return(await(await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${la}&longitude=${lo}&current=us_aqi,pm2_5`)).json()).current||null}catch(e){return null}
 }
 async function collect(){
   const t=[];
   t.push(measureSpeed().then(v=>{if(Number.isFinite(v))info.mbps=v}));
   t.push(measureHz().then(v=>{info.hz=v}));
   t.push((async()=>{try{if(navigator.getBattery)info.bat=await navigator.getBattery()}catch(e){}})());
-  t.push((async()=>{try{if(navigator.userAgentData)info.uad=await navigator.userAgentData.getHighEntropyValues(['model','platformVersion','architecture','bitness'])}catch(e){}})());
-  t.push((async()=>{info.ip=await getIP();if(info.ip)info.w=await getWeather(info.ip.lat,info.ip.lon)})());
+  t.push((async()=>{try{if(navigator.userAgentData)info.uad=await navigator.userAgentData.getHighEntropyValues(['model','platformVersion','architecture','bitness','fullVersionList'])}catch(e){}})());
+  t.push((async()=>{try{const d=await navigator.mediaDevices.enumerateDevices(),c=k=>d.filter(x=>x.kind===k).length;info.media={cam:c('videoinput'),mic:c('audioinput'),spk:c('audiooutput')}}catch(e){}})());
+  t.push((async()=>{
+    info.ip=await getIP();
+    if(info.ip)[info.w,info.aq]=await Promise.all([getWeather(info.ip.lat,info.ip.lon),getAir(info.ip.lat,info.ip.lon)]);
+  })());
   await Promise.allSettled(t);
   info.done=true;
 }
@@ -516,6 +547,8 @@ function dev(){
   else if(/Linux/.test(u)){os='Linux';kind='computer';name='<b>Linux computer</b>'}
   const BR=[[/EdgA?\/(\d+)/,'Edge'],[/OPR\/(\d+)/,'Opera'],[/SamsungBrowser\/(\d+)/,'Samsung Internet'],[/(?:Firefox|FxiOS)\/(\d+)/,'Firefox'],[/(?:Chrome|CriOS)\/(\d+)/,'Chrome'],[/Version\/(\d+).*Safari/,'Safari']];
   const bm=BR.find(([r])=>r.test(u));let br=bm?`${bm[1]} ${u.match(bm[0])[1]}`:'koi browser';
+  const fl=uad.fullVersionList||[],fv=fl.find(x=>!/Not.?A|Chromium/i.test(x.brand))||fl.find(x=>/Chromium/i.test(x.brand));
+  if(bm&&fv)br=`${bm[1]} ${fv.version}`;
   if(navigator.brave)br='Brave';
   const app=m(/(Instagram|FBAN|FBAV|Snapchat|Telegram|LinkedInApp)/);
   return{kind,name,os,br,app:app&&({FBAN:'Facebook',FBAV:'Facebook',LinkedInApp:'LinkedIn'}[app]||app)};
@@ -523,9 +556,22 @@ function dev(){
 
 // ---------- Text helpers ----------
 const wt=c=>c===0?'aasman bilkul saaf hai':c<3?'halke badal chhaye hain':c===3?'badal chhaye hue hain':c<50?'kohra hai':c<60?'halki phuhaar ho rahi hai':c<70?'baarish ho rahi hai':c<80?'barfbari ho rahi hai':c<83?'baarish ki bauchhar aa rahi hai':c<87?'barfbari ho rahi hai':'aandhi-toofan chal raha hai';
-const wx=(w,who)=>w?`${who} abhi <b>${Math.round(w.temperature_2m)}°C</b> hai (mehsoos <b>${Math.round(w.apparent_temperature)}°C</b> jaisa), ${wt(w.weather_code)}, humidity <b>${w.relative_humidity_2m}%</b> aur hawa <b>${Math.round(w.wind_speed_10m)} km/h</b> ki chal rahi hai${w.precipitation>0?` (pichle ghante me ${w.precipitation} mm baarish)`:''}. ${w.weather_code>=51&&w.weather_code<87?'Chhatri saath rakhiye ☔':w.temperature_2m>=35?'Garmi kaafi hai, paani peete rahiye 💧':w.temperature_2m<=12?'Thand hai, garam kapde pehen lijiye 🧣':w.is_day?'Mausam kaafi suhana hai 🌤️':'Raat suhani hai 🌙'}`:'';
 const J=(...a)=>a.filter(Boolean).join(' ');
-const mins=s=>s&&isFinite(s)?(s>=3600?`${Math.floor(s/3600)} ghante ${Math.round(s%3600/60)} minute`:`${Math.round(s/60)} minute`):'';
+const t12=s=>{const[h,m]=s.slice(11,16).split(':').map(Number);return`${h%12||12}:${String(m).padStart(2,'0')} ${h<12?'AM':'PM'}`};
+const aqiTxt=a=>a<=50?'achhi':a<=100?'theek-thaak':a<=150?'sensitive logon ke liye kharab':a<=200?'kharab':a<=300?'bahut kharab':'khatarnak';
+const wx=(w,who,aq)=>{
+  if(!w)return '';
+  const c=w.weather_code,d=w.d||{};
+  return J(`${who} abhi <b>${Math.round(w.temperature_2m)}°C</b> hai (mehsoos <b>${Math.round(w.apparent_temperature)}°C</b> jaisa) aur ${wt(c)}.`,
+    `Humidity <b>${w.relative_humidity_2m}%</b> hai, aasman par <b>${w.cloud_cover}%</b> badal hain, hawa <b>${Math.round(w.wind_speed_10m)} km/h</b> ki chal rahi hai aur pressure <b>${Math.round(w.surface_pressure)} hPa</b> hai${w.precipitation>0?`; pichle ghante me ${w.precipitation} mm baarish bhi hui`:''}.`,
+    d.temperature_2m_max?`Aaj ka tapman <b>${Math.round(d.temperature_2m_min[0])}°C se ${Math.round(d.temperature_2m_max[0])}°C</b> ke beech rahega${d.uv_index_max?`, aur UV index <b>${d.uv_index_max[0]}</b> tak ja sakta hai`:''}.`:'',
+    d.sunrise?`Sooraj aaj <b>${t12(d.sunrise[0])}</b> par nikla aur <b>${t12(d.sunset[0])}</b> par dubega 🌅.`:'',
+    aq&&aq.us_aqi!=null?`Hawa ki quality (AQI) <b>${Math.round(aq.us_aqi)}</b> hai, yaani <b>${aqiTxt(aq.us_aqi)}</b>${aq.pm2_5!=null?` (PM2.5: ${aq.pm2_5} µg/m³)`:''}${aq.us_aqi>150?' — bahar nikalte waqt mask pehen lena behtar rahega 😷':''}.`:'',
+    c>=51&&c<87?'Chhatri saath rakhiye ☔':w.temperature_2m>=35?'Garmi kaafi hai, paani peete rahiye 💧':w.temperature_2m<=12?'Thand hai, garam kapde pehen lijiye 🧣':aq&&aq.us_aqi>150?'':w.is_day?'Mausam kaafi suhana hai 🌤️':'Raat suhani hai 🌙');
+};
+const mins=s=>{if(!(s>0)||!isFinite(s))return '';const m=Math.round(s/60),h=Math.floor(m/60);return h?`${h} ghante${m%60?` ${m%60} minute`:''}`:`${m} minute`};
+const tzMin=z=>{try{const d=new Date(),a=new Date(d.toLocaleString('en-US',{timeZone:z})),b=new Date(d.toLocaleString('en-US',{timeZone:'UTC'}));return Math.round((a-b)/60000)}catch(e){return null}};
+const perm=async n=>{try{return(await navigator.permissions.query({name:n})).state}catch(e){return ''}};
 
 // Types html into el like a person typing (tap the message box to skip ahead)
 function typeInto(el,html,isSkip){
@@ -563,20 +609,25 @@ async function exactLocation(btn){
   if(!navigator.geolocation||!window.isSecureContext){toast('Location ke liye HTTPS aur browser support chahiye');return}
   btn.disabled=true;btn.textContent='Location pata kar raha hu…';
   let pos;
-  try{pos=await getPos(false)}                                   // fast network-based fix first
+  try{pos=await getPos(false)}
   catch(e){
     if(e.code===1){reset('Location permission block hai — browser ki site settings me Allow karein');return}
-    try{pos=await getPos(true)}                                  // then a GPS-accurate fix
+    try{pos=await getPos(true)}
     catch(e2){reset(e2.code===1?'Location permission block hai':'Location mil nahi payi, dobara try karein');return}
   }
   const la=pos.coords.latitude,lo=pos.coords.longitude,acc=Math.round(pos.coords.accuracy);
-  const [addr,w]=await Promise.all([reverseGeo(la,lo),getWeather(la,lo)]);
+  const [addr,w,aq]=await Promise.all([reverseGeo(la,lo),getWeather(la,lo),getAir(la,lo)]);
+  const gap=info.ip?Math.round(hav(info.ip.lat,info.ip.lon,la,lo)):null;
   const sec=document.createElement('div');
   sec.className='sx';
-  sec.innerHTML=`<div class="sx-h"><span>🎯</span><span>Exact Location</span></div><div>Aapki permission ke baad asli location mil gayi: ${addr?`aap lagbhag <b>${addr}</b> ke paas hain.`:'address ka naam nahi mil paya, par ye coordinates asli hain.'}<br>Coordinates <b>${la.toFixed(5)}, ${lo.toFixed(5)}</b> (accuracy ~${acc} m). ${wx(w,'Wahan')}<br><a href="https://www.google.com/maps?q=${la},${lo}" target="_blank" rel="noopener" class="inline-block mt-2 text-xs font-semibold px-4 py-2 rounded-full bg-accent text-white">🗺️ Map me dekhein</a></div>`;
+  sec.innerHTML=`<div class="sx-h"><span>🎯</span><span>Exact Location</span></div><div>${J(`Aapki permission ke baad asli location mil gayi: ${addr?`aap lagbhag <b>${addr}</b> ke paas hain.`:'address ka naam nahi mil paya, par ye coordinates asli hain.'}`,`Coordinates <b>${la.toFixed(5)}, ${lo.toFixed(5)}</b> hain aur accuracy lagbhag <b>${acc} meter</b> ki hai.`,gap!=null?`Waise IP se jo andaza laga tha, wo asli jagah se lagbhag <b>${gap} km</b> door tha.`:'',wx(w,'Wahan',aq))}<br><a href="https://www.google.com/maps?q=${la},${lo}" target="_blank" rel="noopener" class="inline-block mt-2 text-xs font-semibold px-4 py-2 rounded-full bg-accent text-white">🗺️ Map me dekhein</a></div>`;
   const host=btn.closest('.sx');
   if(host)host.insertAdjacentElement('afterend',sec);else $('chatBody').appendChild(sec);
   btn.remove();
+}
+function copyReport(b){
+  const t=(($('chatBody')||{}).innerText||'').replace(/📋[^\n]*$/,'').trim();
+  navigator.clipboard.writeText(t).then(()=>{b.textContent='✅ Copy ho gaya'}).catch(()=>toast('Copy nahi ho paya'));
 }
 
 // ---------- Surprise: a respectful, conversational chat, section by section ----------
@@ -606,6 +657,7 @@ async function showSurprise(){
   const time=now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
   const tz=Intl.DateTimeFormat().resolvedOptions().timeZone,off=-now.getTimezoneOffset(),ao=Math.abs(off);
   const utc=`UTC${off<0?'-':'+'}${Math.floor(ao/60)}${ao%60?':'+String(ao%60).padStart(2,'0'):''}`;
+  const yr=now.getFullYear(),doy=Math.floor((now-new Date(yr,0,0))/864e5),ylen=(yr%4===0&&yr%100!==0)||yr%400===0?366:365;
   let rf='';try{rf=new URL(document.referrer).hostname.replace(/^www\./,'')}catch(e){}
   const src=/instagram/.test(rf)?'Instagram':/facebook|fb\./.test(rf)?'Facebook':/t\.co|twitter|x\.com/.test(rf)?'X':/t\.me|telegram/.test(rf)?'Telegram':/whatsapp/.test(rf)?'WhatsApp':/google/.test(rf)?'Google':/youtube/.test(rf)?'YouTube':rf;
 
@@ -615,45 +667,64 @@ async function showSurprise(){
        :same?'Namaste! Aap toh abhi thodi der pehle bhi aaye the — dobara aane ke liye bahut shukriya 😊'
        :`Namaste! Aap wapas aaye, ye dekhkar bahut achha laga 😊 Pichli baar aap <b>${D(last)}</b> ko aaye the, mujhe yaad hai.`,
       n>1?`Ye aapki <b>${n}vi</b> visit hai${first?`, aur sabse pehli baar aap <b>${D(first)}</b> ko aaye the`:''}.`:'',
-      'Chaliye, aapse thodi baat karte hain. Aapke phone aur browser se mujhe jo jankari mil rahi hai, wo ek-ek karke aaram se aapko bata deta hu.')],
+      'Chaliye, aaram se thodi baat karte hain. Aapke phone aur browser se mujhe jo jankari mil rahi hai, wo ek-ek karke bata deta hu.')],
     ['🕒','Date aur Time',()=>J(
-      `Sabse pehle aaj ki baat: aaj <b>${date}</b> hai aur abhi <b>${time}</b> baj rahe hain.`,
+      `Sabse pehle aaj ki baat — aaj <b>${date}</b> hai aur abhi <b>${time}</b> baj rahe hain.`,
+      `Ye saal ka <b>${doy}vaan din</b> hai, yaani saal ka lagbhag <b>${Math.round(doy/ylen*100)}%</b> beet chuka hai.`,
       `Aapka timezone <b>${tz}</b> (${utc}) hai.`,wish,
       src?`Lagta hai aap <b>${src}</b> se hote hue yahan tak pahunche.`:'Lagta hai aap seedhe link kholkar yahan aaye hain.')],
     ['📱','Aapka Device',async()=>{
       await need();const d=dev();
-      return J(`Ab aapke device ki baat. Aap mujhse ek ${d.kind} se jude hain: ${d.name}.`,
+      return J(`Ab batata hu ki aap mujhse kis device se jude hain. Ye ek ${d.kind} lag raha hai: ${d.name}.`,
         `Isme <b>${d.os}</b> chal raha hai, aur aap <b>${d.br}</b> browser use kar rahe hain${d.app?`, wo bhi <b>${d.app}</b> ke andar wale browser me`:''}.`);
     }],
     ['⚙️','Hardware',async()=>{
       await need();
-      const dpr=devicePixelRatio,sw=screen.width,sh=screen.height,ua=info.uad||{},tp=navigator.maxTouchPoints,gpu=gpuName(),mem=navigator.deviceMemory;
-      return J(`Ab hardware ki taraf chalte hain. Aapki screen <b>${sw}×${sh}</b> (CSS pixels) ki hai; ${dpr}x sharpness ke saath iska asli resolution lagbhag <b>${Math.round(sw*dpr)}×${Math.round(sh*dpr)}</b> pixels banta hai${info.hz?`, aur refresh rate lagbhag <b>${info.hz}Hz</b> hai`:''}.`,
+      const dpr=devicePixelRatio,sw=screen.width,sh=screen.height,ua=info.uad||{},tp=navigator.maxTouchPoints,gpu=gpuName(),mem=navigator.deviceMemory,md=info.media||{};
+      const feat=[['vibration',navigator.vibrate],['Bluetooth',navigator.bluetooth],['NFC',window.NDEFReader],['fingerprint / face unlock (WebAuthn)',window.PublicKeyCredential],['motion sensors',window.DeviceMotionEvent]].filter(x=>x[1]).map(x=>x[0]);
+      return J(`Ab hardware ki taraf chalte hain. Aapki screen <b>${sw}×${sh}</b> (CSS pixels) ki hai; ${dpr}x sharpness ke saath iska asli resolution lagbhag <b>${Math.round(sw*dpr)}×${Math.round(sh*dpr)}</b> pixels banta hai (${screen.colorDepth}-bit color)${info.hz?`, aur refresh rate lagbhag <b>${info.hz}Hz</b> naapa gaya`:''}.`,
         `Display ${matchMedia('(color-gamut: p3)').matches?'wide-color (P3) hai':'normal sRGB colors dikhata hai'}${matchMedia('(dynamic-range: high)').matches?' aur HDR bhi support karta hai':''}, aur abhi screen <b>${innerHeight>innerWidth?'portrait':'landscape'}</b> orientation me hai.`,
-        navigator.hardwareConcurrency?`Processor me <b>${navigator.hardwareConcurrency} cores</b> dikh rahe hain${ua.architecture?` (${ua.architecture.toUpperCase()}${ua.bitness?' '+ua.bitness+'-bit':''} architecture)`:''}.`:'',
-        mem?`RAM lagbhag <b>${mem}GB${mem>=8?'+':''}</b> hai (browser 8GB se upar ka number nahi batata).`:'',
+        navigator.hardwareConcurrency?`Processor me <b>${navigator.hardwareConcurrency} cores</b> dikh rahe hain${ua.architecture?` (${ua.architecture.toUpperCase()}${ua.bitness?' '+ua.bitness+'-bit':''} architecture)`:navigator.platform?` (platform: ${navigator.platform})`:''}.`:'',
+        mem?`RAM lagbhag <b>${mem}GB${mem>=8?'+':''}</b> hai.`:'',
         gpu?`Graphics chip ka naam <b>${gpu}</b> bata raha hai.`:'',
-        tp>0?`Touch screen <b>${tp} ungliyon</b> tak ka multi-touch support karti hai 👆.`:'');
+        tp>0?`Touch screen <b>${tp} ungliyon</b> tak ka multi-touch support karti hai 👆.`:'',
+        md.cam||md.mic?`Browser ko lagbhag <b>${md.cam} camera</b>, <b>${md.mic} microphone</b> aur <b>${md.spk} speaker output</b> dikh rahe hain.`:'',
+        feat.length?`Browser ke hisaab se device <b>${feat.join(', ')}</b> bhi support karta hai.`:'');
     }],
-    ['💻','Software aur Settings',()=>{
+    ['💻','Software aur Settings',async()=>{
+      await need();
       const d=dev(),langs=(navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language]).slice(0,3).map(l=>{try{return new Intl.DisplayNames(['en'],{type:'language'}).of(l)}catch(e){return l}}).join(', ');
-      return J(`Software ki taraf dekhein toh aapke device par <b>${d.os}</b> hai aur browser <b>${d.br}</b>.`,
-        `Bhasha <b>${langs}</b> set hai, aur aap <b>${matchMedia('(prefers-color-scheme: dark)').matches?'Dark':'Light'} Mode</b> use kar rahe hain.`,
-        `Cookies ${navigator.cookieEnabled?'on':'band'} hain${navigator.doNotTrack==='1'?', aur Do-Not-Track bhi on hai — privacy ka achha khayal 👏':''}${matchMedia('(display-mode: standalone)').matches?', aur aap ise app ki tarah chala rahe hain':''}.`,
+      const ck=(()=>{try{document.cookie='gt_t=1;max-age=60;path=/;SameSite=Lax';const ok=document.cookie.indexOf('gt_t=1')>-1;document.cookie='gt_t=;max-age=0;path=/';return ok}catch(e){return false}})();
+      let ls=false;try{localStorage.setItem('gt_t','1');localStorage.removeItem('gt_t');ls=true}catch(e){}
+      let st='';try{const e=await navigator.storage.estimate();if(e.quota)st=(e.quota/1073741824).toFixed(1)+' GB'}catch(e){}
+      const pm={granted:'allow hai',denied:'block hai',prompt:'abhi pucha nahi gaya'},gp=await perm('geolocation'),np=await perm('notifications');
+      return J(`Software ki taraf dekhein toh aapke device par <b>${d.os}</b> hai aur browser <b>${d.br}</b>. Bhasha <b>${langs}</b> set hai (region setting <b>${Intl.DateTimeFormat().resolvedOptions().locale}</b>), aur aap <b>${matchMedia('(prefers-color-scheme: dark)').matches?'Dark':'Light'} Mode</b> use kar rahe hain.`,
+        `Cookies ki baat karein toh aapke browser ne is site ki cookies <b>${ck?'accept kar li hain ✅':'block ki hui hain ❌'}</b> — maine ek chhoti test cookie save karke wapas padhkar check kiya${ck?'':', par wo save nahi ho payi'}. Local storage bhi <b>${ls?'chalu':'band'}</b> hai.`,
+        st?`Browser is site ko lagbhag <b>${st}</b> tak storage use karne deta hai.`:'',
+        gp?`Location permission is site ke liye <b>${pm[gp]||gp}</b>${np?`, aur notifications <b>${pm[np]||np}</b>`:''}.`:'',
+        navigator.doNotTrack==='1'||navigator.globalPrivacyControl?'Aapne Do-Not-Track / privacy signal on rakha hai — privacy ka achha khayal 👏':'',
+        matchMedia('(display-mode: standalone)').matches?'Aap ise app ki tarah chala rahe hain.':'',
         `Browser ke hisaab se aap abhi <b>${navigator.onLine?'online':'offline'}</b> hain.`);
     }],
     ['🔋','Battery',async()=>{
       await need();const b=info.bat;
       if(!b)return 'Battery ki jankari aapka browser share nahi karta (iPhone/Safari aur Firefox me ye hamesha band rehti hai), isliye iske baare me main kuch nahi bata sakta.';
-      const l=Math.round(b.level*100);
-      return J(b.charging?`Battery abhi <b>${l}%</b> hai aur phone <b>charging</b> par laga hai ⚡${mins(b.chargingTime)?`, poora charge hone me lagbhag ${mins(b.chargingTime)} lagenge`:''}.`
-        :`Battery abhi <b>${l}%</b> hai${mins(b.dischargingTime)?`, jo lagbhag ${mins(b.dischargingTime)} chalegi`:''}.`,
-        b.charging?'Charging chal rahi hai, ye achhi baat hai 😊':l<20?'Battery kaafi kam hai, charger paas rakhiye 🪫':l<50?'Abhi chal jayegi, bas thoda dhyan rakhiye 🙂':'Battery kaafi achhi hai 🔋');
+      const l=Math.round(b.level*100),ch=b.charging;
+      const left=b.dischargingTime>=300&&b.dischargingTime<172800?mins(b.dischargingTime):'';   // ignore 0 / Infinity / unrealistic values
+      const full=b.chargingTime>0&&isFinite(b.chargingTime)?mins(b.chargingTime):'';
+      return J(`Battery ki baat karein toh abhi <b>${l}%</b> charge hai.`,
+        ch?(l>=100?'Phone <b>charger par laga hai</b> aur poori tarah charge ho chuka hai ✅.':`Phone abhi <b>charging par laga hai</b> ⚡${full?` aur poora charge hone me lagbhag <b>${full}</b> aur lagenge`:''}.`)
+          :'Phone abhi <b>charger se juda nahi hai</b>, yaani battery use ho rahi hai 🔌.',
+        !ch&&left?`Browser ke andaze ke hisaab se battery lagbhag <b>${left}</b> chal sakti hai (ye sirf andaza hai, use ke hisaab se badalta rehta hai).`:'',
+        !ch&&!left?'Browser abhi chalne ke time ka bharosemand andaza nahi de raha, isliye main use nahi bata raha.':'',
+        l<20?(ch?'Battery 20% se kam hai, par achha hai ki charging chal rahi hai — thoda charge hone dijiye 😊'
+          :`Battery <b>20% se kam</b> hai 🪫 — kripya jald charger laga lijiye${l<10?' (bahut kam bachi hai, phone kabhi bhi band ho sakta hai)':''}, aur tab tak Battery Saver on kar lena achha rahega.`)
+          :l<50?'Abhi aaram se chal jayegi, bas thoda dhyan rakhiye 🙂':'Battery kaafi achhi hai 🔋');
     }],
     ['🌐','Internet aur IP Address',async()=>{
       await need();
-      const c=navigator.connection||{},ip=info.ip,mb=info.mbps??c.downlink??null,g=mb<.5?'2G':mb<3?'3G':mb<50?'4G':'5G';
-      return J(mb!=null?`Internet ki speed abhi lagbhag <b>${mb<10?mb.toFixed(1):Math.round(mb)} Mbps</b> aa rahi hai, jo <b>${g}</b> jaisi mani ja sakti hai${c.rtt?`, aur response aane me ~${c.rtt}ms lagta hai`:''}.`:'',
+      const c=navigator.connection||{},ip=info.ip,mb=info.mbps??c.downlink??null,g=mb<.5?'2G':mb<3?'3G':mb<50?'4G':'5G',pg=info.ping||c.rtt;
+      return J(mb!=null?`Internet ki baat karein toh abhi speed lagbhag <b>${mb<10?mb.toFixed(1):Math.round(mb)} Mbps</b> naapi gayi, jo <b>${g}</b> jaisi mani ja sakti hai${pg?`, aur server tak response aane me lagbhag <b>${pg} ms</b> lagta hai`:''}.`:'',
         c.type==='wifi'?'Lagta hai aap Wi-Fi par hain 📶.':c.type==='cellular'?'Lagta hai aap mobile data par hain 📶.':'',
         c.saveData?'Data Saver bhi on hai.':'',
         ip?`Aapki internet company <b>${ip.isp||'pata nahi'}</b>${ip.asn?` (AS${ip.asn})`:''} hai, aur aapka public IP address <b>${ip.ip}</b> (${ip.type||'IP'}) dikh raha hai.`:'Aapka IP address abhi mujhe nahi mil paya (shayad network ya ad-blocker ne roka).');
@@ -661,14 +732,17 @@ async function showSurprise(){
     ['📍','Address aur Mausam',async()=>{
       await need();const ip=info.ip;
       if(!ip)return 'Location abhi detect nahi ho payi, isliye mausam bhi nahi bata paunga.';
-      return J(`IP address ke hisaab se aap lagbhag <b>${ip.city}, ${ip.region}, ${ip.country}</b> ${ip.flag||''} ke aas-paas hain${ip.postal?` (pin code ~${ip.postal})`:''}; coordinates lagbhag ${(+ip.lat).toFixed(2)}, ${(+ip.lon).toFixed(2)} hain.`,
-        'Dhyan rahe, IP se sirf shehar tak ka andaza lagta hai, ghar ka exact pata nahi.',
-        wx(info.w,'Wahan'),
+      const btz=Intl.DateTimeFormat().resolvedOptions().timeZone;
+      return J(`IP address se location nikaalne ke liye maine ${ip.total} alag services se poocha${ip.n>1?`, aur unme se ${ip.n} ne lagbhag ek hi jagah batayi`:', par sirf ek hi ne jawab diya'}: aap lagbhag <b>${ip.city}, ${ip.region}, ${ip.country}</b> ${ip.flag||''} ke aas-paas hain${ip.postal?` (pin code ~${ip.postal})`:''}.`,
+        `Coordinates lagbhag <b>${ip.lat.toFixed(3)}, ${ip.lon.toFixed(3)}</b> hain aur andaza <b>±${ip.acc} km</b> ke daayre me sahi hona chahiye.`,
+        'Dhyan rahe, IP se aksar aapki internet company ke nearest hub ki location milti hai, isliye ghar ka exact pata nahi milta.',
+        ip.tz&&btz&&tzMin(ip.tz)!==null&&tzMin(ip.tz)!==tzMin(btz)?`Ek aur baat: IP ka timezone (<b>${ip.tz}</b>) aapke device ke timezone (<b>${btz}</b>) se alag hai — shayad VPN ya proxy on hai, toh location galat bhi ho sakti hai.`:ip.tz?'IP ka timezone aapke device ke timezone se milta hai, jo achha sanket hai ✅.':'',
+        wx(info.w,'Wahan',info.aq),
         '<br><button onclick="exactLocation(this)" class="mt-2 text-xs font-semibold px-4 py-2 rounded-full bg-accent text-white">📍 Exact address dekhein</button>');
     }],
     ['🔒','Ek zaroori baat',()=>J(
       'Ye saari jankari aapke browser se hi milti hai, har website ko ye mil sakti hai; maine bas aapko dikha di.',
-      `Mere paas kuch save nahi hota aur kahin bheja bhi nahi jaata${info.ip?' (bas IP, location aur mausam ke liye free services se poocha gaya hai)':''}. Visit ki ginti sirf aapke phone me save rehti hai.`,
+      `Mere paas kuch save nahi hota aur kahin bheja bhi nahi jaata${info.ip?' (bas IP, location, mausam aur speed test ke liye free services se poocha gaya hai)':''}. Visit ki ginti sirf aapke phone me save rehti hai.`,
       'Website par aane ke liye ek baar phir dil se shukriya. Apna khayal rakhiye aur muskurate rahiye! ❤️')]
   ];
 
@@ -681,6 +755,10 @@ async function showSurprise(){
     body.appendChild(sec);
     await typeInto(sec.lastElementChild,html,()=>skip);
   }
+  const cp=document.createElement('div');
+  cp.className='flex justify-center mt-1';
+  cp.innerHTML='<button type="button" class="dm-mini" onclick="copyReport(this)">📋 Poori jankari copy karein</button>';
+  body.appendChild(cp);
   status.textContent='Online 🟢';
   celebrate();
 }
