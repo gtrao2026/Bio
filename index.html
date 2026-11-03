@@ -200,15 +200,16 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
     <div class="flex items-center justify-between mb-4">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center text-accent"><i class="fa-solid fa-message"></i></div>
-        <div><h3 class="font-bold leading-tight">Direct Message</h3><p class="text-xs text-[var(--text-muted)]">No app, no login, no signup — just write and send</p></div>
+        <div><h3 class="font-bold leading-tight">Direct Message</h3><p class="text-xs text-[var(--text-muted)]">No mobile number needed — send a message anonymously</p></div>
       </div>
       <button onclick="closeDm()" class="text-[var(--text-muted)]" aria-label="Close"><i class="fa-solid fa-xmark text-xl"></i></button>
     </div>
 
     <!-- Step 1: name first -->
     <div id="dmStep1">
-      <label for="dmName" class="text-sm font-semibold">Pehle apna naam batayein</label>
+      <label for="dmName" class="text-sm font-semibold">Pehle apna naam batayein (nickname bhi chalega)</label>
       <input id="dmName" maxlength="40" autocomplete="name" placeholder="Aapka naam" class="dm-input mt-2">
+      <p class="text-xs text-[var(--text-muted)] mt-2">No mobile number needed — you can send a message anonymously.</p>
       <p id="dmNameErr" class="hidden text-xs mt-1" style="color:#f87171">Kripya apna naam likhein (kam se kam 2 akshar).</p>
       <button onclick="dmNext()" class="dm-btn mt-4 w-full">Aage badhein <i class="fa-solid fa-arrow-right"></i></button>
     </div>
@@ -225,7 +226,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
       <div id="dmDrop" class="dm-drop mt-3">
         <button type="button" class="dm-mini" onclick="$('dmImg').click()"><i class="fa-solid fa-image"></i> Photo</button>
         <button type="button" class="dm-mini" onclick="$('dmFile').click()"><i class="fa-solid fa-paperclip"></i> File</button>
-        <span class="text-[0.7rem] text-[var(--text-muted)]">ya yahan drag &amp; drop / paste karein (max 5, har ek 50 MB tak)</span>
+        <span class="text-[0.7rem] text-[var(--text-muted)]">ya yahan drag &amp; drop / paste karein (max 5, har ek 20 MB tak; badi photos apne aap chhoti ho jaati hain)</span>
         <input id="dmImg" type="file" accept="image/*" multiple hidden>
         <input id="dmFile" type="file" multiple hidden>
       </div>
@@ -258,21 +259,22 @@ function toast(m){const t=document.createElement('div');t.className='glass-card 
 // Links
 const XIcon='<svg viewBox="0 0 24 24" class="w-6 h-6 fill-current" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>';
 const LINKS=[
- ['Website','<i class="fa-solid fa-globe"></i>','var(--accent)','https://pdflytools.github.io/Home/'],
+ ['Website','<i class="fa-solid fa-globe"></i>','var(--accent)','https://pdflytools.github.io/Home/','pill'],
  ['Instagram','<i class="fa-brands fa-instagram ig-grad"></i>','#dc2743','ig'],
+ ['X',XIcon,'var(--text-main)','https://x.com/mr_gt_rao'],
  ['Telegram','<i class="fa-brands fa-telegram"></i>','#0088cc','https://t.me/Gt_Rao'],
  ['WhatsApp','<i class="fa-brands fa-whatsapp"></i>','#25D366','https://whatsapp.com/channel/0029Vb8s6FTLNSa1Hh33k607'],
- ['X',XIcon,'var(--text-main)','https://x.com/mr_gt_rao'],
+ ['Facebook','<i class="fa-brands fa-facebook-f"></i>','#1877F2',''],
  ['YouTube','<i class="fa-brands fa-youtube"></i>','#FF0000',''],
- ['Facebook','<i class="fa-brands fa-facebook-f"></i>','#1877F2','','col-span-2'],
- ['Direct Message','<i class="fa-solid fa-message"></i>','var(--accent)','dm','col-span-2','Send me a message directly — no app, no login, no signup needed.']
+ ['Direct Message','<i class="fa-solid fa-message"></i>','var(--accent)','dm','col-span-2','No mobile number needed — send a message anonymously.']
 ];
 $('linksGrid').innerHTML=LINKS.map(([n,ic,c,u,x,sub])=>{
-  const soon=!u,tag=(u==='ig'||u==='dm')?'button':soon?'div':'a';
+  const soon=!u,pill=x==='pill',tag=(u==='ig'||u==='dm')?'button':soon?'div':'a';
   const at=u==='ig'?'onclick="openIgModal()"':u==='dm'?'onclick="openDm()"':soon?'':`href="${u}" target="_blank" rel="noopener"`;
-  return `<${tag} ${at} class="link-card glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-1 text-center w-full ${x||''} ${soon?'cursor-default':''}">
-   <div class="w-12 h-12 rounded-full flex items-center justify-center mb-1 text-2xl" style="color:${c};background:color-mix(in srgb,${c} 14%,transparent)">${ic}</div>
-   <span class="font-semibold text-sm">${n}</span>${sub?`<span class="text-xs text-[var(--text-muted)] max-w-xs leading-snug">${sub}</span>`:''}
+  const shape=pill?'rounded-full px-6 py-3 flex-row gap-3 col-span-2':`rounded-2xl p-4 flex-col gap-1 ${x||''}`;
+  return `<${tag} ${at} class="link-card glass-card ${shape} flex items-center justify-center text-center w-full ${soon?'cursor-default':''}">
+   <div class="${pill?'w-10 h-10 text-xl':'w-12 h-12 text-2xl mb-1'} rounded-full flex items-center justify-center" style="color:${c};background:color-mix(in srgb,${c} 14%,transparent)">${ic}</div>
+   <span class="font-semibold ${pill?'text-base':'text-sm'}">${n}</span>${sub?`<span class="text-xs text-[var(--text-muted)] max-w-xs leading-snug">${sub}</span>`:''}
    ${soon?'<span class="text-[0.55rem] uppercase tracking-wider font-bold bg-white/10 px-2 py-0.5 rounded-full mt-0.5">Coming Soon</span>':''}
   </${tag}>`}).join('');
 
@@ -512,7 +514,6 @@ async function collect(){
   t.push(measureHz().then(v=>{info.hz=v}));
   t.push((async()=>{try{if(navigator.getBattery)info.bat=await navigator.getBattery()}catch(e){}})());
   t.push((async()=>{try{if(navigator.userAgentData)info.uad=await navigator.userAgentData.getHighEntropyValues(['model','platformVersion','architecture','bitness','fullVersionList'])}catch(e){}})());
-  t.push((async()=>{try{const d=await navigator.mediaDevices.enumerateDevices(),c=k=>d.filter(x=>x.kind===k).length;info.media={cam:c('videoinput'),mic:c('audioinput'),spk:c('audiooutput')}}catch(e){}})());
   t.push((async()=>{
     info.ip=await getIP();
     if(info.ip)[info.w,info.aq]=await Promise.all([getWeather(info.ip.lat,info.ip.lon),getAir(info.ip.lat,info.ip.lon)]);
@@ -570,6 +571,8 @@ const wx=(w,who,aq)=>{
     c>=51&&c<87?'Chhatri saath rakhiye ☔':w.temperature_2m>=35?'Garmi kaafi hai, paani peete rahiye 💧':w.temperature_2m<=12?'Thand hai, garam kapde pehen lijiye 🧣':aq&&aq.us_aqi>150?'':w.is_day?'Mausam kaafi suhana hai 🌤️':'Raat suhani hai 🌙');
 };
 const mins=s=>{if(!(s>0)||!isFinite(s))return '';const m=Math.round(s/60),h=Math.floor(m/60);return h?`${h} ghante${m%60?` ${m%60} minute`:''}`:`${m} minute`};
+const PXW=[480,540,600,720,750,800,828,1080,1125,1170,1179,1200,1242,1260,1264,1280,1284,1290,1344,1440,1600,1920,2048,2560,2880,3200,3840],PXH=[800,854,960,1280,1334,1440,1560,1600,1920,2160,2220,2244,2280,2340,2376,2400,2412,2436,2460,2532,2556,2640,2688,2778,2796,2868,3088,3120,3168,3200,3216,3392,3840];
+const snapPx=(v,l)=>{const c=l.reduce((a,b)=>Math.abs(b-v)<Math.abs(a-v)?b:a);return Math.abs(c-v)/v<.012?c:Math.round(v)};
 const tzMin=z=>{try{const d=new Date(),a=new Date(d.toLocaleString('en-US',{timeZone:z})),b=new Date(d.toLocaleString('en-US',{timeZone:'UTC'}));return Math.round((a-b)/60000)}catch(e){return null}};
 const perm=async n=>{try{return(await navigator.permissions.query({name:n})).state}catch(e){return ''}};
 
@@ -680,16 +683,15 @@ async function showSurprise(){
     }],
     ['⚙️','Hardware',async()=>{
       await need();
-      const dpr=devicePixelRatio,sw=screen.width,sh=screen.height,ua=info.uad||{},tp=navigator.maxTouchPoints,gpu=gpuName(),mem=navigator.deviceMemory,md=info.media||{};
-      const feat=[['vibration',navigator.vibrate],['Bluetooth',navigator.bluetooth],['NFC',window.NDEFReader],['fingerprint / face unlock (WebAuthn)',window.PublicKeyCredential],['motion sensors',window.DeviceMotionEvent]].filter(x=>x[1]).map(x=>x[0]);
-      return J(`Ab hardware ki taraf chalte hain. Aapki screen <b>${sw}×${sh}</b> (CSS pixels) ki hai; ${dpr}x sharpness ke saath iska asli resolution lagbhag <b>${Math.round(sw*dpr)}×${Math.round(sh*dpr)}</b> pixels banta hai (${screen.colorDepth}-bit color)${info.hz?`, aur refresh rate lagbhag <b>${info.hz}Hz</b> naapa gaya`:''}.`,
+      const dpr=devicePixelRatio,sw=screen.width,sh=screen.height,ua=info.uad||{},tp=navigator.maxTouchPoints,gpu=gpuName(),mem=navigator.deviceMemory;
+      const lo=Math.min(sw,sh)*dpr,hi=Math.max(sw,sh)*dpr;
+      return J(`Ab hardware ki taraf chalte hain. Aapki screen <b>${sw}×${sh}</b> (CSS pixels) ki hai; ${dpr}x sharpness ke saath iska asli resolution lagbhag <b>${snapPx(lo,PXW)}×${snapPx(hi,PXH)}</b> pixels banta hai (${screen.colorDepth}-bit color).`,
+        info.hz?`Browser ne screen ko lagbhag <b>${info.hz}Hz</b> par chalta paya (power-saving mode me ye asli screen se kam bhi dikh sakta hai).`:'',
         `Display ${matchMedia('(color-gamut: p3)').matches?'wide-color (P3) hai':'normal sRGB colors dikhata hai'}${matchMedia('(dynamic-range: high)').matches?' aur HDR bhi support karta hai':''}, aur abhi screen <b>${innerHeight>innerWidth?'portrait':'landscape'}</b> orientation me hai.`,
         navigator.hardwareConcurrency?`Processor me <b>${navigator.hardwareConcurrency} cores</b> dikh rahe hain${ua.architecture?` (${ua.architecture.toUpperCase()}${ua.bitness?' '+ua.bitness+'-bit':''} architecture)`:navigator.platform?` (platform: ${navigator.platform})`:''}.`:'',
-        mem?`RAM lagbhag <b>${mem}GB${mem>=8?'+':''}</b> hai.`:'',
+        mem?`Browser ke andaaze ke mutabik RAM <b>${mem}GB ya usse zyada</b> hai.`:'',
         gpu?`Graphics chip ka naam <b>${gpu}</b> bata raha hai.`:'',
-        tp>0?`Touch screen <b>${tp} ungliyon</b> tak ka multi-touch support karti hai 👆.`:'',
-        md.cam||md.mic?`Browser ko lagbhag <b>${md.cam} camera</b>, <b>${md.mic} microphone</b> aur <b>${md.spk} speaker output</b> dikh rahe hain.`:'',
-        feat.length?`Browser ke hisaab se device <b>${feat.join(', ')}</b> bhi support karta hai.`:'');
+        tp>0?`Touch screen <b>${tp} ungliyon</b> tak ka multi-touch support karti hai 👆.`:'');
     }],
     ['💻','Software aur Settings',async()=>{
       await need();
@@ -727,7 +729,7 @@ async function showSurprise(){
       return J(mb!=null?`Internet ki baat karein toh abhi speed lagbhag <b>${mb<10?mb.toFixed(1):Math.round(mb)} Mbps</b> naapi gayi, jo <b>${g}</b> jaisi mani ja sakti hai${pg?`, aur server tak response aane me lagbhag <b>${pg} ms</b> lagta hai`:''}.`:'',
         c.type==='wifi'?'Lagta hai aap Wi-Fi par hain 📶.':c.type==='cellular'?'Lagta hai aap mobile data par hain 📶.':'',
         c.saveData?'Data Saver bhi on hai.':'',
-        ip?`Aapki internet company <b>${ip.isp||'pata nahi'}</b>${ip.asn?` (AS${ip.asn})`:''} hai, aur aapka public IP address <b>${ip.ip}</b> (${ip.type||'IP'}) dikh raha hai.`:'Aapka IP address abhi mujhe nahi mil paya (shayad network ya ad-blocker ne roka).');
+        ip?`IP ke hisaab se aapki internet company <b>${ip.isp||'pata nahi'}</b>${ip.asn?` (AS${ip.asn})`:''} lag rahi hai, aur aapka public IP address <b>${ip.ip}</b> (${ip.type||'IP'}) dikh raha hai.`:'Aapka IP address abhi mujhe nahi mil paya (shayad network ya ad-blocker ne roka).');
     }],
     ['📍','Address aur Mausam',async()=>{
       await need();const ip=info.ip;
@@ -781,11 +783,11 @@ function confetti(){
 }
 function celebrate(){fireworks();confetti()}
 
-// ---------- Direct message -> Telegram bot ----------
-// Messages go to this bot/chat. NOTE: anything in this file is visible to every visitor.
-// To hide the token later, put a proxy (e.g. a Cloudflare Worker) in front and set TG_URL to its address (ending with "/").
-const TG_URL='https://api.telegram.org/bot9050271131:AAHrZGKgnaIHvo1zs2a5AAfAAtF-JESuidw/',TG_CHAT='1811199798';
-const DM={files:[],busy:false,text:false},DM_MAX_FILES=5,DM_MAX_MB=50;
+// ---------- Direct message ----------
+// Messages are handed to a small private server-side function (see worker.js), so no secret key is stored in this page.
+// After deploying it, paste its address here:
+const DM_API='https://YOUR-WORKER.YOUR-NAME.workers.dev';
+const DM={files:[],busy:false,text:false},DM_MAX_FILES=5,DM_MAX_MB=20;
 const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 const fsize=b=>b>=1048576?(b/1048576).toFixed(1)+' MB':Math.max(1,Math.round(b/1024))+' KB';
 
@@ -834,15 +836,26 @@ function dmReset(){
   $('dmText').value='';$('dmBar').style.width='0%';dmRender();dmInput();
 }
 
-// Upload with progress (XHR) to the Telegram Bot API
-function tgPost(method,fd,onp){
+// Big photos are shrunk first (max 1600px, JPEG) so they upload in a second or two instead of minutes
+async function dmPrep(f){
+  if(!/^image\/(jpeg|png|webp)$/.test(f.type)||f.size<600*1024)return f;
+  try{
+    const bmp=await createImageBitmap(f),k=Math.min(1,1600/Math.max(bmp.width,bmp.height)),c=document.createElement('canvas');
+    c.width=Math.round(bmp.width*k);c.height=Math.round(bmp.height*k);
+    c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
+    const b=await new Promise(r=>c.toBlob(r,'image/jpeg',.82));
+    return b&&b.size<f.size?new File([b],f.name.replace(/\.\w+$/,'')+'.jpg',{type:'image/jpeg'}):f;
+  }catch(e){return f}
+}
+// One request with upload progress
+function dmPost(fd,onp){
   return new Promise((res,rej)=>{
     const x=new XMLHttpRequest();
-    x.open('POST',TG_URL+method);x.timeout=120000;
+    x.open('POST',DM_API);x.timeout=90000;
     if(x.upload)x.upload.onprogress=e=>{if(onp&&e.lengthComputable)onp(e.loaded/e.total)};
-    x.onload=()=>{let j={};try{j=JSON.parse(x.responseText)}catch(e){}j.ok?res(j):rej(new Error(j.description||('HTTP '+x.status)))};
-    x.onerror=()=>rej(new Error('Network error'));
-    x.ontimeout=()=>rej(new Error('Timeout'));
+    x.onload=()=>{let j={};try{j=JSON.parse(x.responseText)}catch(e){}res(j.ok?j:Object.assign(j,{ok:false,error:j.error||('Server error '+x.status)}))};
+    x.onerror=()=>rej(new Error('Internet connection check karein'));
+    x.ontimeout=()=>rej(new Error('Bahut der lag gayi'));
     x.send(fd);
   });
 }
@@ -850,33 +863,27 @@ async function dmSend(){
   if(DM.busy||$('dmHp').value)return;                         // honeypot for bots
   const name=$('dmName').value.trim(),text=$('dmText').value.trim();
   if(!text&&!DM.files.length)return;
+  if(!/^https:\/\//.test(DM_API)||/YOUR-WORKER/.test(DM_API)){dmErr('Direct message abhi setup me hai, thodi der baad try karein.');return}
   let last=0;try{last=+localStorage.getItem('gtrao_dm_last')||0}catch(e){}
-  const wait=Math.ceil((last+15000-Date.now())/1000);          // small cooldown against spam
+  const wait=Math.ceil((last+10000-Date.now())/1000);          // small cooldown against spam
   if(wait>0){dmErr(`Thoda ruk kar dobara bhejein (${wait} second)`);return}
   DM.busy=true;dmErr('');
-  $('dmProg').classList.remove('hidden');
+  $('dmProg').classList.remove('hidden');$('dmBar').style.width='4%';$('dmProgTxt').textContent='Taiyaar kar raha hu…';
   $('dmSend').innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Bhej raha hu…';dmCheck();
-  const todo=(DM.text?0:1)+DM.files.filter(f=>!f._sent).length;let done=0;
-  const prog=p=>{$('dmBar').style.width=Math.round((done+p)/todo*100)+'%';$('dmProgTxt').textContent=`Bhej raha hu… ${Math.min(done+1,todo)}/${todo}`};
+  const todo=DM.files.filter(f=>!f._sent);
   try{
-    if(!DM.text){
-      const fd=new FormData();
-      fd.append('chat_id',TG_CHAT);fd.append('parse_mode','HTML');fd.append('disable_web_page_preview','true');
-      fd.append('text',`📩 <b>New message from ${esc(name)}</b>\n🕒 ${esc(new Date().toLocaleString('en-IN'))}\n\n${text?esc(text):'<i>(sirf attachment)</i>'}`);
-      prog(0);await tgPost('sendMessage',fd,prog);DM.text=true;done++;
-    }
-    for(const f of DM.files){
-      if(f._sent)continue;
-      const photo=/^image\/(jpeg|png|webp)$/.test(f.type)&&f.size<=10485760;
-      const send=m=>{
-        const fd=new FormData();
-        fd.append('chat_id',TG_CHAT);fd.append('parse_mode','HTML');
-        fd.append('caption',`📎 From <b>${esc(name)}</b>\n${esc(f.name)}`);
-        fd.append(m==='sendPhoto'?'photo':'document',f,f.name);
-        prog(0);return tgPost(m,fd,prog);
-      };
-      try{await send(photo?'sendPhoto':'sendDocument')}catch(e){if(photo)await send('sendDocument');else throw e}
-      f._sent=true;done++;prog(0);
+    const fd=new FormData();
+    fd.append('name',name);fd.append('text',text);fd.append('hp',$('dmHp').value);
+    if(DM.text)fd.append('skipText','1');
+    for(const f of todo){const p=await dmPrep(f);fd.append('files',p,p.name)}
+    const r=await dmPost(fd,p=>{
+      $('dmBar').style.width=Math.max(4,Math.round(p*100))+'%';
+      $('dmProgTxt').textContent=p<1?`Upload ho raha hai… ${Math.round(p*100)}%`:'Pahunch raha hai…';
+    });
+    if(!r.ok){
+      if(r.textSent)DM.text=true;
+      (r.sent||[]).forEach(i=>{if(todo[i])todo[i]._sent=true});
+      throw new Error(r.error);
     }
     $('dmBar').style.width='100%';
     try{localStorage.setItem('gtrao_dm_last',String(Date.now()))}catch(e){}
